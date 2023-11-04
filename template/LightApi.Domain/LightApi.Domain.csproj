@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <DocumentationFile>bin\Debug\LightApi.Domain.xml</DocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <DebugSymbols>true</DebugSymbols>
+      <DocumentationFile>bin\Release\LightApi.Domain.xml</DocumentationFile>
+    </PropertyGroup>
+   
+    <ItemGroup>
+      <PackageReference Include="LightApi.EFCore" Version="0.1.0" />
+      <PackageReference Include="LightApi.EFCore.SqlServer" Version="0.1.0" />
+      <PackageReference Include="LightApi.Infra" Version="0.1.1" />
+    </ItemGroup>
+
+</Project>

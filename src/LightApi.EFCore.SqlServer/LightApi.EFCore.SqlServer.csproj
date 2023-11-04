@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <TargetFrameworks>net7.0;</TargetFrameworks>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <IncludeSymbols>true</IncludeSymbols>
+        <Version>0.1.0</Version>
+        <Title>LightApi.EFCore.SqlServer</Title>
+        <Authors>lizhenghao</Authors>
+        <Description>AspNetCore项目开发库</Description>
+        <Copyright>lizhenghao</Copyright>
+        <PackageProjectUrl>https://github.com/li-zheng-hao/LightApi</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/li-zheng-hao/LightApi</RepositoryUrl>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="DotNetCore.CAP.SqlServer" Version="7.2.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.5" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.4" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\LightApi.EFCore\LightApi.EFCore.csproj" />
+    </ItemGroup>
+    
+</Project>

@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <TargetFrameworks>net7.0;</TargetFrameworks>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <IncludeSymbols>true</IncludeSymbols>
+        <Version>0.1.0</Version>
+        <Title>LightApi.EFCore.MySql</Title>
+        <Authors>lizhenghao</Authors>
+        <Description>AspNetCore项目开发库</Description>
+        <Copyright>lizhenghao</Copyright>
+        <PackageProjectUrl>https://github.com/li-zheng-hao/LightApi</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/li-zheng-hao/LightApi</RepositoryUrl>
+    </PropertyGroup>
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\LightApi.EFCore\LightApi.EFCore.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="DotNetCore.CAP.MySql" Version="7.2.0" />
+        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
+    </ItemGroup>
+</Project>

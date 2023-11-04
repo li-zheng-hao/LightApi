@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net7.0;net6.0</TargetFrameworks>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <IncludeSymbols>true</IncludeSymbols>
+        <Version>0.1.1</Version>
+        <Title>LightApi.Infra</Title>
+        <Authors>lizhenghao</Authors>
+        <Description>AspNetCore项目开发库</Description>
+        <Copyright>lizhenghao</Copyright>
+        <PackageProjectUrl>https://github.com/li-zheng-hao/LightApi</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/li-zheng-hao/LightApi</RepositoryUrl>
+
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Autofac" Version="7.0.1"/>
+        <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0"/>
+        <PackageReference Include="DistributedLock.Redis" Version="1.0.2"/>
+        <PackageReference Include="IdentityModel" Version="6.0.0"/>
+        <PackageReference Include="JWT" Version="10.0.2"/>
+        <PackageReference Include="Mapster" Version="7.3.0"/>
+        <PackageReference Include="Masuit.Tools.AspNetCore" Version="1.2.7.4"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.16"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+        <PackageReference Include="Rougamo.Fody" Version="2.0.0"/>
+        <PackageReference Include="Serilog" Version="2.12.0"/>
+        <PackageReference Include="Serilog.AspNetCore" Version="6.1.0"/>
+        <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0"/>
+        <PackageReference Include="Serilog.Exceptions" Version="8.4.0"/>
+        <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0"/>
+        <PackageReference Include="Serilog.Settings.Configuration" Version="3.4.0"/>
+        <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0"/>
+        <PackageReference Include="Serilog.Sinks.File" Version="5.0.0"/>
+        <PackageReference Include="StackExchange.Redis" Version="2.6.104"/>
+        <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.2.3"/>
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.2.3"/>
+    </ItemGroup>
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+    </ItemGroup>
+</Project>

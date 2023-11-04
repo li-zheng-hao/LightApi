@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <IncludeSymbols>true</IncludeSymbols>
+        <Version>0.1.0</Version>
+        <Title>LightApi.EFCore.SqlServer</Title>
+        <Authors>lizhenghao</Authors>
+        <Description>AspNetCore项目开发库</Description>
+        <Copyright>lizhenghao</Copyright>
+        <PackageProjectUrl>https://github.com/li-zheng-hao/LightApi</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/li-zheng-hao/LightApi</RepositoryUrl>
+        <TargetFramework>net7.0</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Dapper" Version="2.0.138"/>
+        <PackageReference Include="DotNetCore.CAP" Version="7.2.0"/>
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+        <PackageReference Include="EFCore.BulkExtensions" Version="7.1.0" />
+        <PackageReference Include="Mapster" Version="7.3.0"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.5"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+    </ItemGroup>
+</Project>
