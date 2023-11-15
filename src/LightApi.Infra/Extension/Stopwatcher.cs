@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 
-namespace FB.Infrastructure.Extension;
+namespace LightApi.Infra.Extension;
 
 /// <summary>
 /// 记录耗时工具类

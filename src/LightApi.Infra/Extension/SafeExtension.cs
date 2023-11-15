@@ -1,7 +1,6 @@
 ﻿using System.Collections;
-using LightApi.Infra.Extension;
 
-namespace FB.Infrastructure.Extension;
+namespace LightApi.Infra.Extension;
 
 public static class SafeExtension
 {

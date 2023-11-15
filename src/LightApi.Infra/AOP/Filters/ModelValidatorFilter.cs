@@ -1,13 +1,11 @@
-﻿using FB.Infrastructure.Extension;
-using LightApi.Infra.Options;
+﻿using LightApi.Infra.Options;
 using LightApi.Infra.Unify;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 
-namespace FB.Infrastructure.AOP;
+namespace LightApi.Infra.AOP.Filters;
 
 /// <summary>
 /// 请求验证错误处理过滤器

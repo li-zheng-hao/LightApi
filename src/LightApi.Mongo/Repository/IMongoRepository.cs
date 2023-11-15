@@ -1,15 +1,11 @@
 ﻿#if NET6_0_OR_GREATER
 
-using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
 using LightApi.Mongo.Entities;
 using MongoDB.Driver;
 using MongoDB.Entities;
 
-namespace FB.Infrastructure.Mongo
+namespace LightApi.Mongo.Repository
 {
     public interface IMongoRepository<TDocument> where TDocument : MongoEntity
     {

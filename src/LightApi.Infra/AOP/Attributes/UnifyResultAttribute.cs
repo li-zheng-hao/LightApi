@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace FB.Infrastructure.AOP;
+namespace LightApi.Infra.AOP.Attributes;
 
 /// <summary>
 /// 需要忽略包装的函数上加这个特性

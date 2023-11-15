@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using FB.Infrastructure.EFCore.Repository.IRepositories;
+using LightApi.EFCore;
 using LightApi.EFCore.Config;
 using LightApi.EFCore.EFCore.DbContext;
 using LightApi.EFCore.Entities;

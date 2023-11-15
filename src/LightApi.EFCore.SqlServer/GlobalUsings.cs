@@ -5,4 +5,3 @@ global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using Microsoft.Extensions.Logging;
 global using System.Data;
-global using FB.Infrastructure.EFCore;

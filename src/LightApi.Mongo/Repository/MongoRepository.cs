@@ -1,6 +1,5 @@
 ﻿#if NET6_0_OR_GREATER
 using System.Linq.Expressions;
-using FB.Infrastructure.Mongo;
 using LightApi.Mongo.Entities;
 using LightApi.Mongo.UnitOfWork;
 using Mapster;

@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace FB.Infrastructure.Extension;
+namespace LightApi.Infra.Extension;
 
 public static class ObjectExtension
 {

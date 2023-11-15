@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using FB.Infrastructure.EFCore.Internal;
+using LightApi.EFCore.Internal;
 
 namespace System;
 

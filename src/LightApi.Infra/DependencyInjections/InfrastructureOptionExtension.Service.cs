@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using FB.Infrastructure;
 using LightApi.Infra.DependencyInjections.Core;
 using LightApi.Infra.Mapper;
 using LightApi.Infra.Options;

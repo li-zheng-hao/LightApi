@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FB.Infrastructure.EFCore.Repository.IRepositories;
+namespace LightApi.EFCore;
 
 public class UnitOfWorkAttribute : ActionFilterAttribute
 {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Reflection;
 
-namespace FB.Infrastructure.EFCore.Internal
+namespace LightApi.EFCore.Internal
 {
     internal static class ReflectionDictionary
     {

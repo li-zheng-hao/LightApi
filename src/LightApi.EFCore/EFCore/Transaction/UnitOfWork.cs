@@ -1,6 +1,4 @@
-﻿using FB.Infrastructure.EFCore.Repository.IRepositories;
-
-namespace LightApi.EFCore.EFCore.Transaction;
+﻿namespace LightApi.EFCore.EFCore.Transaction;
 
 public abstract class UnitOfWork<TDbContext> : IUnitOfWork
     where TDbContext : Microsoft.EntityFrameworkCore.DbContext
