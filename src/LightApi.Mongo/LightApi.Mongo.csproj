@@ -10,7 +10,7 @@
         <Title>LightApi.Mongo</Title>
         <Authors>lizhenghao</Authors>
         <Description>MongoDB扩展库</Description>
-        <Version>0.1.0</Version>
+        <Version>0.1.1</Version>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
     <Choose>
