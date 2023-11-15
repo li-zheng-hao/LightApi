@@ -1,34 +1,53 @@
 ﻿using System.Net;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 
-namespace FB.Infrastructure;
+namespace LightApi.Infra.Options;
 
 /// <summary>
 /// 基础设施配置
 /// </summary>
 public class InfrastructureOptions
 {
+    #region 状态码相关
     /// <summary>
     /// 默认成功时的业务码
     /// </summary>
-    public int DefaultSuccessCode { get; set; } = 200;
+    public int DefaultSuccessBusinessCode { get; set; } = 200;
 
     /// <summary>
     /// 默认成功时的消息
     /// </summary>
     public string DefaultSuccessMessage { get; set; } = "";
+    /// <summary>
+    /// 默认的模型验证业务错误码
+    /// </summary>
+    public int DefaultModelValidateErrorBusinessCode { get; set; } = 400;
 
+    /// <summary>
+    /// 未捕获异常的错误业务码
+    /// </summary>
+    public int UnCatchExceptionBusinessCode { get; set; } = 888;
+    
+    /// <summary>
+    /// 默认业务异常错误码
+    /// </summary>
+    public int DefaultFailureBusinessException { get; set; } = 400;
+    
+    /// <summary>
+    /// 默认的未捕获内部异常时HTTP错误码
+    /// </summary>
+    public HttpStatusCode DefaultUnCatchErrorHttpStatusCode { get; set; } = HttpStatusCode.InternalServerError;
+    
+    /// <summary>
+    /// 默认的模型验证HTTP错误码
+    /// </summary>
+    public HttpStatusCode DefaultModelValidateErrorHttpStatusCode { get; set; } = HttpStatusCode.OK;
+    
+    #endregion
+   
     /// <summary>
     /// 默认的错误返回信息
     /// </summary>
     public string DefaultErrorMessage { get; set; } = "系统繁忙，请稍后再试";
-
-
-    /// <summary>
-    /// 默认的模型验证错误码
-    /// </summary>
-    public HttpStatusCode DefaultModelValidateErrorHttpStatusCode { get; set; } = HttpStatusCode.BadRequest;
 
     /// <summary>
     /// 默认的模型验证业务错误消息
@@ -36,20 +55,16 @@ public class InfrastructureOptions
     public string DefaultModelValidateErrorMessage { get; set; } = "参数非法";
 
     /// <summary>
-    /// 默认的模型验证业务错误码
+    /// 将第一个模型验证错误消息作为业务错误消息
     /// </summary>
-    public int DefaultModelValidateErrorBusinessCode { get; set; } = 400;
+    public bool UseFirstModelValidateErrorMessage { get; set; } = false;
+    
 
 
     /// <summary>
-    /// 未捕获异常的错误业务码
+    /// 是否开启全局权限校验
     /// </summary>
-    public int UnCatchExceptionCode { get; set; } = 888;
-
-    /// <summary>
-    /// 是否开启全局权限校验,开启前需要确认已经注册了框架提供的权限校验服务
-    /// </summary>
-    public bool EnableGlobalAuthorize { get; set; }
+    public bool EnableGlobalAuthorize { get; set; } = false;
 
     /// <summary>
     /// 是否压制非空引用类型的隐式必需属性
@@ -67,22 +82,13 @@ public class InfrastructureOptions
     public bool EnableGlobalModelValidator { get; set; } = true;
 
     /// <summary>
-    /// 是否开启全局Http响应统一包装 默认false
+    /// 是否开启全局Http响应统一包装 默认true
     /// </summary>
-    public bool EnableGlobalUnifyResult { get; set; } = false;
+    public bool EnableGlobalUnifyResult { get; set; } = true;
 
     /// <summary>
-    /// 系统中各种日志的最大长度，超过长度后会自动截取 默认2000
+    /// 系统中各种日志的最大长度，超过长度后会自动截取 默认8000
     /// </summary>
-    public uint MaxLogLength { get; set; } = 2000;
+    public uint MaxLogLength { get; set; } = 8000;
 
-    /// <summary>
-    /// TimeFilter过滤器需要忽略的Url 例如 /api/message 会忽略所有以/api/message开头的Url
-    /// </summary>
-    public List<string> IgnoreTimeFilterUrls { get; set; } = new List<string>();
-
-    /// <summary>
-    /// 慢查询的最小时间 默认1000ms
-    /// </summary>
-    public uint? SlowQueryMilliseconds { get; set; } = 1000;
 }

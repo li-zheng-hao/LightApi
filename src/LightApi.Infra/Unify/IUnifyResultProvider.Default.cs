@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using LightApi.Infra.Options;
 
 namespace LightApi.Infra.Unify;
 
@@ -13,6 +14,10 @@ public class DefaultUnifyResultProvider : IUnifyResultProvider
     public object Failure(object? data, int code, string? msg,
         HttpStatusCode httpStatusCode = HttpStatusCode.BadRequest)
     {
+        if (code == -1)
+        {
+            code=App.GetRequiredService<InfrastructureOptions>().DefaultFailureBusinessException;
+        }
         return Unify.UnifyResult.Failure(msg, httpStatusCode, code);
     }
 }

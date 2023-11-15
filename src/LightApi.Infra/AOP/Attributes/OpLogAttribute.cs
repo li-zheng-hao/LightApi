@@ -2,7 +2,8 @@
 using FB.Infrastructure;
 using FB.Infrastructure.Extension;
 using LightApi.Infra.Extension;
-using LightApi.Infra.Helper;
+using LightApi.Infra.Json;
+using LightApi.Infra.Options;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Rougamo;
@@ -52,7 +53,7 @@ public class OpLogAttribute : ExMoAttribute
     protected override void ExOnExit(MethodContext context)
     {
         var parameterStr = JsonConvert.SerializeObject(context.Arguments
-            .Where(it => !_ignoreTypes.Contains(it.GetType())));
+            .Where(it => !_ignoreTypes.Contains(it.GetType())),new JsonSerializerSettings(){ ContractResolver = new DynamicContractResolver() });
 
         parameterStr = parameterStr.SafeSubString(LogLength!.Value);
 
@@ -64,8 +65,9 @@ public class OpLogAttribute : ExMoAttribute
         }
         else
         {
-            var resultStr = JsonConvert.SerializeObject(context.ExReturnValue);
-
+            var resultStr = 
+                JsonConvert.SerializeObject(context.ExReturnValue
+                    ,new JsonSerializerSettings(){ ContractResolver = new DynamicContractResolver() });
             resultStr = resultStr.SafeSubString(LogLength!.Value);
 
             Log.Write(Level, "操作日志 描述: {0} 请求路由: {1}  请求时间: {2} 结束时间: {3} 请求参数: {4} 返回结果: {5} 耗时: {6}毫秒",

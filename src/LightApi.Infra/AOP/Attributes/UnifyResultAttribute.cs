@@ -1,4 +1,5 @@
-﻿using LightApi.Infra.Unify;
+﻿using LightApi.Infra.Options;
+using LightApi.Infra.Unify;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,11 +40,11 @@ public class UnifyResultAttribute : ActionFilterAttribute
                 return;
 
             context.Result = new ObjectResult(unifyResultProvider.Success(objRes.Value,
-                option.Value.DefaultSuccessCode, option.Value.DefaultSuccessMessage));
+                option.Value.DefaultSuccessBusinessCode, option.Value.DefaultSuccessMessage));
         }
         else if (context.Result is NoContentResult or StatusCodeResult)
         {
-            context.Result = new ObjectResult(unifyResultProvider.Success(null, option.Value.DefaultSuccessCode,
+            context.Result = new ObjectResult(unifyResultProvider.Success(null, option.Value.DefaultSuccessBusinessCode,
                 option.Value.DefaultSuccessMessage
             ));
         }

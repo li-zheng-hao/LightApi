@@ -7,7 +7,7 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeSymbols>true</IncludeSymbols>
-        <Version>0.1.1</Version>
+        <Version>0.2.0</Version>
         <Title>LightApi.Infra</Title>
         <Authors>lizhenghao</Authors>
         <Description>AspNetCore项目开发库</Description>
@@ -45,5 +45,8 @@
     </ItemGroup>
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="DependencyInjections\Middleware\" />
     </ItemGroup>
 </Project>

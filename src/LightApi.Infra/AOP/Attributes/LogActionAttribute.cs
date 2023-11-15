@@ -1,5 +1,8 @@
 ﻿using FB.Infrastructure;
 using FB.Infrastructure.Extension;
+using LightApi.Infra.Json;
+using LightApi.Infra.Options;
+using LightApi.Infra.Unify;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,7 +26,7 @@ public class LogActionAttribute : ActionFilterAttribute
 
     private IOptions<InfrastructureOptions> _options;
 
-
+    
     /// <summary>
     /// 记录方法耗时
     /// </summary>
@@ -37,6 +40,11 @@ public class LogActionAttribute : ActionFilterAttribute
 
     public DateTime beginTime { get; set; }
 
+    /// <summary>
+    /// 最大日志长度 不设置则使用InfrastructureOptions中的值
+    /// </summary>
+    public uint MaxLogLength { get; set; } = 0;
+
     public override void OnActionExecuting(ActionExecutingContext actionContext)
     {
         _svc = actionContext.HttpContext.RequestServices;
@@ -48,6 +56,9 @@ public class LogActionAttribute : ActionFilterAttribute
 
     public override void OnActionExecuted(ActionExecutedContext actionExecutedContext)
     {
+        if(MaxLogLength==0) 
+            MaxLogLength=_options.Value.MaxLogLength;
+        
         if (actionExecutedContext.Exception != null)
         {
             var (paramStr, resultStr) = GetLogString(actionExecutedContext);
@@ -60,7 +71,7 @@ public class LogActionAttribute : ActionFilterAttribute
             if (_logOnError)
             {
                 var objectResult = actionExecutedContext.Result as ObjectResult;
-                var resp = objectResult?.Value as Unify.UnifyResult;
+                var resp = objectResult?.Value as UnifyResult;
 
                 if (resp?.success == false || actionExecutedContext.Exception != null)
                 {
@@ -82,11 +93,11 @@ public class LogActionAttribute : ActionFilterAttribute
 
     private (string, string) GetLogString(ActionExecutedContext actionExecutedContext)
     {
-        var paramStr = JsonConvert.SerializeObject(_args);
-        var resultStr = JsonConvert.SerializeObject(actionExecutedContext.Result);
+        var paramStr = JsonConvert.SerializeObject(_args,new JsonSerializerSettings(){ContractResolver =new DynamicContractResolver()});
+        var resultStr = JsonConvert.SerializeObject(actionExecutedContext.Result,new JsonSerializerSettings(){ContractResolver =new DynamicContractResolver()});
 
-        paramStr = paramStr.SafeSubString(_options.Value.MaxLogLength);
-        resultStr = resultStr.SafeSubString(_options.Value.MaxLogLength);
+        paramStr = paramStr.SafeSubString(MaxLogLength);
+        resultStr = resultStr.SafeSubString(MaxLogLength);
 
         return (paramStr, resultStr);
     }

@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Runtime.ExceptionServices;
-using FB.Infrastructure.Core;
+using LightApi.Infra.InfraException;
 
 namespace LightApi.Infra.Extension;
 
@@ -11,7 +11,7 @@ public static class Check
     /// </summary>
     /// <param name="obj"></param>
     /// <param name="ex"></param>
-    public static void NotNullOrEmpty(object? obj, Exception ex)
+    public static void NotNullOrEmpty(object? obj, System.Exception ex)
     {
         if (obj is null)
         {

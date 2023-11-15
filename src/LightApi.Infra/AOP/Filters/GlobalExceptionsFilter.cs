@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using FB.Infrastructure;
-using FB.Infrastructure.Core;
 using FB.Infrastructure.Extension;
+using LightApi.Infra.InfraException;
+using LightApi.Infra.Options;
 using LightApi.Infra.Unify;
 using Masuit.Tools;
 using Microsoft.AspNetCore.Hosting;
@@ -47,16 +48,10 @@ public class GlobalExceptionsFilter : IExceptionFilter
 
             context.ExceptionHandled = true;
 
-            if (customException.HttpStatusCode.HasValue)
-            {
-                context.HttpContext.Response.StatusCode = (int)customException.HttpStatusCode.Value;
-            }
-
             context.Result = new JsonResult(jm);
         }
         else
         {
-            HttpStatusCode status = HttpStatusCode.InternalServerError;
             RequestInfo requestInfo = new();
 
             // IMPORTANT: Leave the body open so the next middleware can read it.
@@ -79,10 +74,10 @@ public class GlobalExceptionsFilter : IExceptionFilter
             requestInfo.Path = $"{context.HttpContext.Request.Path}/{context.HttpContext.Request.QueryString}";
 
             //处理各种异常
-            var jm = _unifyResultProvider.Failure(null, _options.Value.UnCatchExceptionCode,
+            var jm = _unifyResultProvider.Failure(null, _options.Value.UnCatchExceptionBusinessCode,
                 _options.Value.DefaultErrorMessage);
 
-            context.HttpContext.Response.StatusCode = (int)status;
+            context.HttpContext.Response.StatusCode = (int)_options.Value.DefaultUnCatchErrorHttpStatusCode;
 
             context.ExceptionHandled = true;
             context.Result = new JsonResult(jm);

@@ -1,4 +1,5 @@
 ﻿using FB.Infrastructure.Extension;
+using LightApi.Infra.Options;
 using LightApi.Infra.Unify;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
