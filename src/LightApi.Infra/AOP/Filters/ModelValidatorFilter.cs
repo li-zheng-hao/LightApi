@@ -1,4 +1,5 @@
-﻿using LightApi.Infra.Options;
+﻿using LightApi.Infra.Extension;
+using LightApi.Infra.Options;
 using LightApi.Infra.Unify;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -31,10 +32,11 @@ public class ModelValidatorFilter : IResultFilter
                 }
             }
 
-
+            string errorMsg =  errors.FirstOrDefault(it => it.HasChineseChar());
+            
             var unifyResultProvider = actionContext.HttpContext.RequestServices.GetService<IUnifyResultProvider>();
             var baseResult = unifyResultProvider.Failure(errors, options.Value.DefaultModelValidateErrorBusinessCode,
-                options.Value.DefaultModelValidateErrorMessage,
+                options.Value.UseFirstModelValidateErrorMessage?errorMsg:options.Value.DefaultModelValidateErrorMessage,
                 options.Value.DefaultModelValidateErrorHttpStatusCode
             );
             // 设置返回值和状态码

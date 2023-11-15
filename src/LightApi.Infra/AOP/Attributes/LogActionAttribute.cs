@@ -24,25 +24,24 @@ public class LogActionAttribute : ActionFilterAttribute
     private readonly bool _logOnError;
 
     private IOptions<InfrastructureOptions> _options;
+    
+    private DateTime _beginTime { get; set; }
 
+    /// <summary>
+    /// 最大日志长度 设置为0时则使用InfrastructureOptions中的值
+    /// </summary>
+    public uint MaxLogLength { get; set; } = 0;
     
     /// <summary>
     /// 记录方法耗时
     /// </summary>
     /// <param name="description">日志中插入的描述内容</param>
     /// <param name="logOnError">是否仅在出现异常时打印 判断条件为http状态码等于4xx 5xx或归一化结果时UnifyResult中的success为false</param>
-    public LogActionAttribute(string description = null, bool logOnError = true)
+    public LogActionAttribute(string description = null, bool logOnError = false)
     {
         this._logOnError = logOnError;
         this._description = description;
     }
-
-    public DateTime beginTime { get; set; }
-
-    /// <summary>
-    /// 最大日志长度 不设置则使用InfrastructureOptions中的值
-    /// </summary>
-    public uint MaxLogLength { get; set; } = 0;
 
     public override void OnActionExecuting(ActionExecutingContext actionContext)
     {
@@ -50,7 +49,7 @@ public class LogActionAttribute : ActionFilterAttribute
         _options = _svc.GetRequiredService<IOptions<InfrastructureOptions>>();
         _logger = _svc.GetService<ILogger<LogActionAttribute>>();
         _args = actionContext.ActionArguments;
-        beginTime = DateTime.Now;
+        _beginTime = DateTime.Now;
     }
 
     public override void OnActionExecuted(ActionExecutedContext actionExecutedContext)
@@ -63,7 +62,7 @@ public class LogActionAttribute : ActionFilterAttribute
             var (paramStr, resultStr) = GetLogString(actionExecutedContext);
 
             _logger.LogInformation(
-                $"请求记录 描述: {_description} 请求路由: {actionExecutedContext.HttpContext.Request.Path}  请求时间: {beginTime} 结束时间: {DateTime.Now} 请求参数: {paramStr} 出现异常: {actionExecutedContext.Exception}");
+                $"请求记录 \r\n描述: {_description} \r\n请求路由: {actionExecutedContext.HttpContext.Request.Path}  \r\n请求时间: {_beginTime} \r\n结束时间: {DateTime.Now} \r\n请求参数: {paramStr} \r\n出现异常: {actionExecutedContext.Exception}");
         }
         else
         {
@@ -77,23 +76,26 @@ public class LogActionAttribute : ActionFilterAttribute
                     var (paramStr, resultStr) = GetLogString(actionExecutedContext);
 
                     _logger.LogInformation(
-                        $"请求记录 描述: {_description} 请求路由: {actionExecutedContext.HttpContext.Request.Path}  请求时间: {beginTime} 结束时间: {DateTime.Now} 请求参数: {paramStr} 返回结果: {resultStr}");
+                        $"请求记录 \r\n描述: {_description} \r\n请求路由: {actionExecutedContext.HttpContext.Request.Path}  \r\n请求时间: {_beginTime} \r\n结束时间: {DateTime.Now} \r\n请求参数: {paramStr} \r\n返回结果: {resultStr}");
                 }
             }
             else if (_logOnError == false)
             {
+                
                 var (paramStr, resultStr) = GetLogString(actionExecutedContext);
 
                 _logger.LogInformation(
-                    $"请求记录 描述: {_description} 请求路由: {actionExecutedContext.HttpContext.Request.Path}  请求时间: {beginTime} 结束时间: {DateTime.Now} 请求参数: {paramStr} 返回结果: {resultStr}");
+                    $"请求记录 \r\n描述: {_description} \r\n请求路由: {actionExecutedContext.HttpContext.Request.Path}  \r\n请求时间: {_beginTime} \r\n结束时间: {DateTime.Now} \r\n请求参数: {paramStr} \r\n返回结果: {resultStr}");
             }
         }
     }
 
     private (string, string) GetLogString(ActionExecutedContext actionExecutedContext)
     {
+        var objectResult = actionExecutedContext.Result as ObjectResult;
+        
         var paramStr = JsonConvert.SerializeObject(_args,new JsonSerializerSettings(){ContractResolver =new DynamicContractResolver()});
-        var resultStr = JsonConvert.SerializeObject(actionExecutedContext.Result,new JsonSerializerSettings(){ContractResolver =new DynamicContractResolver()});
+        var resultStr = JsonConvert.SerializeObject(objectResult==null?actionExecutedContext.Result:objectResult.Value,new JsonSerializerSettings(){ContractResolver =new DynamicContractResolver()});
 
         paramStr = paramStr.SafeSubString(MaxLogLength);
         resultStr = resultStr.SafeSubString(MaxLogLength);

@@ -1,4 +1,4 @@
-﻿using FB.Infrastructure.Core;
+﻿using LightApi.Infra.InfraException;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace LightApi.Core.Aop;

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
-using FB.Infrastructure.Core;
+using LightApi.Infra.InfraException;
 using Masuit.Tools.Systems;
 
 namespace LightApi.Core;
@@ -84,7 +84,7 @@ public static class BusinessErrorCodeExtension
     /// <returns></returns>
     public static BusinessException ToBusinessException(this BusinessErrorCode code)
     {
-        return new BusinessException(code.GetDescription(), (int)code, HttpStatusCode.OK);
+        return new BusinessException(code.GetDescription(), (int)code);
     }
 
     /// <summary>
@@ -96,7 +96,7 @@ public static class BusinessErrorCodeExtension
     public static BusinessException ToBusinessException(this BusinessErrorCode code, params object[] parameters)
     {
         var args = string.Format(code.GetDescription(), parameters);
-        return new BusinessException(args, (int)code, HttpStatusCode.OK);
+        return new BusinessException(args, (int)code);
     }
 
     /// <summary>
@@ -110,7 +110,7 @@ public static class BusinessErrorCodeExtension
         params object[] parameters)
     {
         var args = string.Format(code.GetDescription(), parameters);
-        return new BusinessException(args, (int)code, httpStatusCode);
+        return new BusinessException(args, (int)code);
     }
 
     /// <summary>
@@ -128,7 +128,7 @@ public static class BusinessErrorCodeExtension
                 
         if(!isValid)
         {
-            throw new BusinessException(validationResults[0].ErrorMessage?? "数据错误", (int)BusinessErrorCode.Code400, HttpStatusCode.OK);
+            throw new BusinessException(validationResults[0].ErrorMessage?? "数据错误");
         }
     }
 }

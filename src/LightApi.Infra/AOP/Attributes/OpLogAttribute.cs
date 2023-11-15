@@ -58,7 +58,7 @@ public class OpLogAttribute : ExMoAttribute
 
         if (context.Exception is not null)
         {
-            Log.Error(context.Exception, "操作日志(出现异常) 描述: {0} 请求路由: {1}  请求时间: {2} 结束时间: {3} 请求参数: {4} 耗时: {6}毫秒",
+            Log.Error(context.Exception, "操作日志(出现异常) \r\n描述: {0} \r\n请求路由: {1}  \r\n请求时间: {2} \r\n结束时间: {3} \r\n请求参数: {4} \r\n耗时: {6}毫秒",
                 OpName, context.Method.Name, _beginTime, DateTime.Now, parameterStr, _sw.ElapsedMilliseconds);
         }
         else
@@ -68,7 +68,7 @@ public class OpLogAttribute : ExMoAttribute
                     ,new JsonSerializerSettings(){ ContractResolver = new DynamicContractResolver() });
             resultStr = resultStr.SafeSubString(LogLength!.Value);
 
-            Log.Write(Level, "操作日志 描述: {0} 请求路由: {1}  请求时间: {2} 结束时间: {3} 请求参数: {4} 返回结果: {5} 耗时: {6}毫秒",
+            Log.Write(Level, "操作日志 \r\n描述: {0} \r\n请求路由: {1} \r\n请求时间: {2} \r\n结束时间: {3} \r\n请求参数: {4} \r\n返回结果: {5} \r\n耗时: {6}毫秒",
                 OpName, context.Method.Name, _beginTime, DateTime.Now, parameterStr, resultStr, _sw.ElapsedMilliseconds);
         }
     }

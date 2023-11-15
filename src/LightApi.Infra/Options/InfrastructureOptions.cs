@@ -30,7 +30,7 @@ public class InfrastructureOptions
     /// <summary>
     /// 默认业务异常错误码
     /// </summary>
-    public int DefaultFailureBusinessException { get; set; } = 400;
+    public int DefaultFailureBusinessExceptionCode { get; set; } = 400;
     
     /// <summary>
     /// 默认的未捕获内部异常时HTTP错误码

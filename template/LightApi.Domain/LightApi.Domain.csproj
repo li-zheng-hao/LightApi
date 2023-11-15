@@ -14,11 +14,13 @@
       <DebugSymbols>true</DebugSymbols>
       <DocumentationFile>bin\Release\LightApi.Domain.xml</DocumentationFile>
     </PropertyGroup>
-   
+
     <ItemGroup>
-      <PackageReference Include="LightApi.EFCore" Version="0.1.0" />
-      <PackageReference Include="LightApi.EFCore.SqlServer" Version="0.1.0" />
-      <PackageReference Include="LightApi.Infra" Version="0.1.1" />
+      <ProjectReference Include="..\..\src\LightApi.EFCore.SqlServer\LightApi.EFCore.SqlServer.csproj" />
+      <ProjectReference Include="..\..\src\LightApi.EFCore\LightApi.EFCore.csproj" />
+      <ProjectReference Include="..\..\src\LightApi.Infra\LightApi.Infra.csproj" />
     </ItemGroup>
+   
+    
 
 </Project>

@@ -45,7 +45,17 @@ public static class StringExtension
 
         return builder.ToString();
     }
-
+    /// <summary>
+    /// 是否包含中文
+    /// </summary>
+    /// <param name="source"></param>
+    /// <returns></returns>
+    public static bool HasChineseChar(this string source)
+    {
+        if (string.IsNullOrWhiteSpace(source)) return false;
+        
+        return Regex.IsMatch(source, @"[\u4e00-\u9fa5]");  
+    }
     /// <summary>
     /// 填充字符串
     /// </summary>

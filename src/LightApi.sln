@@ -10,6 +10,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightApi.EFCore.MySql", "Li
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightApi.Mongo", "LightApi.Mongo\LightApi.Mongo.csproj", "{5DA12E95-F1B8-4DC1-9448-1C931EDB2ECC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{F364DABB-647A-4E87-A1DA-16CA1A688260}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+		..\RELEASE_EFCore.md = ..\RELEASE_EFCore.md
+		..\RELEASE_Infra.md = ..\RELEASE_Infra.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

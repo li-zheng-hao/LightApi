@@ -42,6 +42,8 @@ public class GlobalExceptionsFilter : IExceptionFilter
         {
             var customException = (context.Exception as BusinessException);
 
+            if (customException.Code == -1) customException.Code = _options.Value.DefaultFailureBusinessExceptionCode;
+            
             var jm = _unifyResultProvider.Failure(customException.Body, customException.Code,
                 context.Exception.Message);
 

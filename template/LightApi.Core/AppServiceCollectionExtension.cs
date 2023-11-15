@@ -70,8 +70,8 @@ public static class AppServiceCollectionExtension
                 it.DefaultModelValidateErrorMessage = BusinessErrorCode.Code400.GetDescription();
                 it.DefaultModelValidateErrorBusinessCode = (int)BusinessErrorCode.Code400;
                 it.DefaultModelValidateErrorHttpStatusCode = HttpStatusCode.OK;
+                it.UseFirstModelValidateErrorMessage = true;
             });
-            configure.UseUnifyResultProvider(null, null);
             configure.UseMapster(Assembly.Load("LightApi.Service"));
         });
 
