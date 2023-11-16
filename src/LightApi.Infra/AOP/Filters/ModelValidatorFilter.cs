@@ -26,19 +26,24 @@ public class ModelValidatorFilter : IResultFilter
             {
                 var state = modelState[key];
 
-                if (state.Errors.Any())
-                {
-                    errors.Add(state.Errors?.FirstOrDefault()?.ErrorMessage);
-                }
+                if (state == null || !state.Errors.Any()) continue;
+                
+                var errorMessage = state.Errors?.FirstOrDefault()?.ErrorMessage;
+                
+                if (errorMessage != null)
+                    errors.Add(errorMessage);
             }
 
-            string errorMsg =  errors.FirstOrDefault(it => it.HasChineseChar());
+            string? errorMsg =  errors.FirstOrDefault(it => it.HasChineseChar());
+
+            if (errorMsg.IsNullOrWhiteSpace()) errorMsg = options!.Value.DefaultModelValidateErrorMessage;
             
             var unifyResultProvider = actionContext.HttpContext.RequestServices.GetService<IUnifyResultProvider>();
-            var baseResult = unifyResultProvider.Failure(errors, options.Value.DefaultModelValidateErrorBusinessCode,
+            var baseResult = unifyResultProvider!.Failure(errors, options!.Value.DefaultModelValidateErrorBusinessCode,
                 options.Value.UseFirstModelValidateErrorMessage?errorMsg:options.Value.DefaultModelValidateErrorMessage,
                 options.Value.DefaultModelValidateErrorHttpStatusCode
             );
+            
             // 设置返回值和状态码
             actionContext.Result = new JsonResult(baseResult);
             actionContext.HttpContext.Response.StatusCode = (int)options.Value.DefaultModelValidateErrorHttpStatusCode;

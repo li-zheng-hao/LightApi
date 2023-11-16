@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using LightApi.Infra.AOP.Attributes;
 using LightApi.Infra.Extension;
 using LightApi.Service;
@@ -37,7 +38,7 @@ public class TestController : ControllerBase
     /// <returns></returns>
     [HttpGet()]
     [OpLog("Get2")]
-    public IActionResult Get2()
+    public IActionResult Get2([FromQuery] [MaxLength(2)]string i)
     {
         Check.ThrowIf(true,"eerrr");
         return Ok();

@@ -28,6 +28,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightApi.EFCore", "..\src\L
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightApi.EFCore.SqlServer", "..\src\LightApi.EFCore.SqlServer\LightApi.EFCore.SqlServer.csproj", "{B278D349-7887-430E-B702-036325C8BBC8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0. 文档", "0. 文档", "{82B31624-7F8E-4B73-BEEB-463C5E46A876}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+		..\RELEASE_EFCore.md = ..\RELEASE_EFCore.md
+		..\RELEASE_Infra.md = ..\RELEASE_Infra.md
+		..\RELEASE_Mongo.md = ..\RELEASE_Mongo.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightApi.Mongo", "..\src\LightApi.Mongo\LightApi.Mongo.csproj", "{5D3F3DAE-E368-4F91-BF5F-ED3B02CA338D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,6 +80,10 @@ Global
 		{B278D349-7887-430E-B702-036325C8BBC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B278D349-7887-430E-B702-036325C8BBC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B278D349-7887-430E-B702-036325C8BBC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D3F3DAE-E368-4F91-BF5F-ED3B02CA338D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D3F3DAE-E368-4F91-BF5F-ED3B02CA338D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D3F3DAE-E368-4F91-BF5F-ED3B02CA338D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D3F3DAE-E368-4F91-BF5F-ED3B02CA338D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{78C3F048-C29E-442D-8390-F83D1AD39C1D} = {078A255D-2DBD-44D9-8D36-D21748E4210A}
@@ -81,5 +95,6 @@ Global
 		{D4E9AC05-AC7A-4D2E-B596-3BCD635F4B21} = {FBE0C0AF-3B66-403C-B3E4-4FF747DFA97A}
 		{63CFAC56-1A77-43D5-8920-E782E36C750E} = {FBE0C0AF-3B66-403C-B3E4-4FF747DFA97A}
 		{B278D349-7887-430E-B702-036325C8BBC8} = {FBE0C0AF-3B66-403C-B3E4-4FF747DFA97A}
+		{5D3F3DAE-E368-4F91-BF5F-ED3B02CA338D} = {FBE0C0AF-3B66-403C-B3E4-4FF747DFA97A}
 	EndGlobalSection
 EndGlobal

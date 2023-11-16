@@ -12,7 +12,7 @@ public class UnifyResult : IUnifyResult
 
     public int code { get; set; }
 
-    public string msg { get; set; }
+    public string? msg { get; set; }
 
     public object? data { get; set; }
 
@@ -35,7 +35,7 @@ public class UnifyResult : IUnifyResult
     }
 
 
-    public static UnifyResult Failure(string msg, HttpStatusCode httpStatusCode = HttpStatusCode.BadRequest,
+    public static UnifyResult Failure(string? msg,object? data, HttpStatusCode httpStatusCode = HttpStatusCode.BadRequest,
         int code = 888)
     {
         return new UnifyResult
@@ -43,6 +43,7 @@ public class UnifyResult : IUnifyResult
             success = false,
             code = code,
             msg = msg,
+            data = data,
             httpStatusCode = httpStatusCode,
         };
     }

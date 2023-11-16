@@ -284,7 +284,7 @@ public static class AppServiceCollectionExtension
         serviceCollection.AddRouting(options => options.LowercaseUrls = true);
         return serviceCollection.AddMvc(options =>
         {
-            // autosave在绝大部分 filter 之前先执行，这样报错了有异常能被action上的aop捕获
+             // autosave在绝大部分 filter 之前先执行，这样报错了有异常能被action上的aop捕获
             options.Filters.Add<AutoSaveAttribute>(100);
         });
     }
@@ -359,7 +359,7 @@ public static class AppServiceCollectionExtension
             .MinimumLevel.Override("System.Net.Http.HttpClient.NacosClient", LogEventLevel.Warning)
             .MinimumLevel.Override("Nacos", LogEventLevel.Information)
             .WriteTo.Console(outputTemplate: logTemplate)
-            .WriteTo.File("logs/lightapi_.log"
+            .WriteTo.File(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"logs/lightapi_.log")
                 , rollingInterval: RollingInterval.Day, outputTemplate: logTemplate);
 
 

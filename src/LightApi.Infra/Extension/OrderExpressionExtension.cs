@@ -1,8 +1,12 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
+using LightApi.Infra.InfraException;
 
-namespace LightApi.Infra.Extension.Order;
+namespace LightApi.Infra.Extension;
 
+/// <summary>
+/// 动态排序
+/// </summary>
 public static class OrderExpressionExtension
 {
     /// <summary>
@@ -79,7 +83,7 @@ public static class OrderExpressionExtension
             // use reflection (not ComponentModel) to mirror LINQ
             PropertyInfo? pi = type.GetProperty(prop);
             if (pi == null)
-                throw new KeyNotFoundException($"未找到属性{prop}");
+                throw new BusinessException($"排序字段不存在");
             expr = Expression.Property(expr, pi);
             type = pi.PropertyType;
         }
