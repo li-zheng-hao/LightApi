@@ -110,7 +110,7 @@ namespace LightApi.EFCore.Repository
         public IQueryable<TEntity> GetById(List<int> ids, bool useTracking = false)
         {
             List<object> internalIds = new List<object> { ids };
-            return GetById(internalIds);
+            return GetById(internalIds,useTracking);
         }
 
         public Task<TEntity> FirstOrDefaultAsync(bool useFilter,
