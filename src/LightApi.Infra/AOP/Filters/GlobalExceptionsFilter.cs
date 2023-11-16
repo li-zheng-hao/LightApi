@@ -1,22 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Text;
+﻿using System.Text;
 using LightApi.Infra.Extension;
 using LightApi.Infra.InfraException;
 using LightApi.Infra.Options;
 using LightApi.Infra.Unify;
 using Masuit.Tools;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ExceptionContext = Microsoft.AspNetCore.Mvc.Filters.ExceptionContext;
 using IExceptionFilter = Microsoft.AspNetCore.Mvc.Filters.IExceptionFilter;
 
-namespace FB.Filter;
+namespace LightApi.Infra.AOP.Filters;
 
 /// <summary>
 /// 接口全局异常错误日志
@@ -65,7 +59,7 @@ public class GlobalExceptionsFilter : IExceptionFilter
 
                 requestInfo.Body = reader.ReadToEndAsync().Result;
 
-                requestInfo.Body = requestInfo.Body.SafeSubString(1000);
+                requestInfo.Body = requestInfo.Body.SafeSubString(_options.Value.MaxLogLength);
 
                 if (context.HttpContext.Request.Body.CanSeek)
                     context.HttpContext.Request.Body.Seek(0, SeekOrigin.Begin);
@@ -82,7 +76,7 @@ public class GlobalExceptionsFilter : IExceptionFilter
 
             context.ExceptionHandled = true;
             context.Result = new JsonResult(jm);
-            _logger.LogError(context.Exception, "全局异常 Http信息 {Json}", requestInfo.ToJsonString());
+            _logger.LogError(context.Exception, "全局未捕获异常 Http信息 {Json}", requestInfo.ToJsonString());
         }
     }
 }

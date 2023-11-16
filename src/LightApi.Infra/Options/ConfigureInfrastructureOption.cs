@@ -1,5 +1,4 @@
-﻿using FB.Filter;
-using LightApi.Infra.AOP.Attributes;
+﻿using LightApi.Infra.AOP.Attributes;
 using LightApi.Infra.AOP.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -37,6 +37,7 @@ public class TestController : ControllerBase
     [LogAction("获取学校")]
     public IActionResult GetSchool()
     {
+        throw new Exception("11");
         return Ok(_fbAppContext.Entities<School>().ToList());
     }
     /// <summary>
