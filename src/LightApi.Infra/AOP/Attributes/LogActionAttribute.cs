@@ -1,4 +1,5 @@
 ﻿using LightApi.Infra.Extension;
+using LightApi.Infra.Http;
 using LightApi.Infra.Json;
 using LightApi.Infra.Options;
 using LightApi.Infra.Unify;
@@ -11,6 +12,9 @@ using Newtonsoft.Json;
 
 namespace LightApi.Infra.AOP.Attributes;
 
+/// <summary>
+/// 接口日志记录
+/// </summary>
 public class LogActionAttribute : ActionFilterAttribute
 {
     private ILogger<LogActionAttribute> _logger;
@@ -56,13 +60,11 @@ public class LogActionAttribute : ActionFilterAttribute
     {
         if(MaxLogLength==0) 
             MaxLogLength=_options.Value.MaxLogLength;
-        
         if (actionExecutedContext.Exception != null)
         {
-            var (paramStr, resultStr) = GetLogString(actionExecutedContext);
+            var (paramStr, resultStr) = GetLogString(actionExecutedContext, false);
 
-            _logger.LogInformation(
-                $"请求记录 \r\n描述: {_description} \r\n请求路由: {actionExecutedContext.HttpContext.Request.Path}  \r\n请求时间: {_beginTime} \r\n结束时间: {DateTime.Now} \r\n请求参数: {paramStr} \r\n出现异常: {actionExecutedContext.Exception}");
+            LogError(actionExecutedContext,paramStr);
         }
         else
         {
@@ -74,32 +76,52 @@ public class LogActionAttribute : ActionFilterAttribute
                 if (resp?.success == false || actionExecutedContext.Exception != null)
                 {
                     var (paramStr, resultStr) = GetLogString(actionExecutedContext);
-
-                    _logger.LogInformation(
-                        $"请求记录 \r\n描述: {_description} \r\n请求路由: {actionExecutedContext.HttpContext.Request.Path}  \r\n请求时间: {_beginTime} \r\n结束时间: {DateTime.Now} \r\n请求参数: {paramStr} \r\n返回结果: {resultStr}");
+                    LogSuccess(actionExecutedContext,paramStr,resultStr);
                 }
             }
             else if (_logOnError == false)
             {
                 
                 var (paramStr, resultStr) = GetLogString(actionExecutedContext);
-
-                _logger.LogInformation(
-                    $"请求记录 \r\n描述: {_description} \r\n请求路由: {actionExecutedContext.HttpContext.Request.Path}  \r\n请求时间: {_beginTime} \r\n结束时间: {DateTime.Now} \r\n请求参数: {paramStr} \r\n返回结果: {resultStr}");
+                LogSuccess(actionExecutedContext,paramStr,resultStr);
             }
         }
     }
 
-    private (string, string) GetLogString(ActionExecutedContext actionExecutedContext)
+    private (string, string?) GetLogString(ActionExecutedContext actionExecutedContext,bool logResult=true)
     {
-        var objectResult = actionExecutedContext.Result as ObjectResult;
+        string? resultStr = string.Empty;
+        
+        if (logResult)
+        {
+            var objectResult = actionExecutedContext.Result as ObjectResult;
+            resultStr = JsonConvert.SerializeObject(objectResult==null?actionExecutedContext.Result:objectResult.Value,new JsonSerializerSettings(){ContractResolver =new DynamicContractResolver()});
+
+        }
         
         var paramStr = JsonConvert.SerializeObject(_args,new JsonSerializerSettings(){ContractResolver =new DynamicContractResolver()});
-        var resultStr = JsonConvert.SerializeObject(objectResult==null?actionExecutedContext.Result:objectResult.Value,new JsonSerializerSettings(){ContractResolver =new DynamicContractResolver()});
 
         paramStr = paramStr.SafeSubString(MaxLogLength);
         resultStr = resultStr.SafeSubString(MaxLogLength);
 
         return (paramStr, resultStr);
+    }
+    
+    private void LogError(ActionExecutedContext actionExecutedContext,string paramStr)
+    {
+        var user = actionExecutedContext.HttpContext.RequestServices.GetService<IUser>();
+
+        _logger.LogError(actionExecutedContext.Exception,
+            $"\r\n------------------------------------\r\n请求记录 \r\n描述: {_description} \r\n用户：{user?.UserName??"未登录"} \r\n请求路由: {actionExecutedContext.HttpContext.Request.Path}  \r\n请求时间: {_beginTime} \r\n结束时间: {DateTime.Now} \r\n请求参数: {paramStr} \r\n出现异常: {actionExecutedContext.Exception?.Message}\r\n------------------------------------");
+
+    }
+
+    private void LogSuccess(ActionExecutedContext actionExecutedContext,string paramStr, string? resultStr)
+    {
+        var user = actionExecutedContext.HttpContext.RequestServices.GetService<IUser>();
+
+        _logger.LogInformation(
+            $"\r\n------------------------------------\r\n请求记录 \r\n描述: {_description} \r\n用户：{user?.UserName??"未登录"} \r\n请求路由: {actionExecutedContext.HttpContext.Request.Path}  \r\n请求时间: {_beginTime} \r\n结束时间: {DateTime.Now} \r\n请求参数: {paramStr} \r\n返回结果: {resultStr} \r\n------------------------------------");
+
     }
 }

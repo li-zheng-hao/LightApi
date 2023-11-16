@@ -2,6 +2,7 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using LightApi.Infra.DependencyInjections.Core;
+using LightApi.Infra.Http;
 using LightApi.Infra.Mapper;
 using LightApi.Infra.Options;
 using LightApi.Infra.Unify;
@@ -163,6 +164,19 @@ public static partial class InfrastructureOptionExtension
         serviceCollection.Replace(new ServiceDescriptor(typeof(IUnifyResultProvider), unifyResultProviderType,
             ServiceLifetime.Singleton));
 
+        return option;
+    }
+
+    /// <summary>
+    /// 配置IUser上下文
+    /// </summary>
+    /// <param name="option"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static InfrastructureSetupOption UseUserContext<T>(this InfrastructureSetupOption option) where T : class, IUser
+    {
+        var serviceCollection = option.ServiceCollection;
+        serviceCollection.AddScoped<IUser, T>();
         return option;
     }
 }

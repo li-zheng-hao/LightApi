@@ -27,7 +27,7 @@ public class TestController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet()]
-    [LogAction]
+    [LogAction("新增函数")]
     public IActionResult Get()
     {
         return Ok(_testService.Test());
@@ -40,7 +40,7 @@ public class TestController : ControllerBase
     [OpLog("Get2")]
     public IActionResult Get2([FromQuery] [MaxLength(2)]string i)
     {
-        Check.ThrowIf(true,"eerrr");
+        // Check.ThrowIf(true,"eerrr");
         return Ok();
     }
 }
