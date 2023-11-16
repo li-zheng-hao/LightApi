@@ -48,7 +48,7 @@ public class CustomApiAuthHandler : AuthenticationHandler<CustomApiAuthSchemeOpt
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, validateResult.context.Name),
+                new Claim(ClaimTypes.Name, validateResult.context.UserName),
                 new Claim(ClaimTypes.Role, validateResult.context.Roles),
             };
             

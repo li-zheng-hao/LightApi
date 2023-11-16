@@ -44,7 +44,7 @@ namespace LightApi.Core;
 
 public static class AppServiceCollectionExtension
 {
-    public static IServiceCollection AddMonitor(this IServiceCollection serviceCollection)
+    public static IServiceCollection AddMonitorSetup(this IServiceCollection serviceCollection)
     {
         if (Equals(System.Globalization.CultureInfo.CurrentCulture,
                 System.Globalization.CultureInfo.InvariantCulture) &&
@@ -78,11 +78,19 @@ public static class AppServiceCollectionExtension
                 it.DefaultModelValidateErrorHttpStatusCode = HttpStatusCode.OK;
                 it.UseFirstModelValidateErrorMessage = true;
             });
+            configure.UseUserContext<UserContext>();
             configure.UseMapster(Assembly.Load("LightApi.Service"));
         });
 
         serviceCollection.AddScoped<UserContext>();
 
+      
+
+        return serviceCollection;
+    }
+
+    public static IServiceCollection AddFileProviderSetup(this IServiceCollection serviceCollection)
+    {
         serviceCollection.AddSingleton<IFileProvider, LocalFileProvider>(sp =>
         {
             var configuration = sp.GetService<IConfiguration>();
@@ -98,9 +106,7 @@ public static class AppServiceCollectionExtension
 
         return serviceCollection;
     }
-
-
-    public static IServiceCollection AddCustomCors(this IServiceCollection serviceCollection)
+    public static IServiceCollection AddCorsSetup(this IServiceCollection serviceCollection)
     {
         // 此处根据自己的需要配置可通过的域名或ip
         serviceCollection.AddCors(options =>
@@ -118,7 +124,7 @@ public static class AppServiceCollectionExtension
         return serviceCollection;
     }
 
-    public static IServiceCollection AddCustomAuth(this IServiceCollection serviceCollection)
+    public static IServiceCollection AddAuthorizeSetup(this IServiceCollection serviceCollection)
     {
         // 全局启动授权校验
         // serviceCollection.AddAuthorization(options =>
@@ -139,11 +145,11 @@ public static class AppServiceCollectionExtension
     }
 
     /// <summary>
-    /// 加载锁
+    /// 分布式锁
     /// </summary>
     /// <param name="serviceCollection"></param>
     /// <returns></returns>
-    public static IServiceCollection AddFileLock(this IServiceCollection serviceCollection)
+    public static IServiceCollection AddDistributedLockSetup(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddSingleton<IDistributedLockProvider>(_ =>
         {
@@ -185,7 +191,7 @@ public static class AppServiceCollectionExtension
     /// </summary>
     /// <param name="serviceCollection"></param>
     /// <returns></returns>
-    public static IServiceCollection AddRedis(this IServiceCollection serviceCollection, IConfiguration configuration)
+    public static IServiceCollection AddRedisSetup(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
         Check.NotNullOrEmpty(configuration["ConnectionStrings:RedisConnectionString"], "redis连接字符串不能为空");
 
@@ -205,7 +211,7 @@ public static class AppServiceCollectionExtension
     /// </summary>
     /// <param name="builder"></param>
     /// <returns></returns>
-    public static IHostBuilder UseAutofac(this IHostBuilder builder)
+    public static IHostBuilder AddAutofacSetup(this IHostBuilder builder)
     {
         builder
             .UseServiceProviderFactory<
@@ -298,25 +304,27 @@ public static class AppServiceCollectionExtension
     }
 
     /// <summary>
-    /// 加载框架层
+    /// 请求记录
     /// </summary>
     /// <param name="serviceCollection"></param>
     /// <returns></returns>
-    public static IServiceCollection AddCustomMiniProfiler(this IServiceCollection serviceCollection)
+    public static IServiceCollection AddMiniProfilerSetup(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddMiniProfiler(options => { options.RouteBasePath = "/profiler"; }).AddEntityFramework();
 
         return serviceCollection;
     }
 
-    public static IMvcBuilder AddCustomMvc(this IServiceCollection serviceCollection)
+    public static IMvcBuilder AddMvcSetup(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddRouting(options => options.LowercaseUrls = true);
-        return serviceCollection.AddMvc(options =>
+        var mvcBuilder = serviceCollection.AddMvc(options =>
         {
              // autosave在绝大部分 filter 之前先执行，这样报错了有异常能被action上的aop捕获
             options.Filters.Add<AutoSaveAttribute>(100);
         });
+        mvcBuilder.AddCustomJson();
+        return mvcBuilder;
     }
 
     public static IMvcBuilder AddCustomJson(this IMvcBuilder mvcBuilder)
@@ -375,7 +383,7 @@ public static class AppServiceCollectionExtension
         return serviceCollection;
     }
 
-    public static IServiceCollection AddEfCoreSqliteSetup(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddEfCoreSqliteSetup(this IServiceCollection services)
     {
         var serviceType = typeof(IEntityInfo);
         var implType =
@@ -419,7 +427,7 @@ public static class AppServiceCollectionExtension
         });
         return services;
     }
-    public static WebApplicationBuilder AddCustomSerilog(this WebApplicationBuilder builder)
+    public static WebApplicationBuilder AddSerilogSetup(this WebApplicationBuilder builder)
     {
         string logTemplate = "[{Timestamp:HH:mm:ss} {Level:u3} {SourceContext}]  {Message:lj}{NewLine}{Exception}";
         var config = new LoggerConfiguration()

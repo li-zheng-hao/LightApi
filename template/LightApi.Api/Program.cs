@@ -13,62 +13,85 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
-    builder.AddCustomSerilog();
+    #region 注册服务
 
     builder.Services.AddControllers();
-
+    builder.Services.AddCustomSwaggerGen();
     builder.Services.AddEndpointsApiExplorer();
-
     builder.Services.AddSwaggerGen();
 
-    builder.Services.AddWindowsService()
-        .AddInfra(builder)
+    // Serilog日志
+    builder.AddSerilogSetup(); 
+    
+    // Windows服务
+    builder.Services.AddWindowsService(); 
+    
+    // 基础框架
+    builder.Services.AddInfra(builder); 
+    
 #if DEBUG
 #else
-         .AddNacos(builder.Configuration)
+    // 服务注册中心
+    builder.Services.AddNacos(builder.Configuration) 
 #endif
-        .AddCustomSwaggerGen()
-        // .AddMonitor()
-        .AddCustomCors()
-        .AddCustomAuth()
-        .AddWindowsService()
-        .AddEfCoreSqliteSetup(builder.Configuration)
-        .AddEasyCaching(options =>
-        {
-            // Memory缓存不需要序列化器，如果切换到Redis的话必须添加序列化器
-            options.UseInMemory(configure =>
-            {
-                configure.MaxRdSecond = 5;
-                configure.CacheNulls = false;
-            }, "default");
-        })
-        .AddFileLock()
-        // .AddRedis(builder.Configuration)
-        .AddHttpContextAccessor()
-        .AddCustomMiniProfiler()
-        .AddCustomMvc()
-        .AddCustomJson()
-        ;
-
-    builder.Host.UseAutofac();
     
+    //Prometheus监控
+    // builder.Services.AddMonitorSetup(); 
+    
+    // 跨域
+    builder.Services.AddCorsSetup(); 
+    
+    // 文件服务
+    builder.Services.AddFileProviderSetup(); 
+    
+    // 权限认证
+    builder.Services.AddAuthorizeSetup(); 
+    
+    // EFCore
+    builder.Services.AddEfCoreSqliteSetup(); 
+    
+    // 缓存
+    builder.Services.AddEasyCachingSetup(); 
+    
+    // 分布式锁
+    builder.Services.AddDistributedLockSetup(); 
+    
+    // Redis
+    // builder.Services.AddRedisSetup(builder.Configuration); 
+    
+    builder.Services.AddHttpContextAccessor();
+    
+    // Miniprofiler
+    builder.Services.AddMiniProfilerSetup(); 
+    
+    // MVC配置
+    builder.Services.AddMvcSetup(); 
+
+    // IOC容器
+    builder.Host.AddAutofacSetup(); 
+
+    // Kestrel配置
     builder.WebHost.ConfigureKestrel(it =>
     {
         // 上传文件大小500MB
         it.Limits.MaxRequestBodySize = 524288000;
-    });
+    }); 
+
+    #endregion
 
     var app = builder.Build();
 
-    
+    #region 中间件
+
+    // 数据库迁移脚本执行
     using (var scope = app.Services.CreateScope())
     {
         var db = scope.ServiceProvider.GetRequiredService<FbAppContext>();
         // 如果多实例 这里需要加redis锁 或者把迁移拆分出来
         db.Database.Migrate();
     }
-   
-    
+
+    // Swagger
     if (!app.Environment.IsProduction())
     {
         app.UseSwagger();
@@ -81,6 +104,7 @@ try
                     FileAccess.Read);
         });
     }
+    // 基础框架
     app.UseInfrastructure();
 
     app.UseRouting();
@@ -99,6 +123,8 @@ try
     app.MapMetrics();
 
     app.MapControllers();
+
+    #endregion
 
     app.Run();
 }

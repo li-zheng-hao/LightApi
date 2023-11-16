@@ -51,7 +51,7 @@ public class CustomJwtAuthHandler : AuthenticationHandler<CustomJwtAuthSchemeOpt
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, result.context.Name),
+                new Claim(ClaimTypes.Name, result.context.UserName),
                 new Claim(ClaimTypes.Role, result.context.Roles),
             };
 
