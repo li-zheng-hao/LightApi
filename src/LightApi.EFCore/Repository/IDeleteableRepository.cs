@@ -4,7 +4,13 @@ namespace LightApi.EFCore.Repository;
 
 public interface IDeleteableRepository<TEntity> where TEntity : class, IEfEntity
 {
-
+   /// <summary>
+   /// 删除一条
+   /// </summary>
+   /// <param name="id"></param>
+   /// <returns></returns>
+   Task<bool> DeleteByKey(object? id);
+   
    /// <summary>
    /// 删除 如果不存在则忽略
    /// </summary>

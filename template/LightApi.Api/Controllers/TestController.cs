@@ -19,15 +19,16 @@ public class TestController : ControllerBase
 {
 
     private readonly ILogger<TestController> _logger;
-    private readonly TestService _testService;
     private readonly FbAppContext _fbAppContext;
+    private readonly StudentService _studentService;
 
-    public TestController(ILogger<TestController> logger,TestService testService,FbAppContext fbAppContext)
+    public TestController(ILogger<TestController> logger,FbAppContext fbAppContext,StudentService studentService)
     {
         _logger = logger;
-        _testService = testService;
         _fbAppContext = fbAppContext;
+        _studentService = studentService;
     }
+    
     /// <summary>
     /// 获取学校
     /// </summary>
@@ -56,7 +57,7 @@ public class TestController : ControllerBase
     /// <returns></returns>
     [HttpGet()]
     [LogAction("获取学生")]
-    public IActionResult GetStudent()
+    public async Task<IActionResult> GetStudent([FromQuery]List<long> ids)
     {
         return Ok(_fbAppContext.Entities<Student>().AsQueryable().Include(it=>it.School).ToList());
     }
@@ -91,7 +92,7 @@ public class TestController : ControllerBase
     /// <returns></returns>
     [HttpPost()]
     [LogAction("DeleteStudent")]
-    public IActionResult DeleteStudent([FromQuery]int id)
+    public async Task<IActionResult> DeleteStudent([FromQuery]long id)
     {
         var entity = _fbAppContext.AsQueryable<Student>().Where(it=>it.Id==id).First();
         _fbAppContext.Remove(entity);

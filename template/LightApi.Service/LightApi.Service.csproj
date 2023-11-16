@@ -15,4 +15,9 @@
       <DocumentationFile>bin\Release\LightApi.Service.xml</DocumentationFile>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\LightApi.EFCore\LightApi.EFCore.csproj" />
+      <ProjectReference Include="..\LightApi.Domain\LightApi.Domain.csproj" />
+    </ItemGroup>
+
 </Project>
