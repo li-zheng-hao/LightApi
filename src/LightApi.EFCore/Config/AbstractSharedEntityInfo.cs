@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using LightApi.EFCore.Entities;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace LightApi.EFCore.Config;
 
@@ -26,33 +27,6 @@ public abstract class AbstractSharedEntityInfo : IEntityInfo
         return typeList;
     }
 
-    protected virtual void SetComment(ModelBuilder modelBuilder, IEnumerable<Type>? types)
-    {
-        if (types is null)
-            return;
-
-        var entityTypes = modelBuilder.Model.GetEntityTypes().Where(x => types.Contains(x.ClrType));
-        entityTypes.ForEach(entityType =>
-        {
-            modelBuilder.Entity(entityType.Name, buider =>
-            {
-                var typeSummary = entityType.ClrType.GetSummary();
-                buider.HasComment(typeSummary);
-
-                entityType.GetProperties().ForEach(property =>
-                {
-                    string propertyName = property.Name;
-                    var memberSummary = entityType.ClrType?.GetMember(propertyName)?.FirstOrDefault()?.GetSummary();
-                    buider.Property(propertyName).HasComment(memberSummary);
-                });
-            });
-        });
-    }
-
-    protected virtual void SetTableName(dynamic modelBuilder)
-    {
-    }
-
     public virtual void OnModelCreating(dynamic modelBuilder)
     {
         if (modelBuilder is not ModelBuilder builder)
@@ -62,12 +36,60 @@ public abstract class AbstractSharedEntityInfo : IEntityInfo
         var assemblies = new List<Assembly> { entityAssembly };
 
         var entityTypes = GetEntityTypes(entityAssembly);
-        entityTypes?.ForEach(t => builder.Entity(t));
+        entityTypes?.ForEach(t =>
+        {
+            var typeBuilder = builder.Entity(t);
+            ConfigureEntity(typeBuilder, t);
+        });
 
         assemblies?.ForEach(assembly => builder.ApplyConfigurationsFromAssembly(assembly));
 
         // SetComment(modelBuilder, entityTypes);
 
         // SetTableName(modelBuilder);
+    }
+
+    /// <summary>
+    /// 配置实体类  主键自增、软删除
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="entityType"></param>
+    protected virtual void ConfigureEntity(EntityTypeBuilder  builder,Type entityType)
+    {
+        builder.HasKey("Id");
+
+        if (entityType.HasAttribute<NonAutoIncrementAttribute>())
+        {
+            builder.Property("Id").ValueGeneratedNever();
+        }
+        if (typeof(ISoftDelete).IsAssignableFrom(entityType))
+        {
+            Type classType = typeof(AbstractSharedEntityInfo);
+            MethodInfo methodInfo = classType.GetMethod("ConfigureSoftDelete")!;
+
+            Type[] genericArguments = new Type[] { entityType };
+            MethodInfo genericMethod = methodInfo.MakeGenericMethod(genericArguments);
+
+            genericMethod.Invoke(null, new object[] { builder });
+        }
+        else if (typeof(ISoftDeleteV2).IsAssignableFrom(entityType))
+        {
+            Type classType = typeof(AbstractSharedEntityInfo);
+            MethodInfo methodInfo = classType.GetMethod("ConfigureSoftDeleteV2")!;
+
+            Type[] genericArguments = new Type[] { entityType };
+            MethodInfo genericMethod = methodInfo.MakeGenericMethod(genericArguments);
+
+            genericMethod.Invoke(null, new object[] { builder });
+        }
+    }
+    
+    public static void ConfigureSoftDelete<TEntity>(EntityTypeBuilder builder) where TEntity : class, ISoftDelete
+    {
+        builder.HasQueryFilter((TEntity d) => d.IsDeleted!=true);
+    }
+    public static void ConfigureSoftDeleteV2<TEntity>(EntityTypeBuilder builder) where TEntity : class, ISoftDeleteV2
+    {
+        builder.HasQueryFilter((TEntity d) => d.IsDeleted!=true);
     }
 }

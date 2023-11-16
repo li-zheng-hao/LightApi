@@ -1,4 +1,6 @@
-﻿namespace LightApi.EFCore.Entities;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace LightApi.EFCore.Entities;
 
 public interface ISoftDeleteV2
 {
@@ -11,4 +13,11 @@ public interface ISoftDeleteV2
         IsDeleted = false;
         DeletedAt = null;
     }
+
+    public void Delete()
+    {
+        IsDeleted = true;
+        DeletedAt=DateTime.Now;
+    }
+  
 }

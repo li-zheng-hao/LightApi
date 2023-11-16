@@ -11,13 +11,19 @@ using LightApi.Core.Converter;
 using LightApi.Core.FileProvider;
 using LightApi.Core.Swagger;
 using LightApi.Domain;
+using LightApi.EFCore;
+using LightApi.EFCore.Config;
+using LightApi.EFCore.EFCore.DbContext;
+using LightApi.EFCore.Entities;
 using LightApi.EFCore.Interceptors;
+using LightApi.EFCore.Repository;
 using LightApi.Infra.DependencyInjections;
 using LightApi.Infra.Extension;
 using Masuit.Tools.Systems;
 using Medallion.Threading;
 using Medallion.Threading.FileSystem;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
@@ -149,7 +155,31 @@ public static class AppServiceCollectionExtension
 
         return serviceCollection;
     }
+    /// <summary>
+    /// 加载锁
+    /// </summary>
+    /// <param name="serviceCollection"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddEasyCachingSetup(this IServiceCollection serviceCollection)
+    {
+        serviceCollection.AddEasyCaching(options =>
+        {
+            // Memory缓存不需要序列化器，如果切换到Redis的话必须添加序列化器
+            options.UseInMemory(configure =>
+            {
+                configure.MaxRdSecond = 5;
+                configure.CacheNulls = false;
+            }, "default");
+            // options.UseRedis(it =>
+            // {
+                // it.DBConfig.Configuration= configuration["ConnectionStrings:RedisConnectionString"];
+            // }, "redis");
 
+            // options.WithJson("redis");
+        });
+
+        return serviceCollection;
+    }
     /// <summary>
     /// 添加redis
     /// </summary>
@@ -328,21 +358,67 @@ public static class AppServiceCollectionExtension
 
     public static IServiceCollection AddEfCore(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
-        serviceCollection.AddInfrastructureEfCoreSqlServer<FbAppContext>(config =>
-        {
-            config.UseSqlServer(configuration["ConnectionStrings:SqlServerConnectionString"],
-                sqlOptions => { sqlOptions.MigrationsAssembly("LightApi.Api"); });
-            config.EnableSensitiveDataLogging();
-            config.EnableDetailedErrors();
-            config.AddInterceptors(new SoftDeleteInterceptor());
-            config.AddInterceptors(new SlowQueryLogInterceptor());
-            config.ReplaceService<IMigrationsModelDiffer, MigrationsModelDifferWithoutForeignKey>();
-        }, Assembly.Load("LightApi.Domain"));
+        // serviceCollection.AddInfrastructureEfCoreSqlServer<FbAppContext>(config =>
+        // {
+        //     config.UseSqlServer(configuration["ConnectionStrings:SqlServerConnectionString"],
+        //         sqlOptions => { sqlOptions.MigrationsAssembly("LightApi.Api"); });
+        //     config.EnableSensitiveDataLogging();
+        //     config.EnableDetailedErrors();
+        //     config.AddInterceptors(new SoftDeleteInterceptor());
+        //     config.AddInterceptors(new SlowQueryLogInterceptor());
+        //     config.ReplaceService<IMigrationsModelDiffer, MigrationsModelDifferWithoutForeignKey>();
+        // }, Assembly.Load("LightApi.Domain"));
+        
+        
 
 
         return serviceCollection;
     }
 
+    public static IServiceCollection AddEfCoreSqliteSetup(this IServiceCollection services, IConfiguration configuration)
+    {
+        var serviceType = typeof(IEntityInfo);
+        var implType =
+            typeof(FbAppContext).Assembly.ExportedTypes.FirstOrDefault(type => type.IsAssignableTo(serviceType));
+
+        if (implType is null)
+            throw new NotSupportedException(
+                $"模型所在程序集必须继承 {nameof(IEntityInfo)} 接口,或者直接派生 {nameof(AbstractSharedEntityInfo)} 类");
+        else
+            services.AddSingleton(serviceType, implType);
+
+        // services.TryAddScoped<IUnitOfWork, SqliteUnitOfWork<FbAppContext>>();
+
+        services.AddScoped<AppDbContext>(sp => sp.GetService<FbAppContext>());
+
+        services.TryAddScoped(typeof(IEfRepository<>), typeof(EfRepository<>));
+
+        services.AddDbContext<FbAppContext>((sp, op) =>
+        {
+            var env = sp.GetService<IWebHostEnvironment>();
+            // if (env.IsDevelopment())
+            // {
+            // op.UseSqlite("DataSource=file::memory:?cache=shared", b => b.MigrationsAssembly("FB.AppSrv"));
+            // }
+            // else
+            // {
+            op.UseSqlite( "Data Source=lightapi_data.db;", b => b.MigrationsAssembly("LightApi.Api"));
+
+            // }
+            // op.UseLoggerFactory(LoggerFactory.Create(builder =>
+            // {
+            // builder.AddFilter(_ => false);
+            // }));
+            // 自定义日志
+            // op.LogTo(Log.Information,LogLevel.Information);
+            op.EnableSensitiveDataLogging();
+            op.EnableDetailedErrors();
+            op.AddInterceptors(new SoftDeleteInterceptor());
+            op.AddInterceptors(new SlowQueryLogInterceptor());
+            op.ReplaceService<IMigrationsModelDiffer, MigrationsModelDifferWithoutForeignKey>();
+        });
+        return services;
+    }
     public static WebApplicationBuilder AddCustomSerilog(this WebApplicationBuilder builder)
     {
         string logTemplate = "[{Timestamp:HH:mm:ss} {Level:u3} {SourceContext}]  {Message:lj}{NewLine}{Exception}";

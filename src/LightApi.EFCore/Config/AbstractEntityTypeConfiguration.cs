@@ -13,37 +13,37 @@ public abstract class AbstractEntityTypeConfiguration<TEntity,TKey> : IEntityTyp
 {
     public virtual void Configure(EntityTypeBuilder<TEntity> builder)
     {
-        var entityType = typeof(TEntity);
-        ConfigureKey(builder, entityType);
-        ConfigureConcurrency(builder, entityType);
-        ConfigureQueryFilter(builder, entityType);
+        // var entityType = typeof(TEntity);
+        // ConfigureKey(builder, entityType);
+        // ConfigureConcurrency(builder, entityType);
+        // ConfigureQueryFilter(builder, entityType);
     }
 
-    protected virtual void ConfigureKey(EntityTypeBuilder<TEntity> builder, Type entityType)
-    {
-        builder.HasKey(x => x.Id);
+    // protected virtual void ConfigureKey(EntityTypeBuilder<TEntity> builder, Type entityType)
+    // {
+    //     builder.HasKey(x => x.Id);
+    //
+    //     if (entityType.HasAttribute<NonAutoIncrementAttribute>())
+    //     {
+    //         builder.Property(x => x.Id).ValueGeneratedNever();
+    //     }
+    // }
 
-        if (entityType.HasAttribute<NonAutoIncrementAttribute>())
-        {
-            builder.Property(x => x.Id).ValueGeneratedNever();
-        }
-    }
+    // protected virtual void ConfigureConcurrency(EntityTypeBuilder<TEntity> builder, Type entityType)
+    // {
+    //     // if (typeof(IConcurrency).IsAssignableFrom(entityType))
+    //         // builder.Property("RowVersion").IsRequired().IsRowVersion().ValueGeneratedOnAddOrUpdate();
+    // }
 
-    protected virtual void ConfigureConcurrency(EntityTypeBuilder<TEntity> builder, Type entityType)
-    {
-        // if (typeof(IConcurrency).IsAssignableFrom(entityType))
-            // builder.Property("RowVersion").IsRequired().IsRowVersion().ValueGeneratedOnAddOrUpdate();
-    }
-
-    protected virtual void ConfigureQueryFilter(EntityTypeBuilder<TEntity> builder, Type entityType)
-    {
-        if (typeof(ISoftDelete).IsAssignableFrom(entityType))
-        {
-            builder.HasQueryFilter(d => !EF.Property<bool>(d, "IsDeleted"));
-        }
-        else if (typeof(ISoftDeleteV2).IsAssignableFrom(entityType))
-        {
-            builder.HasQueryFilter(d => EF.Property<bool>(d, "IsDeleted")!=true);
-        }
-    }
+    // protected virtual void ConfigureQueryFilter(EntityTypeBuilder<TEntity> builder, Type entityType)
+    // {
+    //     if (typeof(ISoftDelete).IsAssignableFrom(entityType))
+    //     {
+    //         builder.HasQueryFilter(d => !EF.Property<bool>(d, "IsDeleted"));
+    //     }
+    //     else if (typeof(ISoftDeleteV2).IsAssignableFrom(entityType))
+    //     {
+    //         builder.HasQueryFilter(d => EF.Property<bool>(d, "IsDeleted")!=true);
+    //     }
+    // }
 }
