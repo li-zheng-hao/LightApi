@@ -14,11 +14,30 @@ public interface IFileProvider
     /// </summary>
     FileNameGenerateStrategy FileNameGenerateStrategy { get; set; }
     
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="stream"></param>
+    /// <param name="fileName"></param>
+    /// <param name="fileNameGenerateStrategy"></param>
+    /// <returns></returns>
     Task<(string? fileUrl, string? md5)> SaveFile(Stream stream, string fileName);
 
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="file"></param>
+    /// <param name="fileNameGenerateStrategy"></param>
+    /// <returns></returns>
     Task<(string? fileUrl, string? md5)> SaveFile(IFormFile file);
     
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="fileBytes"></param>
+    /// <param name="fileName"></param>
+    /// <param name="fileNameGenerateStrategy"></param>
+    /// <returns></returns>
     Task<(string? fileUrl, string? md5)> SaveFile(byte[] fileBytes, string fileName);
 
     /// <summary>

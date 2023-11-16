@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +14,10 @@ public class App
         Configuration = app.Configuration;
         HostEnvironment = app.Environment;
         ServiceProvider = app.Services;
+        AutofacContainer=app.Services.GetAutofacRoot();
     }
+    public static ILifetimeScope AutofacContainer { get; set; }
+    
     public static IConfiguration Configuration { get; set; }
 
     public static IWebHostEnvironment HostEnvironment { get; set; }
@@ -22,37 +27,84 @@ public class App
     /// </summary>
     public static IServiceProvider ServiceProvider { get; set; }
 
-    public static object GetService(Type serviceType)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="serviceType"></param>
+    /// <returns></returns>
+    public static object? GetService(Type serviceType)
     {
         return ServiceProvider.GetService(serviceType);
     }
 
-    public static T GetService<T>()
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static T? GetService<T>()
     {
         return ServiceProvider.GetService<T>();
     }
 
+    /// <summary>
+    /// 获取命名服务
+    /// </summary>
+    /// <param name="name"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static T? GetNamedService<T>(string name) where T : class
+    {
+        return AutofacContainer.ResolveNamed(serviceName:name,serviceType:typeof(T)) as T;
+    }
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public static IEnumerable<T> GetServices<T>()
     {
         return ServiceProvider.GetServices<T>();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="serviceType"></param>
+    /// <returns></returns>
     public static object GetRequiredService(Type serviceType)
     {
         return ServiceProvider.GetRequiredService(serviceType);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public static T GetRequiredService<T>()
     {
         return ServiceProvider.GetRequiredService<T>();
     }
 
-    public static IEnumerable<object> GetServices(Type serviceType)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="serviceType"></param>
+    /// <returns></returns>
+    public static IEnumerable<object?> GetServices(Type serviceType)
     {
         return ServiceProvider.GetServices(serviceType);
     }
 
-    public static T GetConfig<T>(string key)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="key"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static T? GetConfig<T>(string key)
     {
         return Configuration.GetSection(key).Get<T>();
     }

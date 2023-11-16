@@ -9,6 +9,7 @@ using LightApi.Core.Authorization;
 using LightApi.Core.Autofac;
 using LightApi.Core.Converter;
 using LightApi.Core.FileProvider;
+using LightApi.Core.Options;
 using LightApi.Core.Swagger;
 using LightApi.Domain;
 using LightApi.EFCore;
@@ -30,6 +31,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Nacos.AspNetCore.V2;
 using Newtonsoft.Json;
@@ -64,7 +66,7 @@ public static class AppServiceCollectionExtension
         return serviceCollection;
     }
 
-    public static IServiceCollection AddInfra(this IServiceCollection serviceCollection, WebApplicationBuilder builder)
+    public static IServiceCollection AddInfraSetup(this IServiceCollection serviceCollection, WebApplicationBuilder builder)
     {
         serviceCollection.AddInfrastructure(builder.Configuration, configure =>
         {
@@ -84,25 +86,12 @@ public static class AppServiceCollectionExtension
 
         serviceCollection.AddScoped<UserContext>();
 
-      
-
         return serviceCollection;
     }
 
     public static IServiceCollection AddFileProviderSetup(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddSingleton<IFileProvider, LocalFileProvider>(sp =>
-        {
-            var configuration = sp.GetService<IConfiguration>();
-            var rootDir = configuration!["Other:LocalStorageDir"];
-            var fileProvider = new LocalFileProvider()
-            {
-                RootDir = rootDir ?? Path.Combine(AppContext.BaseDirectory, "FileData"),
-                FileNameGenerateStrategy = FileNameGenerateStrategy.TimeStampWithDayPrefix
-            };
-            Directory.CreateDirectory(fileProvider.RootDir);
-            return fileProvider;
-        });
+       
 
         return serviceCollection;
     }
@@ -210,8 +199,9 @@ public static class AppServiceCollectionExtension
     /// 使用Autofac注入服务
     /// </summary>
     /// <param name="builder"></param>
+    /// <param name="configuration"></param>
     /// <returns></returns>
-    public static IHostBuilder AddAutofacSetup(this IHostBuilder builder)
+    public static IHostBuilder AddAutofacSetup(this IHostBuilder builder,IConfiguration configuration)
     {
         builder
             .UseServiceProviderFactory<
@@ -219,7 +209,7 @@ public static class AppServiceCollectionExtension
             .ConfigureContainer(
                 (Action<HostBuilderContext, ContainerBuilder>)((_, containerBuilder) =>
                     containerBuilder.RegisterModule(
-                        new AutofacModuleRegister())));
+                        new AutofacModuleRegister(configuration))));
         return builder;
     }
 

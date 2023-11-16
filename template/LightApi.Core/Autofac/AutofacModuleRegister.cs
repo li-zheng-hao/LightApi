@@ -1,5 +1,9 @@
 ﻿using System.Reflection;
 using Autofac;
+using LightApi.Core.FileProvider;
+using LightApi.Core.Options;
+using Masuit.Tools;
+using Microsoft.Extensions.Configuration;
 using Module = Autofac.Module;
 
 namespace LightApi.Core.Autofac;
@@ -9,12 +13,22 @@ namespace LightApi.Core.Autofac;
 /// </summary>
 public class AutofacModuleRegister : Module
 {
+    private readonly IConfiguration _configuration;
+    private ContainerBuilder _builder;
+
+    public AutofacModuleRegister(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
+
     protected override void Load(ContainerBuilder builder)
     {
+        _builder = builder;
+
         var basePath = AppContext.BaseDirectory;
-        
+
         var servicesDllFile = Path.Combine(basePath, "LightApi.Service.dll");
-        
+
         var repositoryDllFile = Path.Combine(basePath, "LightApi.Repository.dll");
 
         if (!(File.Exists(servicesDllFile) && File.Exists(repositoryDllFile)))
@@ -62,5 +76,34 @@ public class AutofacModuleRegister : Module
             builder.RegisterTypes(singleton).AsSelf().SingleInstance()
                 .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
         });
+
+        AddFileProvider();
+    }
+
+    private void AddFileProvider()
+    {
+        var fileStorageOptions = _configuration.GetSection(FileStorageOptions.SectionName).Get<FileStorageOptions>();
+
+        if (fileStorageOptions?.LocalStorages.IsNullOrEmpty() == false)
+        {
+            foreach (var localStorage in fileStorageOptions.LocalStorages!)
+            {
+                _builder.Register<IFileProvider>((it,b) =>
+                {
+                    var fileProvider = new LocalFileProvider();
+                    fileProvider.RootDir = localStorage.StorageRootDir;
+                    // 判断是否为相对路径
+                    if (!Path.IsPathRooted(fileProvider.RootDir))
+                    {
+                        fileProvider.RootDir = Path.Combine(AppContext.BaseDirectory, fileProvider.RootDir);
+                    }
+
+                    fileProvider.FileNameGenerateStrategy = localStorage.FileNameGenerateStrategy;
+                    return fileProvider;
+                }).Named<IFileProvider>(localStorage.Key);
+            }
+        }
+
+      
     }
 }

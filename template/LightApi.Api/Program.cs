@@ -1,4 +1,5 @@
 using LightApi.Core;
+using LightApi.Core.Options;
 using LightApi.Domain;
 using LightApi.Infra;
 using LightApi.Infra.DependencyInjections;
@@ -13,6 +14,15 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
+    #region 注入配置
+
+    builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection(DatabaseOptions.SectionName));
+    builder.Services.Configure<FileStorageOptions>(builder.Configuration.GetSection(FileStorageOptions.SectionName));
+    builder.Services.Configure<SecretOptions>(builder.Configuration.GetSection(SecretOptions.SectionName));
+    builder.Services.Configure<ThirdPartOptions>(builder.Configuration.GetSection(ThirdPartOptions.SectionName));
+
+    #endregion
+    
     #region 注册服务
 
     builder.Services.AddControllers();
@@ -27,7 +37,7 @@ try
     builder.Services.AddWindowsService(); 
     
     // 基础框架
-    builder.Services.AddInfra(builder); 
+    builder.Services.AddInfraSetup(builder); 
     
 #if DEBUG
 #else
@@ -67,8 +77,8 @@ try
     // MVC配置
     builder.Services.AddMvcSetup(); 
 
-    // IOC容器
-    builder.Host.AddAutofacSetup(); 
+    // IOC容器 及批量注入
+    builder.Host.AddAutofacSetup(builder.Configuration); 
 
     // Kestrel配置
     builder.WebHost.ConfigureKestrel(it =>
