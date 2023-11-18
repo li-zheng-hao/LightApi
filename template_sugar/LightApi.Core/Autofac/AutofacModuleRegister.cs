@@ -57,7 +57,12 @@ public class AutofacModuleRegister : Module
         builder.RegisterTypes(repos).AsSelf().InstancePerLifetimeScope()
             .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
 
-        var coreAssemblies = new Assembly[] { Assembly.Load("LightApi.Core") };
+        var coreAssemblies = new Assembly[]
+        {
+            Assembly.Load("LightApi.Core"),
+            Assembly.Load("LightApi.Service"),
+            
+        };
 
         coreAssemblies.ToList().ForEach(it =>
         {
@@ -65,18 +70,24 @@ public class AutofacModuleRegister : Module
                 .Where(it => it.IsClass && it.IsAssignableTo(typeof(ITransientDependency))).ToArray();
             builder.RegisterTypes(transient).AsSelf().InstancePerDependency()
                 .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
+            builder.RegisterTypes(transient).AsImplementedInterfaces().InstancePerDependency()
+                .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
 
             var scoped = it.GetExportedTypes()
                 .Where(it => it.IsClass && it.IsAssignableTo(typeof(IScopedDependency))).ToArray();
             builder.RegisterTypes(scoped).AsSelf().InstancePerLifetimeScope()
+                .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
+            builder.RegisterTypes(scoped).AsImplementedInterfaces().InstancePerLifetimeScope()
                 .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
 
             var singleton = it.GetExportedTypes()
                 .Where(it => it.IsClass && it.IsAssignableTo(typeof(ISingletonDependency))).ToArray();
             builder.RegisterTypes(singleton).AsSelf().SingleInstance()
                 .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
+            builder.RegisterTypes(singleton).AsImplementedInterfaces().SingleInstance()
+                .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
         });
-
+        
         AddFileProvider();
     }
 

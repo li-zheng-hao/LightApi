@@ -47,6 +47,9 @@ try
     //Prometheus监控
     // builder.Services.AddMonitorSetup(); 
     
+    // Hangfire定时任务
+    builder.Services.AddHangFireSetup();
+    
     // 跨域
     builder.Services.AddCorsSetup(); 
     
@@ -56,7 +59,7 @@ try
     // 权限认证
     builder.Services.AddAuthorizeSetup(); 
     
-    // EFCore
+    // SqlSugar
     builder.Services.AddSqlSugarSetup(); 
     
     // 缓存
@@ -108,6 +111,8 @@ try
     // 基础框架
     app.UseInfrastructure();
 
+    app.UseHangfireMiddleware();
+    
     app.UseRouting();
 
     app.UseAuthentication();

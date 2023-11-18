@@ -16,6 +16,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\LightApi.Core\LightApi.Core.csproj" />
       <ProjectReference Include="..\LightApi.Domain\LightApi.Domain.csproj" />
     </ItemGroup>
 

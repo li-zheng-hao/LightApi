@@ -3,14 +3,20 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Hangfire;
+using Hangfire.Dashboard.BasicAuthorization;
+using Hangfire.MemoryStorage;
+using Hangfire.SqlServer;
 using LightApi.Core.Aop;
 using LightApi.Core.Authorization;
 using LightApi.Core.Autofac;
 using LightApi.Core.Converter;
+using LightApi.Core.Job;
 using LightApi.Core.Swagger;
 using LightApi.Infra;
 using LightApi.Infra.DependencyInjections;
 using LightApi.SqlSugar;
+using Masuit.Tools;
 using Masuit.Tools.Systems;
 using Medallion.Threading;
 using Medallion.Threading.FileSystem;
@@ -55,7 +61,8 @@ public static class AppServiceCollectionExtension
         return serviceCollection;
     }
 
-    public static IServiceCollection AddInfraSetup(this IServiceCollection serviceCollection, WebApplicationBuilder builder)
+    public static IServiceCollection AddInfraSetup(this IServiceCollection serviceCollection,
+        WebApplicationBuilder builder)
     {
         serviceCollection.AddInfrastructure(builder.Configuration, configure =>
         {
@@ -80,10 +87,9 @@ public static class AppServiceCollectionExtension
 
     public static IServiceCollection AddFileProviderSetup(this IServiceCollection serviceCollection)
     {
-       
-
         return serviceCollection;
     }
+
     public static IServiceCollection AddCorsSetup(this IServiceCollection serviceCollection)
     {
         // 此处根据自己的需要配置可通过的域名或ip
@@ -139,6 +145,7 @@ public static class AppServiceCollectionExtension
 
         return serviceCollection;
     }
+
     /// <summary>
     /// EasyCaching缓存
     /// </summary>
@@ -156,7 +163,7 @@ public static class AppServiceCollectionExtension
             }, "default");
             // options.UseRedis(it =>
             // {
-                // it.DBConfig.Configuration= configuration["ConnectionStrings:RedisConnectionString"];
+            // it.DBConfig.Configuration= configuration["ConnectionStrings:RedisConnectionString"];
             // }, "redis");
 
             // options.WithJson("redis");
@@ -164,12 +171,14 @@ public static class AppServiceCollectionExtension
 
         return serviceCollection;
     }
+
     /// <summary>
     /// 添加redis
     /// </summary>
     /// <param name="serviceCollection"></param>
     /// <returns></returns>
-    public static IServiceCollection AddRedisSetup(this IServiceCollection serviceCollection, IConfiguration configuration)
+    public static IServiceCollection AddRedisSetup(this IServiceCollection serviceCollection,
+        IConfiguration configuration)
     {
         Check.NotNullOrEmpty(configuration["ConnectionStrings:RedisConnectionString"], "redis连接字符串不能为空");
 
@@ -190,7 +199,7 @@ public static class AppServiceCollectionExtension
     /// <param name="builder"></param>
     /// <param name="configuration"></param>
     /// <returns></returns>
-    public static IHostBuilder AddAutofacSetup(this IHostBuilder builder,IConfiguration configuration)
+    public static IHostBuilder AddAutofacSetup(this IHostBuilder builder, IConfiguration configuration)
     {
         builder
             .UseServiceProviderFactory<
@@ -297,9 +306,7 @@ public static class AppServiceCollectionExtension
     public static IMvcBuilder AddMvcSetup(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddRouting(options => options.LowercaseUrls = true);
-        var mvcBuilder = serviceCollection.AddMvc(options =>
-        {
-        });
+        var mvcBuilder = serviceCollection.AddMvc(options => { });
         mvcBuilder.AddCustomJson();
         return mvcBuilder;
     }
@@ -350,47 +357,45 @@ public static class AppServiceCollectionExtension
     {
         services.AddScoped<ISqlSugarClient>(s =>
         {
-            SqlSugarClient sqlSugar = new SqlSugarClient (
-                    new ConnectionConfig()
+            SqlSugarClient sqlSugar = new SqlSugarClient(
+                new ConnectionConfig()
+                {
+                    DbType = DbType.Sqlite,
+                    ConnectionString = "DataSource=sqlsugar-dev.db",
+                    IsAutoCloseConnection = true,
+                    ConfigureExternalServices = new ConfigureExternalServices()
                     {
-                        DbType = DbType.Sqlite,
-                        ConnectionString = "DataSource=sqlsugar-dev.db",
-                        IsAutoCloseConnection = true,
-                        ConfigureExternalServices=new ConfigureExternalServices()
+                        //注意:  这儿AOP设置不能少
+                        EntityService = (c, p) =>
                         {
-                            //注意:  这儿AOP设置不能少
-                            EntityService = (c, p) =>
+                            /***高版C#写法***/
+                            //支持string?和string  
+                            if (p.IsPrimarykey == false && new NullabilityInfoContext()
+                                    .Create(c).WriteState is NullabilityState.Nullable)
                             {
-                                /***高版C#写法***/
-                                //支持string?和string  
-                                if(p.IsPrimarykey==false&&new NullabilityInfoContext()
-                                       .Create(c).WriteState is NullabilityState.Nullable)
-                                {
-                                    p.IsNullable = true;
-                                } 
+                                p.IsNullable = true;
                             }
-                        },
-                    }
+                        }
+                    },
+                }
                 ,
-                    
                 db =>
                 {
                     db.Aop.OnLogExecuted = (sql, pars) =>
                     {
                         //执行时间超过1秒
-                        if (db.Ado.SqlExecutionTime.TotalSeconds > 1) 
+                        if (db.Ado.SqlExecutionTime.TotalSeconds > 1)
                         {
                             //代码CS文件名
-                            var fileName= db.Ado.SqlStackTrace.FirstFileName;
+                            var fileName = db.Ado.SqlStackTrace.FirstFileName;
                             //代码行数
                             var fileLine = db.Ado.SqlStackTrace.FirstLine;
                             //方法名
                             var firstMethodName = db.Ado.SqlStackTrace.FirstMethodName;
-                            
-                            Log.Warning($"检测到慢查询Sql,耗时{db.Ado.SqlExecutionTime.TotalMilliseconds}毫秒:\r\n"+
-                                        $"代码文件名:{fileName} 行数:{fileLine} 方法名{firstMethodName}\r\n"+
-                                UtilMethods.GetSqlString(DbType.SqlServer, sql, pars));
 
+                            Log.Warning($"检测到慢查询Sql,耗时{db.Ado.SqlExecutionTime.TotalMilliseconds}毫秒:\r\n" +
+                                        $"代码文件名:{fileName} 行数:{fileLine} 方法名{firstMethodName}\r\n" +
+                                        UtilMethods.GetSqlString(DbType.SqlServer, sql, pars));
                         }
                     };
                     db.Aop.OnLogExecuting = (sql, pars) =>
@@ -399,7 +404,7 @@ public static class AppServiceCollectionExtension
                         {
                             //获取无参数化SQL 对性能有影响，特别大的SQL参数多的，调试使用
                             Log.Information(UtilMethods.GetSqlString(DbType.SqlServer, sql, pars));
-                        }                                
+                        }
                     };
                 });
             return sqlSugar;
@@ -408,6 +413,7 @@ public static class AppServiceCollectionExtension
         services.AddHostedService<DatabaseMigrateService>();
         return services;
     }
+
     public static WebApplicationBuilder AddSerilogSetup(this WebApplicationBuilder builder)
     {
         string logTemplate = "[{Timestamp:HH:mm:ss} {Level:u3} {SourceContext}]  {Message:lj}{NewLine}{Exception}";
@@ -424,7 +430,7 @@ public static class AppServiceCollectionExtension
             .MinimumLevel.Override("System.Net.Http.HttpClient.NacosClient", LogEventLevel.Warning)
             .MinimumLevel.Override("Nacos", LogEventLevel.Information)
             .WriteTo.Console(outputTemplate: logTemplate)
-            .WriteTo.File(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"logs/lightapi_.log")
+            .WriteTo.File(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs/lightapi_.log")
                 , rollingInterval: RollingInterval.Day, outputTemplate: logTemplate);
 
 
@@ -449,5 +455,75 @@ public static class AppServiceCollectionExtension
     {
         serviceCollection.AddNacosAspNet(configuration, section: "Nacos");
         return serviceCollection;
+    }
+    /// <summary>
+    /// Hangfire配置
+    /// </summary>
+    /// <param name="services"></param>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static void AddHangFireSetup(this IServiceCollection services)
+    {
+        if (services == null) throw new ArgumentNullException(nameof(services));
+
+        services.AddHangfire(x => x.UseMemoryStorage(new MemoryStorageOptions()));
+        
+        // TODO SqlServer存储
+        // services.AddHangfire(x => x.UseSqlServerStorage("dbconnection", new SqlServerStorageOptions()
+        // {
+        //     QueuePollInterval = TimeSpan.FromSeconds(15), //- 作业队列轮询间隔。默认值为15秒。
+        //     JobExpirationCheckInterval = TimeSpan.FromHours(1), //- 作业到期检查间隔（管理过期记录）。默认值为1小时。
+        //     CountersAggregateInterval = TimeSpan.FromMinutes(5), //- 聚合计数器的间隔。默认为5分钟。
+        //     PrepareSchemaIfNecessary = true, //- 如果设置为true，则创建数据库表。默认是true。
+        //     DashboardJobListLimit = 500, //- 仪表板作业列表限制。默认值为50000。
+        //     TransactionTimeout = TimeSpan.FromMinutes(1), //- 交易超时。默认为1分钟。
+        // }));
+
+        services.AddHangfireServer(options =>
+        {
+            options.Queues = new[] { "default" };
+            options.ServerTimeout = TimeSpan.FromMinutes(4);
+            options.SchedulePollingInterval = TimeSpan.FromSeconds(15); //秒级任务需要配置短点，一般任务可以配置默认时间，默认15秒
+            options.ShutdownTimeout = TimeSpan.FromMinutes(5); //超时时间
+            options.WorkerCount = Math.Max(Environment.ProcessorCount, 20); //工作线程数，当前允许的最大线程，默认20
+        });
+    }
+
+    public static WebApplication UseHangfireMiddleware(this WebApplication app)
+    {
+        
+        //授权
+        var filter = new BasicAuthAuthorizationFilter(
+            new BasicAuthAuthorizationFilterOptions
+            {
+                SslRedirect = false,
+                // Require secure connection for dashboard
+                RequireSsl = false,
+                // Case sensitive login checking
+                LoginCaseSensitive = false,
+                // Users
+                Users = new[]
+                {
+                    new BasicAuthAuthorizationUser
+                    {
+                        Login = "admin",
+                        PasswordClear = "admin"
+                    }
+                }
+            });
+        var hangfireOptions = new Hangfire.DashboardOptions
+        {
+            AppPath = "/",//返回时跳转的地址
+            DisplayStorageConnectionString = false,//是否显示数据库连接信息
+            Authorization = new[]
+            {
+                filter
+            },
+            IsReadOnlyFunc = _ => false
+        };
+
+        app.UseHangfireDashboard("/job", hangfireOptions); //可以改变Dashboard的url
+        var service = App.GetService<IJobManager>();
+        service?.Register();
+        return app;
     }
 }
