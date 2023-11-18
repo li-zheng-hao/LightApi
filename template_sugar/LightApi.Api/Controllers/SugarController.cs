@@ -111,5 +111,18 @@ public class SugarController : ControllerBase
         throw new BusinessException("11");
         return Ok();
     }
+    
+    
+    /// <summary>
+    /// 导航查询
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<List<Student>> Include()
+    {
+        var res=await _studentService.Repository.AsQueryable().Includes(it => it.Schools)
+            .ToListAsync();
+        return res;
+    }
 
 }
