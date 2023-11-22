@@ -1,24 +1,23 @@
-using System.ComponentModel.DataAnnotations;
+using Asp.Versioning;
 using LightApi.Core.FileProvider;
-using LightApi.Domain;
-using LightApi.Domain.Entities;
 using LightApi.Infra;
-using LightApi.Infra.AOP.Attributes;
-using LightApi.Infra.Extension;
-using LightApi.Service;
-using Mapster;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
-namespace LightApi.Api.Controllers;
+namespace LightApi.Api.Controllers.v2;
 
 /// <summary>
 /// 文件
 /// </summary>
 [ApiController]
-[Route("api/[controller]/[action]")]
+[ApiVersion("2.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
 public class FileController : ControllerBase
 {
+    [HttpGet("test")]
+    public string test()
+    {
+        return "from v2";
+    }
     /// <summary>
     /// 上传
     /// </summary>

@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Asp.Versioning;
 using Autofac;
 using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
@@ -41,6 +42,7 @@ using Prometheus.SystemMetrics.Collectors;
 using Serilog;
 using Serilog.Events;
 using StackExchange.Redis;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace LightApi.Core;
 
@@ -212,10 +214,35 @@ public static class AppServiceCollectionExtension
                         new AutofacModuleRegister(configuration))));
         return builder;
     }
+    /// <summary>
+    /// 版本控制
+    /// </summary>
+    /// <param name="serviceCollection"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddApiVersionSetup(this IServiceCollection serviceCollection)
+    {
+        serviceCollection
+            .AddApiVersioning(opt =>
+            {
+                opt.ApiVersionReader = new UrlSegmentApiVersionReader();
+                opt.AssumeDefaultVersionWhenUnspecified = true;
+            })
+            .AddApiExplorer(options =>
+            {
+                // Add the versioned API explorer, which also adds IApiVersionDescriptionProvider service
+                // note: the specified format code will format the version as "'v'major[.minor][-status]"
+                options.GroupNameFormat = "'v'VVV";
 
-    public static IServiceCollection AddCustomSwaggerGen(this IServiceCollection serviceCollection)
+                // note: this option is only necessary when versioning by url segment. the SubstitutionFormat
+                // can also be used to control the format of the API version in route templates
+                options.SubstituteApiVersionInUrl = true;
+            });
+        return serviceCollection;
+    }
+    public static IServiceCollection AddSwaggerGenSetup(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddSwaggerGenNewtonsoftSupport();
+        serviceCollection.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
         serviceCollection.AddSwaggerGen(c =>
         {
@@ -283,7 +310,8 @@ public static class AppServiceCollectionExtension
                     c.IncludeXmlComments(path, true);
                 }
             }
-
+            // Add a custom operation filter which sets default values
+            c.OperationFilter<SwaggerDefaultValues>();
             //允许上传文件
             c.OperationFilter<FileUploadFilter>();
 

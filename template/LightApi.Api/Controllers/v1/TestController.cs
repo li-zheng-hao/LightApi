@@ -14,6 +14,7 @@ namespace LightApi.Api.Controllers;
 /// 注释
 /// </summary>
 [ApiController]
+
 [Route("api/[controller]/[action]")]
 public class TestController : ControllerBase
 {

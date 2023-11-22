@@ -26,10 +26,11 @@ try
     #region 注册服务
 
     builder.Services.AddControllers();
-    builder.Services.AddCustomSwaggerGen();
+    builder.Services.AddSwaggerGenSetup();
     builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
 
+    // 支持接口Url版本控制
+    builder.Services.AddApiVersionSetup();
     // Serilog日志
     builder.AddSerilogSetup(); 
     
@@ -107,13 +108,23 @@ try
         app.UseSwagger();
         app.UseSwaggerUI(config =>
         {
+            var descriptions = app.DescribeApiVersions();
+            // Build a swagger endpoint for each discovered API version
+            foreach (var description in descriptions)
+            {
+                var url = $"/swagger/{description.GroupName}/swagger.json";
+                var name = description.GroupName.ToUpperInvariant();
+                config.SwaggerEndpoint(url, name);
+            }
             config.DocExpansion(DocExpansion.None);
             config.ConfigObject.AdditionalItems.Add("persistAuthorization", "true");
             config.IndexStream = () =>
                 new FileStream(Path.Combine(AppContext.BaseDirectory, "wwwroot", "swagger-index.html"), FileMode.Open,
                     FileAccess.Read);
+           
         });
     }
+
     // 基础框架
     app.UseInfrastructure();
 

@@ -28,6 +28,9 @@
         <PackageReference Include="Refit.Newtonsoft.Json" Version="7.0.0"/>
         <PackageReference Include="Serilog.Sinks.Seq" Version="5.2.2"/>
         <PackageReference Include="SevenZipExtractor" Version="1.0.17"/>
+        <PackageReference Include="Asp.Versioning.Http" Version="7.1.0" />
+        <PackageReference Include="Asp.Versioning.Mvc" Version="7.1.0" />
+        <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="7.1.0" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\src\LightApi.EFCore.SqlServer\LightApi.EFCore.SqlServer.csproj"/>
