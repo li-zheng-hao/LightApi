@@ -1,6 +1,9 @@
+using Asp.Versioning;
 using LightApi.Core.FileProvider;
 using LightApi.Infra;
+using LightApi.Infra.AOP.Attributes;
 using Microsoft.AspNetCore.Mvc;
+using StackExchange.Profiling;
 
 namespace LightApi.Api.Controllers;
 
@@ -8,9 +11,16 @@ namespace LightApi.Api.Controllers;
 /// 文件
 /// </summary>
 [ApiController]
-[Route("api/[controller]/[action]")]
+[ApiVersion("1.0")]
+[Route("api/[controller]")]
 public class FileController : ControllerBase
 {
+   
+    [HttpGet("test")]
+    public string test()
+    {
+        return "from v1";
+    }
     /// <summary>
     /// 上传
     /// </summary>
