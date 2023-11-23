@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace LightApi.Infra;
 
@@ -15,7 +16,14 @@ public class App
         HostEnvironment = app.Environment;
         ServiceProvider = app.Services;
         AutofacContainer=app.Services.GetAutofacRoot();
+        AppLifeTime=app.Lifetime;
     }
+
+    /// <summary>
+    /// 程序生命周期
+    /// </summary>
+    public static IHostApplicationLifetime AppLifeTime { get; set; }
+
     public static ILifetimeScope AutofacContainer { get; set; }
     
     public static IConfiguration Configuration { get; set; }

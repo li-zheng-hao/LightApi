@@ -4,6 +4,7 @@ using LightApi.Core.FileProvider;
 using LightApi.Core.Options;
 using Masuit.Tools;
 using Microsoft.Extensions.Configuration;
+using PDM.Core.FileProvider;
 using Module = Autofac.Module;
 
 namespace LightApi.Core.Autofac;
@@ -88,10 +89,12 @@ public class AutofacModuleRegister : Module
         {
             foreach (var localStorage in fileStorageOptions.LocalStorages!)
             {
-                _builder.Register<IFileProvider>((it,b) =>
+                _builder.Register<IFileProvider>((it, b) =>
                 {
-                    var fileProvider = new LocalFileProvider();
-                    fileProvider.RootDir = localStorage.StorageRootDir;
+                    var fileProvider = new LocalFileProvider
+                    {
+                        RootDir = localStorage.StorageRootDir
+                    };
                     // 判断是否为相对路径
                     if (!Path.IsPathRooted(fileProvider.RootDir))
                     {
@@ -104,6 +107,18 @@ public class AutofacModuleRegister : Module
             }
         }
 
+        if (fileStorageOptions?.MinIOStorages.IsNullOrEmpty() == false)
+        {
+            foreach (var minioStorage in fileStorageOptions.MinIOStorages!)
+            {
+                _builder.Register<IFileProvider>((it, b) =>
+                {
+                    var fileProvider = new MinioFileProvider(minioStorage);
+
+                    return fileProvider;
+                }).Named<IFileProvider>(minioStorage.Key);
+            }
+        }
       
     }
 }
