@@ -4,6 +4,7 @@ using LightApi.Core.FileProvider;
 using LightApi.Core.Options;
 using Masuit.Tools;
 using Microsoft.Extensions.Configuration;
+using PDM.Core.FileProvider;
 using Module = Autofac.Module;
 
 namespace LightApi.Core.Autofac;
@@ -57,12 +58,7 @@ public class AutofacModuleRegister : Module
         builder.RegisterTypes(repos).AsSelf().InstancePerLifetimeScope()
             .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
 
-        var coreAssemblies = new Assembly[]
-        {
-            Assembly.Load("LightApi.Core"),
-            Assembly.Load("LightApi.Service"),
-            
-        };
+        var coreAssemblies = new Assembly[] { Assembly.Load("LightApi.Core") };
 
         coreAssemblies.ToList().ForEach(it =>
         {
@@ -70,24 +66,18 @@ public class AutofacModuleRegister : Module
                 .Where(it => it.IsClass && it.IsAssignableTo(typeof(ITransientDependency))).ToArray();
             builder.RegisterTypes(transient).AsSelf().InstancePerDependency()
                 .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
-            builder.RegisterTypes(transient).AsImplementedInterfaces().InstancePerDependency()
-                .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
 
             var scoped = it.GetExportedTypes()
                 .Where(it => it.IsClass && it.IsAssignableTo(typeof(IScopedDependency))).ToArray();
             builder.RegisterTypes(scoped).AsSelf().InstancePerLifetimeScope()
-                .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
-            builder.RegisterTypes(scoped).AsImplementedInterfaces().InstancePerLifetimeScope()
                 .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
 
             var singleton = it.GetExportedTypes()
                 .Where(it => it.IsClass && it.IsAssignableTo(typeof(ISingletonDependency))).ToArray();
             builder.RegisterTypes(singleton).AsSelf().SingleInstance()
                 .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
-            builder.RegisterTypes(singleton).AsImplementedInterfaces().SingleInstance()
-                .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
         });
-        
+
         AddFileProvider();
     }
 
@@ -99,10 +89,12 @@ public class AutofacModuleRegister : Module
         {
             foreach (var localStorage in fileStorageOptions.LocalStorages!)
             {
-                _builder.Register<IFileProvider>((it,b) =>
+                _builder.Register<IFileProvider>((it, b) =>
                 {
-                    var fileProvider = new LocalFileProvider();
-                    fileProvider.RootDir = localStorage.StorageRootDir;
+                    var fileProvider = new LocalFileProvider
+                    {
+                        RootDir = localStorage.StorageRootDir
+                    };
                     // 判断是否为相对路径
                     if (!Path.IsPathRooted(fileProvider.RootDir))
                     {
@@ -115,6 +107,18 @@ public class AutofacModuleRegister : Module
             }
         }
 
+        if (fileStorageOptions?.MinIOStorages.IsNullOrEmpty() == false)
+        {
+            foreach (var minioStorage in fileStorageOptions.MinIOStorages!)
+            {
+                _builder.Register<IFileProvider>((it, b) =>
+                {
+                    var fileProvider = new MinioFileProvider(minioStorage);
+
+                    return fileProvider;
+                }).Named<IFileProvider>(minioStorage.Key);
+            }
+        }
       
     }
 }

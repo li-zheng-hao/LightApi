@@ -17,7 +17,7 @@ public class FileStorageOptions
     /// <summary>
     /// MinIO存储配置
     /// </summary>
-    public MinIOStorage MinIOStorage { get; set; }
+    public List<MinIOStorage>? MinIOStorages { get; set; }
 }
 
 /// <summary>
@@ -43,6 +43,20 @@ public class LocalStorage
 public class MinIOStorage
 {
     /// <summary>
+    /// 存储名称
+    /// </summary>
+    public string Key { get; set; }
+    /// <summary>
+    /// 存储根目录 绝对路径或相对路径
+    /// </summary>
+    public string StorageRootDir { get; set; }
+    
+    /// <summary>
+    /// 文件命名策略
+    /// </summary>
+    public FileNameGenerateStrategy FileNameGenerateStrategy { get; set; }
+    
+    /// <summary>
     /// 桶名称
     /// </summary>
     public string Bucket { get; set; }
@@ -58,5 +72,10 @@ public class MinIOStorage
     /// 秘钥
     /// </summary>
     public string SecretKey { get; set; }
+    
+    /// <summary>
+    /// 公网域名 给文件地址用的
+    /// </summary>
+    public string PublicDomain { get; set; }
     
 }

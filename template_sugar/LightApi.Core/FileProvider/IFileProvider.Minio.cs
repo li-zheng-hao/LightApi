@@ -1,11 +1,12 @@
-﻿using LightApi.Core.Helper;
+﻿using LightApi.Core.FileProvider;
+using LightApi.Core.Helper;
+using LightApi.Core.Options;
 using Masuit.Tools;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Minio;
 using Serilog;
 
-namespace LightApi.Core.FileProvider;
+namespace PDM.Core.FileProvider;
 
 public class MinioFileProvider : IFileProvider
 {
@@ -18,16 +19,16 @@ public class MinioFileProvider : IFileProvider
     public FileNameGenerateStrategy FileNameGenerateStrategy { get; set; }
 
 
-    public MinioFileProvider(IConfiguration configuration)
+    public MinioFileProvider(MinIOStorage storage)
     {
         // 内网地址
-        RootDir = configuration["MinIO:Endpoint"];
-        _bucket = configuration["MinIO:Bucket"];
-        _accessKey = configuration["MinIO:AccessKey"];
-        _secretKey = configuration["MinIO:SecretKey"];
+        RootDir =  storage.Endpoint;
+        _bucket = storage.Bucket;
+        _accessKey = storage.AccessKey;
+        _secretKey = storage.SecretKey;
         // 公网地址
-        _publicDomain = configuration["MinIO:PublicDomain"];
-
+        _publicDomain = storage.PublicDomain;
+        FileNameGenerateStrategy=storage.FileNameGenerateStrategy;
         InitMinioClient();
     }
 
