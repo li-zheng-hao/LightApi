@@ -1,12 +1,11 @@
-﻿using LightApi.Core.FileProvider;
-using LightApi.Core.Helper;
+﻿using LightApi.Core.Helper;
 using LightApi.Core.Options;
 using Masuit.Tools;
 using Microsoft.AspNetCore.Http;
 using Minio;
 using Serilog;
 
-namespace PDM.Core.FileProvider;
+namespace LightApi.Core.FileProvider;
 
 public class MinioFileProvider : IFileProvider
 {

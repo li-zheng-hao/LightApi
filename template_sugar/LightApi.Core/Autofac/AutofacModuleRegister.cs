@@ -4,7 +4,6 @@ using LightApi.Core.FileProvider;
 using LightApi.Core.Options;
 using Masuit.Tools;
 using Microsoft.Extensions.Configuration;
-using PDM.Core.FileProvider;
 using Module = Autofac.Module;
 
 namespace LightApi.Core.Autofac;
