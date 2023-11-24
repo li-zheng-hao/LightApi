@@ -41,6 +41,9 @@ public class GlobalExceptionsFilter : IExceptionFilter
             var jm = _unifyResultProvider.Failure(customException.Body, customException.Code,
                 context.Exception.Message);
 
+            if(customException.HttpStatusCode.HasValue)
+                context.HttpContext.Response.StatusCode = (int)customException.HttpStatusCode.Value;
+            
             context.ExceptionHandled = true;
 
             context.Result = new JsonResult(jm);

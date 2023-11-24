@@ -1,4 +1,5 @@
-﻿using LightApi.Infra.Options;
+﻿using System.Net;
+using LightApi.Infra.Options;
 
 namespace LightApi.Infra.InfraException;
 
@@ -11,6 +12,10 @@ public class BusinessException : Exception
 
     public object Body { get; set; }
 
+    /// <summary>
+    /// HTTP状态码 全局异常过滤器处理
+    /// </summary>
+    public HttpStatusCode? HttpStatusCode { get; set; }
     /// <summary>
     /// 业务错误  如果code为-1，则使用InfrastructureOptions.DefaultFailureBusinessException
     /// </summary>
