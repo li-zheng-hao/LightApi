@@ -54,8 +54,42 @@ public class RangeExAttribute : RequiredAttribute
         if (OperandType == typeof(double))
             return ValidateDouble(value);
 
-
+        var converted=double.TryParse(value.ToString(), out var result);
+        
+        if (converted)
+        {
+            if (result >= (double)Minimum && result <= (double)Maximum)
+                return ValidationResult.Success;
+        }
+        
         return ValidationResult.Success;
+    }
+
+    private ValidationResult ValidateDecimal(object value)
+    {
+        bool passed = true;
+        if (value is string str)
+        {
+            passed = decimal.TryParse(str, out var result);
+            if (passed)
+                passed = result >= (decimal)Minimum && result <= (decimal)Maximum;
+        }
+        else
+        {
+            try
+            {
+                var result = Convert.ToDecimal(value);
+
+                passed = result >= (decimal)Minimum && result <= (decimal)Maximum;
+            }
+            catch (Exception)
+            {
+                passed = false;
+            }
+        }
+
+
+        return passed ? ValidationResult.Success : new ValidationResult(ErrorMessage);
     }
 
 
