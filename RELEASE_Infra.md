@@ -1,5 +1,9 @@
 # Infra框架发布记录
 
+## 2023年12月15日 0.5.2
+
+1. 新增ProcessInvokeHelper工具类，用于进程调用
+
 ## 2023年12月4日 0.5.1
 
 1. 新增MinValueEx特性
