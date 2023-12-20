@@ -90,7 +90,7 @@ public static class ProcessInvokeHelper
 
         param.LogError ??= Log.Error;
 
-        param.CancellationToken ??= new CancellationTokenSource(TimeSpan.FromSeconds(60)).Token;
+        param.CancellationToken ??= new CancellationTokenSource(TimeSpan.FromSeconds(param.Timeout??60)).Token;
 
         var paramPath = Write(param.JsonParam);
 
@@ -120,6 +120,7 @@ public class InvokeOptions<T>
 
     /// <summary>
     /// 超时  默认60秒
+    /// 也可以直接配置Timeout来设置超时时间（秒）<seealso cref="Timeout" />
     /// </summary>
     public CancellationToken? CancellationToken { get; set; }
 
@@ -152,4 +153,9 @@ public class InvokeOptions<T>
     /// 当进程返回非0代码时是否忽略错误 默认true
     /// </summary>
     public bool IgnoreError { get; set; } = true;
+    
+    /// <summary>
+    /// 超时时间 默认60秒 
+    /// </summary>
+    public uint? Timeout { get; set; }
 }
