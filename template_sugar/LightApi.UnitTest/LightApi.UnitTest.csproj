@@ -22,4 +22,8 @@
         </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\LightApi.Infra\LightApi.Infra.csproj" />
+    </ItemGroup>
+
 </Project>

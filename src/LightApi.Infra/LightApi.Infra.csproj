@@ -7,7 +7,7 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeSymbols>true</IncludeSymbols>
-        <Version>0.5.2</Version>
+        <Version>0.6.0</Version>
         <Title>LightApi.Infra</Title>
         <Authors>lizhenghao</Authors>
         <Description>AspNetCore项目开发库</Description>
@@ -21,6 +21,7 @@
         <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0"/>
         <PackageReference Include="CliWrap" Version="3.6.4" />
         <PackageReference Include="DistributedLock.Redis" Version="1.0.2"/>
+        <PackageReference Include="EasyNetQ" Version="7.8.0" />
         <PackageReference Include="IdentityModel" Version="6.0.0"/>
         <PackageReference Include="JWT" Version="10.0.2"/>
         <PackageReference Include="Mapster" Version="7.3.0"/>

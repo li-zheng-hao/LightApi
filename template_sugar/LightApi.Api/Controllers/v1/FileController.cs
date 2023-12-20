@@ -1,7 +1,11 @@
 using Asp.Versioning;
+using EasyNetQ.Consumer;
 using LightApi.Core.FileProvider;
+using LightApi.Core.Helper;
 using LightApi.Infra;
 using LightApi.Infra.AOP.Attributes;
+using LightApi.Infra.Helper;
+using LightApi.Infra.RabbitMQ;
 using Microsoft.AspNetCore.Mvc;
 using StackExchange.Profiling;
 
@@ -15,7 +19,6 @@ namespace LightApi.Api.Controllers;
 [Route("api/[controller]")]
 public class FileController : ControllerBase
 {
-   
     [HttpGet("test")]
     public string test()
     {

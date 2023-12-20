@@ -5,6 +5,7 @@ using LightApi.Infra.DependencyInjections.Core;
 using LightApi.Infra.Http;
 using LightApi.Infra.Mapper;
 using LightApi.Infra.Options;
+using LightApi.Infra.RabbitMQ;
 using LightApi.Infra.Unify;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -68,6 +69,19 @@ public static partial class InfrastructureOptionExtension
         return option;
     }
 
+    /// <summary>
+    /// 使用RabbitMqManager
+    /// 配置信息参考 <see cref="RabbitMqOptions"/>
+    /// </summary>
+    /// <param name="option"></param>
+    /// <returns></returns>
+    public static InfrastructureSetupOption UseRabbitMqManager(this InfrastructureSetupOption option)
+    {
+        option.RegisterExtension(new RabbitMqManagerExtension(option.Configuration));
+
+        return option;
+    }
+    
     // /// <summary>
     // /// 引入Redis及分布式锁库
     // /// </summary>
@@ -128,9 +142,7 @@ public static partial class InfrastructureOptionExtension
     // }
 
     /// <summary>
-    /// 自定义统一返回包装类服务，不传参数则使用默认的UnifyResult
-    /// <see cref="UnifyResult"/>
-    /// <see cref="IUnifyResultProvider{T}"/>
+    /// 自定义统一返回包装类服务，不调用本方法则会使用默认的UnifyResult <see cref="UnifyResult"/>
     /// </summary>
     /// <param name="option"></param>
     /// <param name="unifyResultType">统一包装类，必须继承IUnifyResult接口</param>

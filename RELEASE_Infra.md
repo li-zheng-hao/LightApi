@@ -1,5 +1,10 @@
 # Infra框架发布记录
 
+## 2023年12月15日 0.6.0
+
+1. ProcessInvokeHelper 新增TimeOut参数
+2. 新增RabbitMqManager，对EasyNetQ进一步封装
+
 ## 2023年12月15日 0.5.2
 
 1. 新增ProcessInvokeHelper工具类，用于进程调用

@@ -81,6 +81,7 @@ public static class AppServiceCollectionExtension
             });
             configure.UseUserContext<UserContext>();
             configure.UseMapster(Assembly.Load("LightApi.Service"));
+            configure.UseRabbitMqManager();
         });
 
         serviceCollection.AddScoped<UserContext>();
