@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { defineComponent, h, ref, Component } from 'vue'
+import { defineComponent, h, ref,type Component } from 'vue'
 import { NIcon } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
 import IconCommunity from "@/components/icons/IconCommunity.vue";

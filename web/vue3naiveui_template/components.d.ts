@@ -7,16 +7,16 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    ComIcon: typeof import('./src/components/icons/ComIcon.vue')['default']
     IconCommunity: typeof import('./src/components/icons/IconCommunity.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
     NLayout: typeof import('naive-ui')['NLayout']
     NLayoutContent: typeof import('naive-ui')['NLayoutContent']
-    NLayoutFooter: typeof import('naive-ui')['NLayoutFooter']
     NLayoutHeader: typeof import('naive-ui')['NLayoutHeader']
     NLayoutSider: typeof import('naive-ui')['NLayoutSider']
     NMenu: typeof import('naive-ui')['NMenu']
-    NScrollbar: typeof import('naive-ui')['NScrollbar']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SvgIcon: typeof import('./src/components/icons/SvgIcon.vue')['default']
   }
 }
