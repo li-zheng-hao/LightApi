@@ -4,9 +4,33 @@ import SvgIcon from "@/components/icons/SvgIcon.vue";
 import {computed, onMounted, ref} from "vue";
 import {useRouteMenuStore} from "@/stores/routeMenuStore";
 import router from "@/router";
+import { NButton, NDropdown, type MenuOption } from "naive-ui";
 const routeMenuStore=useRouteMenuStore()
 
 
+const dropDownOptions=ref<MenuOption[]>([
+  {
+    label:'个人中心',
+    key:'个人中心'
+  },
+  {
+    label:'个人设置',
+    key:'个人设置'
+  },
+  {
+    label:'退出登录',
+    key:'退出登录'
+  }
+])
+const handleSelect=(key,option)=>{
+  switch (key) {
+    case '退出登录':
+      router.push('/login')
+      break;
+    default:
+      break;
+  }
+}
 onMounted(() => {
   routeMenuStore.refreshCurrentRouteInfo()
 })
@@ -29,14 +53,21 @@ onMounted(() => {
           :style="{
       color: 'yellow',
       backgroundColor: '#2d8cf0',
-      cursor: 'pointer'
     }"
       >
         LZH
       </n-avatar>
-      <div class="cursor-pointer">李正浩</div>
-      <svg-icon name="SettingOutlined" class="cursor-pointer"></svg-icon>
+      <div>李正浩</div>
+      <n-dropdown
+        placement="bottom-start"
+        trigger="click"
+        :options="dropDownOptions"
+      @select="handleSelect"
+      >
+      <svg-icon name="SettingOutlined" class="cursor-pointer" ></svg-icon>
+      </n-dropdown>
     </div>
+   
   </div>
 </template>
 

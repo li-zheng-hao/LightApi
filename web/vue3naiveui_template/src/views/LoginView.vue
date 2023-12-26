@@ -82,19 +82,10 @@ const loading = ref(false)
         <div class="flex-initial">
           <span>其它登录方式</span>
         </div>
-        <div class="flex-initial mx-2">
+        <div class="flex-initial mx-4">
           <a href="javascript:">
-            <n-icon size="24" color="#2d8cf0">
-              <LogoGithub />
-            </n-icon>
-          </a>
-        </div>
-        <div class="flex-initial mx-2">
-          <a href="javascript:">
-            <n-icon size="24" color="#2d8cf0">
-              <LogoFacebook />
-            </n-icon>
-          </a>
+           <svg-icon name="QqSquareFilled"  :size="24" color="#2d8cf0"></svg-icon>
+           </a>
         </div>
         <div class="flex-initial" style="margin-left: auto">
           <a href="javascript:">注册账号</a>

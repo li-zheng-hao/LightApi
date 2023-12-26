@@ -15,25 +15,25 @@ export default [
                         {
                             label: '首页',
                             key: '/',
-                            icon: 'order',
+                            icon: 'UserOutlined',
                             routePath:'/'
                         },
                         {
                             label: '系统设置',
                             key: '/sys',
-                            icon: 'order',
+                            icon: 'UserOutlined',
                             routePath: null,
                             children: [
                                 {
                                     label: '角色权限管理',
                                     key: '/sys/role',
-                                    icon: 'order',
+                                    icon: 'UserOutlined',
                                     routePath:'/sys/role'
                                 },
                                 {
                                     label: '菜单权限管理',
                                     key: '/sys/menu',
-                                    icon: 'order',
+                                    icon: 'UserOutlined',
                                     routePath:'/sys/menu'
                                 },
                             ]
@@ -42,27 +42,27 @@ export default [
                         {
                             label: '异常页面',
                             key: '/error',
-                            icon: 'order',
+                            icon: 'UserOutlined',
                             routePath:null,
                             children: [
                                 {
                                     label: '404',
                                     key: '/error/404',
-                                    icon: 'order',
+                                    icon: 'UserOutlined',
                                     routePath:'/error/404'
 
                                 },
                                 {
                                     label: '403',
                                     key: '/error/403',
-                                    icon: 'order',
+                                    icon: 'UserOutlined',
                                     routePath:'/error/403'
 
                                 },
                                 {
                                     label: '500',
                                     key: '/error/500',
-                                    icon: 'order',
+                                    icon: 'UserOutlined',
                                     routePath:'/error/500'
 
                                 },
@@ -71,26 +71,26 @@ export default [
                         {
                             label: '结果页面',
                             key: '/result',
-                            icon: 'order',
+                            icon: 'UserOutlined',
                             routePath:null,
                             children: [
                                 {
                                     label: '成功',
                                     key: '/result/success',
-                                    icon: 'order',
+                                    icon: 'UserOutlined',
                                     routePath:'/result/success'
 
                                 },
                                 {
                                     label: '失败',
                                     key: '/result/fail',
-                                    icon: 'order',
+                                    icon: 'UserOutlined',
                                     routePath:'/result/fail'
 
                                 }, {
                                     label: '信息',
                                     key: '/result/info',
-                                    icon: 'order',
+                                    icon: 'UserOutlined',
                                     routePath:'/result/info'
                                 }
                             ]

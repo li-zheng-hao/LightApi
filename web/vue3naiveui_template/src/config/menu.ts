@@ -56,7 +56,7 @@ export function getAllMenus(){
         {
             label: '结果页面',
             key: '/result',
-            icon: 'order',
+            icon: 'UserOutlined',
             routePath:null,
             children: [
                 {
@@ -80,7 +80,7 @@ export function getAllMenus(){
         {
             label: '组件示例',
             key: '/example',
-            icon: 'order',
+            icon: 'UserOutlined',
             routePath:null,
             children: [
                 {

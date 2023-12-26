@@ -1,9 +1,8 @@
 <template>
     <!-- svg:图标外层容器节点，内部需要与use标签结合使用 -->
-    <svg class="svg-node flex flex-items-center" :style="{ width: size,height:size,scale:scale }">
-      <!-- xlink:herf执行用哪一个图标，属性值务必#icon-图标名字 -->
-      <!-- use标签fill属性可以设置图标得颜色 -->
-      <use :xlink:href="prefix + name" :fill="color"></use>
+    <svg class="svg-node flex flex-items-center" :style="{ width: size+'px',height:size+'px',scale:scale,color:color}">
+      <!-- xlink:herf执行用哪一个图标，属性值务必 #icon-图标名字 -->
+      <use :xlink:href="prefix + name" ></use>
     </svg>
 </template>
 
@@ -21,7 +20,7 @@ defineProps({
   // svg图标的颜色
   color: {
     type: String,
-    default: '#fff'
+    default: null
   },
   // // svg宽度
   // width: {
@@ -34,8 +33,8 @@ defineProps({
   //   default: '18px'
   // },
   size:{
-    type: String,
-    default: '18px'
+    type: Number,
+    default: 18
   },
   // svg缩放比例
   scale: {
