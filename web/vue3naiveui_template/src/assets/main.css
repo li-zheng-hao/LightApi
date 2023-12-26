@@ -5,3 +5,12 @@
 html, body {
     height: 100%;
 }
+
+a{
+    text-decoration: none;
+    color: rgba(68, 68, 68, 0.92);
+}
+
+*{
+    box-sizing: border-box;
+}

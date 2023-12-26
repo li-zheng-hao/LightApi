@@ -8,6 +8,7 @@ import {NaiveUiResolver} from 'unplugin-vue-components/resolvers'
 import UnoCSS from 'unocss/vite'
 import {viteMockServe} from "vite-plugin-mock";
 import path from "path";
+import vueJsx from "@vitejs/plugin-vue-jsx";  // 配置vue使用jsx
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
@@ -30,8 +31,8 @@ export default defineConfig({
         UnoCSS(),
         viteMockServe({
             mockPath: './src/mock',
-            enable: true,
-            // watchFiles: true,
+            watchFiles: true,
+            logger:true,
         }),
         createSvgIconsPlugin({
             // Specify the icon folder to be cached
@@ -39,6 +40,7 @@ export default defineConfig({
             // Specify symbolId format
             symbolId: 'icon-[dir]-[name]',
         }),
+        vueJsx()
     ],
     resolve: {
         alias: {

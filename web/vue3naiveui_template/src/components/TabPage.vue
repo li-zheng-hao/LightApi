@@ -3,7 +3,9 @@
 </script>
 
 <template>
-<div>头部区域</div>
+  <n-card>
+    <slot></slot>
+  </n-card>
 </template>
 
 <style scoped>
