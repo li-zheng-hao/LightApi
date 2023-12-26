@@ -69,6 +69,18 @@ export const useRouteMenuStore = defineStore('routeMenu', {
                             }
                             return true;
                         }
+                        if(child.children){
+                            child.children.some((grandChild) => {
+                                if (grandChild.routePath == cur.value.path) {
+                                    res = <CurRouteItem>{
+                                        paths: [item.label, child.label, grandChild.label],
+                                        routePath: grandChild.routePath,
+                                    }
+                                    return true;
+                                }
+                                return false;
+                            })
+                        }
                         return false;
                     })
                 }
