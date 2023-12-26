@@ -22,6 +22,7 @@ const dropDownOptions=ref<MenuOption[]>([
     key:'退出登录'
   }
 ])
+
 const handleSelect=(key,option)=>{
   switch (key) {
     case '退出登录':
@@ -64,7 +65,7 @@ onMounted(() => {
         :options="dropDownOptions"
       @select="handleSelect"
       >
-      <svg-icon name="SettingOutlined" class="cursor-pointer" ></svg-icon>
+      <SvgIcon name="SettingOutlined" class="cursor-pointer" ></SvgIcon>
       </n-dropdown>
     </div>
    
