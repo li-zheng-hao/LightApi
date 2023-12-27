@@ -86,7 +86,7 @@ export function getAllMenus(){
                 {
                     label: '按钮',
                     key: '/example/button',
-                    routePath:'/example/button',
+                    routePath:null,
                     icon:'HandClick',
                     children: [
                         {

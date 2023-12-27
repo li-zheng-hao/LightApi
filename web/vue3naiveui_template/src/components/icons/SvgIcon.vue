@@ -6,7 +6,7 @@
     </svg>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // https://blog.csdn.net/weixin_45232247/article/details/131211236
 // 接受父组件传递过来得参数
 defineProps({

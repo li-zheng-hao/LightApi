@@ -1,35 +1,33 @@
 <script setup lang="ts">
+import SvgIcon from '@/components/icons/SvgIcon.vue'
+import { computed, onMounted, ref } from 'vue'
+import { useRouteMenuStore } from '@/stores/routeMenuStore'
+import router from '@/router'
+import { NButton, NDropdown, type MenuOption } from 'naive-ui'
+const routeMenuStore = useRouteMenuStore()
 
-import SvgIcon from "@/components/icons/SvgIcon.vue";
-import {computed, onMounted, ref} from "vue";
-import {useRouteMenuStore} from "@/stores/routeMenuStore";
-import router from "@/router";
-import { NButton, NDropdown, type MenuOption } from "naive-ui";
-const routeMenuStore=useRouteMenuStore()
-
-
-const dropDownOptions=ref<MenuOption[]>([
+const dropDownOptions = ref<MenuOption[]>([
   {
-    label:'个人中心',
-    key:'个人中心'
+    label: '个人中心',
+    key: '个人中心'
   },
   {
-    label:'个人设置',
-    key:'个人设置'
+    label: '个人设置',
+    key: '个人设置'
   },
   {
-    label:'退出登录',
-    key:'退出登录'
+    label: '退出登录',
+    key: '退出登录'
   }
 ])
 
-const handleSelect=(key,option)=>{
+const handleSelect = (key, option) => {
   switch (key) {
     case '退出登录':
       router.push('/login')
-      break;
+      break
     default:
-      break;
+      break
   }
 }
 onMounted(() => {
@@ -40,21 +38,49 @@ onMounted(() => {
 <template>
   <div class="layout-header">
     <div class="layout-header-left flex gap-4 pl-4 pr-4 flex-items-center">
-      <svg-icon name="MenuFoldOutlined" class="cursor-pointer" v-if="!routeMenuStore.menuCollapsed" @click="routeMenuStore.menuCollapsed=!routeMenuStore.menuCollapsed"></svg-icon>
-      <svg-icon name="MenuUnfoldOutlined" class="cursor-pointer" v-if="routeMenuStore.menuCollapsed"  @click="routeMenuStore.menuCollapsed=!routeMenuStore.menuCollapsed"></svg-icon>
-      <svg-icon name="ReloadOutlined" class="cursor-pointer" @click="router.push('/reload')"></svg-icon>
+      <n-tooltip trigger="hover">
+        <template #trigger>
+          <svg-icon
+            name="MenuFoldOutlined"
+            class="cursor-pointer"
+            v-if="!routeMenuStore.menuCollapsed"
+            @click="routeMenuStore.menuCollapsed = !routeMenuStore.menuCollapsed"
+          ></svg-icon>
+          <svg-icon
+            name="MenuUnfoldOutlined"
+            class="cursor-pointer"
+            v-if="routeMenuStore.menuCollapsed"
+            @click="routeMenuStore.menuCollapsed = !routeMenuStore.menuCollapsed"
+          ></svg-icon>
+        </template>
+        {{routeMenuStore.menuCollapsed?"展开":"折叠"}}菜单
+      </n-tooltip>
+     
+         
+        
+      <n-tooltip trigger="hover">
+        <template #trigger>
+          <svg-icon
+            name="ReloadOutlined"
+            class="cursor-pointer"
+            @click="router.push('/reload')"
+          ></svg-icon>
+        </template>
+        刷新页面
+      </n-tooltip>
+
       <n-breadcrumb>
-        <n-breadcrumb-item v-for="(value,key) in routeMenuStore.currentRouteInfo?.paths" >
-          {{value}}
+        <n-breadcrumb-item v-for="(value, key) in routeMenuStore.currentRouteInfo?.paths">
+          {{ value }}
         </n-breadcrumb-item>
       </n-breadcrumb>
     </div>
-    <div class="layout-header-right  flex gap-4 pl-4 pr-4 flex-items-center flex-shrink-0">
+    <div class="layout-header-right flex gap-4 pl-4 pr-4 flex-items-center flex-shrink-0">
       <n-avatar
-          :style="{
-      color: 'yellow',
-      backgroundColor: '#2d8cf0',
-    }"
+        :style="{
+          color: 'yellow',
+          backgroundColor: '#2d8cf0'
+        }"
       >
         LZH
       </n-avatar>
@@ -63,12 +89,11 @@ onMounted(() => {
         placement="bottom-start"
         trigger="click"
         :options="dropDownOptions"
-      @select="handleSelect"
+        @select="handleSelect"
       >
-      <SvgIcon name="SettingOutlined" class="cursor-pointer" ></SvgIcon>
+        <SvgIcon name="SettingOutlined" class="cursor-pointer"></SvgIcon>
       </n-dropdown>
     </div>
-   
   </div>
 </template>
 
@@ -84,9 +109,5 @@ onMounted(() => {
   width: 100%;
   z-index: -1;
   box-sizing: border-box;
-}
-
-.layout-header-left {
-
 }
 </style>

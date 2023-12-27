@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useRouteMenuStore } from "@/stores/routeMenuStore";
+import { useRouteMenuStore, type RouteItem } from "@/stores/routeMenuStore";
 import { computed, onMounted, ref, watch, h, onUnmounted } from "vue";
 import router from "@/router";
 import SvgIcon from "@/components/icons/SvgIcon.vue";
@@ -50,15 +50,17 @@ const data = ref({
       }
     },
   ],
-  enableScroll: false
+  enableScroll: false,
+  rightClickItem: null as RouteItem | null
 
 })
 
 const onClickoutside = () => {
   data.value.showDropdown = false
 }
-const handleContextMenu = (e: MouseEvent) => {
+const handleContextMenu = (e: MouseEvent,item:any) => {
   e.preventDefault()
+  data.value.rightClickItem=item
   data.value.showDropdown = false
   nextTick().then(() => {
     data.value.showDropdown = true
@@ -75,13 +77,14 @@ const handleSelect = (value) => {
       router.push({ path: '/reload' })
       break
     case '关闭当前':
-      routeMenuStore.removeOpenRoute(router.currentRoute.value.path)
+      routeMenuStore.removeOpenRoute(data.value.rightClickItem?.routePath)
       break
     case '关闭其他':
-      routeMenuStore.removeOtherOpenRoute(router.currentRoute.value.path)
+      routeMenuStore.removeOtherOpenRoute(data.value.rightClickItem?.routePath)
+      if(data.value.rightClickItem?.routePath!=router.currentRoute.value.path) router.push({path:data.value.rightClickItem?.routePath??"/" })
       break
     case '关闭所有':
-      routeMenuStore.removeAllOpenRoute(router.currentRoute.value.path)
+      routeMenuStore.removeAllOpenRoute()
       router.push({ path: '/' })
       break
   }
@@ -90,9 +93,9 @@ const handleSelect = (value) => {
 
 }
 
-const updateScrollThrottle = _.throttle(() => updateScroll, 500)
+const updateScrollThrottle = _.throttle(() => updateScroll(), 500)
 onMounted(() => {
-  window.addEventListener('resize', updateScrollThrottle)
+  window.addEventListener('resize', (updateScrollThrottle))
   updateScroll()
 })
 onUnmounted(() => {
@@ -117,6 +120,8 @@ const updateScroll = async () => {
     data.value.enableScroll = false;
   }
 }
+
+
 </script>
 
 <template>
@@ -128,7 +133,7 @@ const updateScroll = async () => {
       <div class="scrollbar flex flex-items-center gap-2 overflow-x-hidden overflow-y-hidden" ref="scrollbar">
         <n-tag closable class="cursor-pointer bg-white h-8 p-2 flex-shrink-0"
           v-for="item in  routeMenuStore.openedRouteInfo" :type="router.currentRoute.value.path == item.routePath ? 'info' : ''"
-          @click="onChangeRoute(item)" @close="onClose(item)" @contextmenu="handleContextMenu">
+          @click="onChangeRoute(item)" @close="onClose(item)" @contextmenu="handleContextMenu($event,item)">
           {{ item?.label }}
         </n-tag>
       </div>

@@ -17,10 +17,9 @@ const data=ref<any>({
   collapsed: false,
   menuOptions: [] as MenuOption[],
   expandKeys: ['/sys/menu'],
-  activeKey:router.currentRoute.value.path
 })
 
-const handleUpdateRoute=(key:string,menuOption:MenuOption|null)=>{
+const handleUpdateRoute=(key:string)=>{
   routeMenuStore.addOpenRoute(key)
 }
 
@@ -29,12 +28,12 @@ onMounted(()=>{
   // 注册最多三级菜单
   routeInfo.forEach((value,key)=>{
     data.value.menuOptions.push({
-      label: value.children?.length>0? value.label: () =>
+      label: value.children?.length??0>0? value.label: () =>
           h(
               RouterLink,
               {
                 to: {
-                  path: value.routePath,
+                  path: value.routePath??"",
                 }
               },
               { default: () => value.label }
@@ -52,7 +51,7 @@ onMounted(()=>{
                 RouterLink,
                 {
                   to: {
-                    path: child.routePath,
+                    path: child.routePath??"",
                   }
                 },
                 { default: () => child.label }
@@ -70,7 +69,7 @@ onMounted(()=>{
                   RouterLink,
                   {
                     to: {
-                      path: grandson.routePath,
+                      path: grandson.routePath??"",
                     }
                   },
                   { default: () => grandson.label }
@@ -95,7 +94,7 @@ const props=defineProps(['collapsed'])
 <template>
       <n-menu
           :inverted="true"
-          v-model:value="data.activeKey"
+          v-model:value="routeMenuStore.currentRouteInfo!.routePath"
           :collapsed="routeMenuStore.menuCollapsed"
           :collapsed-width="64"
           :options="data.menuOptions"

@@ -29,6 +29,7 @@ declare module 'vue' {
     NoPermissionPage: typeof import('./src/components/error/NoPermissionPage.vue')['default']
     NotFoundPage: typeof import('./src/components/error/NotFoundPage.vue')['default']
     NTag: typeof import('naive-ui')['NTag']
+    NTooltip: typeof import('naive-ui')['NTooltip']
     ReloadPage: typeof import('./src/components/ReloadPage.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

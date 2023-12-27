@@ -4,6 +4,7 @@
 }
 html, body {
     height: 100%;
+    min-width: 600px;
 }
 
 a{
@@ -13,4 +14,6 @@ a{
 
 *{
     box-sizing: border-box;
+    outline: none; /*消除点击边框*/
 }
+
