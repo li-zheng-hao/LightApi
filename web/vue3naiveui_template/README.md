@@ -11,7 +11,8 @@
 5. axios
 6. vue-router
 7. unocss
-8. less
+8. less 
+9. vxe-table
 
 ## 项目创建流程
 
