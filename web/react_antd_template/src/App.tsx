@@ -1,31 +1,23 @@
-import { useState } from "react";
-import { Button } from "antd";
 import { observer } from "mobx-react";
-import userStore from "./stores/UserStore";
-import { NavLink, Route, Routes } from "react-router-dom";
-import Login from "./views/Login";
-import Home from "./views/Home";
+import React from "react";
+import {  RouteGuard } from "./router/RouteGuard";
+import { useRoutes } from "react-router-dom";
+import { generateRouter, routes } from "./router";
 
 const App = () => {
-  const [count, setCount] = useState(0);
-  const clickHandle = () => {
-    userStore.inc();
-    console.log("click", userStore.count);
-  };
+  const elements = useRoutes(generateRouter(routes))
   return (
     <>
-        <NavLink to="">
-          <Button>首页</Button>
-        </NavLink>
-        <NavLink to="/login">
-          <Button>登录</Button>
-        </NavLink>
-        <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="*" element={<Login />} />
-      </Routes>
+    <React.Suspense fallback={""}>
+    <RouteGuard>
+      {elements}
+    </RouteGuard>
+  </React.Suspense>
+        
     </>
   );
 };
 
 export default observer(App);
+
+

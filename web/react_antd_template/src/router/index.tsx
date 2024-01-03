@@ -1,0 +1,57 @@
+import React, { ReactNode } from "react";
+
+const Home = React.lazy(() => import("../views/Home"));
+const Login = React.lazy(() => import("../views/Login"));
+const Page1 = React.lazy(() => import("../views/Page1"));
+const Page2 = React.lazy(() => import("../views/Page2"));
+
+export interface RouteInfo {
+  path: string;
+  name: string;
+  element: ReactNode;
+  isAuth?: boolean;
+  children?: RouteInfo[];
+}
+
+export function generateRouter(routes: RouteInfo[]): import("react-router-dom").RouteObject[] {
+    return routes.map((route) => {
+      const obj: import("react-router-dom").RouteObject = {
+        path: route.path,
+        element: route.element,
+      };
+      if (route.children) {
+        obj.children = generateRouter(route.children);
+      }
+      return obj;
+    });
+  }
+  
+
+export const routes: RouteInfo[] = [
+  {
+    path: "/home",
+    name: "home",
+    element: <Home />,
+    isAuth: true,
+    children: [
+        {
+            path: "/home/page1",
+            name: "Page1",
+            element: <Page1 />,
+            isAuth: true,
+        },
+        {
+            path: "/home/page2",
+            name: "Page2",
+            element: <Page2 />,
+            isAuth: true,
+        },
+    ]
+  },
+  {
+    path: "/login",
+    name: "login",
+    element: <Login />,
+    isAuth: false,
+  },
+];
