@@ -21,7 +21,7 @@ const dropDownOptions = ref<MenuOption[]>([
   }
 ])
 
-const handleSelect = (key, option) => {
+const handleSelect = (key: any, option: any) => {
   switch (key) {
     case '退出登录':
       router.push('/login')
@@ -70,7 +70,7 @@ onMounted(() => {
       </n-tooltip>
 
       <n-breadcrumb>
-        <n-breadcrumb-item v-for="(value, key) in routeMenuStore.currentRouteInfo?.paths">
+        <n-breadcrumb-item v-for="(value, key) in routeMenuStore.currentRouteInfo?.paths" :key="key">
           {{ value }}
         </n-breadcrumb-item>
       </n-breadcrumb>

@@ -4,6 +4,7 @@ const Home = React.lazy(() => import("../views/Home"));
 const Login = React.lazy(() => import("../views/Login"));
 const Page1 = React.lazy(() => import("../views/Page1"));
 const Page2 = React.lazy(() => import("../views/Page2"));
+const NotFoundPage = React.lazy(() => import("../components/NotFoundPage"));
 
 export interface RouteInfo {
   path: string;
@@ -35,13 +36,13 @@ export const routes: RouteInfo[] = [
     isAuth: true,
     children: [
         {
-            path: "/home/page1",
+            path: "page1",
             name: "Page1",
             element: <Page1 />,
             isAuth: true,
         },
         {
-            path: "/home/page2",
+            path: "page2",
             name: "Page2",
             element: <Page2 />,
             isAuth: true,
@@ -53,5 +54,11 @@ export const routes: RouteInfo[] = [
     name: "login",
     element: <Login />,
     isAuth: false,
+  },
+  {
+    path: "*",
+    name: "NotFound",
+    element: <NotFoundPage />,
+    isAuth: true,
   },
 ];

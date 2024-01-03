@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {RouterView} from 'vue-router'
 // import { NThemeEditor } from 'naive-ui'
-import {NConfigProvider, type GlobalThemeOverrides} from 'naive-ui'
+import {NConfigProvider, type GlobalThemeOverrides,zhCN, dateZhCN } from 'naive-ui'
 import {lighten} from '@/utils/light'
 import {onMounted} from "vue";
 import MessageApi from "@/components/MessageApi.vue";
@@ -22,7 +22,7 @@ const themeOverrides: GlobalThemeOverrides = {
 </script>
 
 <template>
-  <n-config-provider :theme-overrides="themeOverrides" class="w-full h-full">
+  <n-config-provider :theme-overrides="themeOverrides" :locale="zhCN" :date-locale="dateZhCN" class="w-full h-full">
     <n-notification-provider>
       <n-message-provider>
         <message-api></message-api>

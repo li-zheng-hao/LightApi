@@ -47,6 +47,8 @@ const onClick=(row:any)=>{
         </template>
       </vxe-column>
     </vxe-table>
+    <n-date-picker type="date" />
+
 </tab-page>
 </template>
 
