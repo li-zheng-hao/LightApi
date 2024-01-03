@@ -6,7 +6,7 @@
     "cypress.config.*",
     "nightwatch.conf.*",
     "playwright.config.*"
-  ],
+, "vite.config.ts"  ],
   "compilerOptions": {
     "composite": true,
     "noEmit": true,

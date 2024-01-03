@@ -1,11 +1,11 @@
-<script lang="ts" setup>
+<script lang="tsx" setup>
 import {defineComponent, h, ref, type Component, onMounted} from 'vue'
 import { NIcon } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
 import { useRouteMenuStore} from "@/stores/routeMenuStore";
 import SvgIcon from "@/components/icons/SvgIcon.vue";
 import {RouterLink} from "vue-router";
-import _ from 'lodash'
+import _, { divide } from 'lodash'
 import router from "@/router";
 function renderIcon (icon: string|null|undefined) {
   if (!icon) return null
@@ -28,34 +28,16 @@ onMounted(()=>{
   // 注册最多三级菜单
   routeInfo.forEach((value,key)=>{
     data.value.menuOptions.push({
-      label: value.children?.length??0>0? value.label: () =>
-          h(
-              RouterLink,
-              {
-                to: {
-                  path: value.routePath??"",
-                }
-              },
-              { default: () => value.label }
-          ),
+      label: value.children?.length??0>0? ()=><div>{value.label}</div>: ()=> <RouterLink to={value.routePath??""}>{value.label}</RouterLink>,
       key: value.key,
-      icon: renderIcon(value.icon),
+      icon: ()=><SvgIcon name={value.icon}></SvgIcon>
     })
     if(_.isEmpty(value.children)) return;
     data.value.menuOptions[key].children=[]
 
     value.children?.forEach((child,childKey)=>{
       data.value.menuOptions[key].children?.push({
-        label: ()=>
-            h(
-                RouterLink,
-                {
-                  to: {
-                    path: child.routePath??"",
-                  }
-                },
-                { default: () => child.label }
-            ),
+        label: ()=> <RouterLink to={child.routePath??""}>{child.label}</RouterLink>,
         key: child.key,
         icon: renderIcon(child.icon),
       })
