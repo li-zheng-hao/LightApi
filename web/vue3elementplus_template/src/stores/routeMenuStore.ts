@@ -8,7 +8,8 @@ export const useRouteMenuStore = defineStore('routeMenu', {
     routeMenus: [] as RouteItem[],
     currentRouteInfo: null as CurRouteItem | null,
     openedRouteInfo: [] as RouteItem[],
-    menuCollapsed: false
+    menuCollapsed: false,
+    keepAliveExcludeList: [] as string[]
   }),
   actions: {
     getAllRouteInfo(refresh: boolean = false): RouteItem[] {
@@ -122,11 +123,28 @@ export const useRouteMenuStore = defineStore('routeMenu', {
     },
     removeAllOpenRoute() {
       if (this.openedRouteInfo.length == 0) return
-      if (this.openedRouteInfo.length == 1 && this.openedRouteInfo[0].routePath == '/') return
-      this.openedRouteInfo = []
+      if (this.openedRouteInfo.length == 1 && this.openedRouteInfo[0].routePath === '/') return
+      this.openedRouteInfo.length=0
       router.push('/')
-      this.openedRouteInfo.push(this.findRouteItem('/'))
+      this.openedRouteInfo.push(this.findRouteItem('/home'))
+    },
+    clearKeepAliveExcludeList(){
+      this.keepAliveExcludeList.length=0
+    },
+    addKeepAliveExcludeList(key:string){
+      if(this.keepAliveExcludeList.indexOf(key)==-1){
+        this.keepAliveExcludeList.push(key)
+      }
+    },
+    removeKeepAliveExcludeList(key:string){
+      const index=this.keepAliveExcludeList.indexOf(key)
+      if(index!=-1){
+        this.keepAliveExcludeList.splice(index,1)
+      }
     }
+  
+
+
   }
 })
 

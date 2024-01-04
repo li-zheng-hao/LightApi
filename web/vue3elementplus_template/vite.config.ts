@@ -14,9 +14,11 @@ export default defineConfig({
     plugins: [
         vue(),
         AutoImport({
+            imports: ['vue', 'vue-router', '@vueuse/core'],
             resolvers: [ElementPlusResolver()],
         }),
         Components({
+            dirs: ['src/components'],
             resolvers: [ElementPlusResolver()],
         }),
         UnoCSS(),

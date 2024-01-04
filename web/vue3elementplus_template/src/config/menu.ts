@@ -4,9 +4,9 @@ export function getAllMenus(){
     return [
         {
             label: '首页',
-            key: '/',
+            key: '/home',
             icon: 'DashboardOutlined',
-            routePath:'/'
+            routePath:'/home'
         },
         {
             label: '系统设置',

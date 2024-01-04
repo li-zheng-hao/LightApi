@@ -1,53 +1,59 @@
-import {createRouter, createWebHashHistory, createWebHistory} from 'vue-router'
-import nprogress from "@/utils/nprogress";
-import {getErrorRoutes} from "@/router/error";
-import {getSystemRoute} from "@/router/sys";
-import {getResultRoutes} from "@/router/result";
-import {useRouteMenuStore} from "@/stores/routeMenuStore";
-import {getExampleRoutes} from "@/router/example";
+import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
+import nprogress from '@/utils/nprogress'
+import { getErrorRoutes } from '@/router/error'
+import { getSystemRoute } from '@/router/sys'
+import { getResultRoutes } from '@/router/result'
+import { useRouteMenuStore } from '@/stores/routeMenuStore'
+import { getExampleRoutes } from '@/router/example'
 
 const router = createRouter({
-    history: createWebHashHistory(import.meta.env.BASE_URL),
-    routes: [
+  history: createWebHashHistory(import.meta.env.BASE_URL),
+  routes: [
+    {
+      path: '/',
+      name: 'BasicLayout',
+      component: () => import('../layout/BasicLayout.vue'),
+      children: [
+        ...getResultRoutes(),
+        ...getSystemRoute(),
+        ...getErrorRoutes(),
+        ...getExampleRoutes(),
         {
-            path: '/',
-            name: '主页',
-            component: () => import('../views/HomeView.vue'),
-            children: [
-                ...getResultRoutes(),
-                ...getSystemRoute(),
-                ...getErrorRoutes(),
-                ...getExampleRoutes()
-            ]
-        }, {
-            path: '/login',
-            name: '登录',
-            component: () => import('../views/LoginView.vue')
-        },
-        {
-            path: '/reload',
-            name: '重新加载',
-            component: () => import('../components/ReloadPage.vue')
+          path: '/home',
+          name: 'DefaultHomePage',
+          component: () => import('../views/DefaultHomePage.vue')
         }
-        ,
-        {
-            path: '/:pathMatch(.*)*',
-            name: '404',
-            redirect: '/error/404'
-        }
-    ]
+      ],
+      redirect: '/home'
+    },
+    {
+      path: '/login',
+      name: 'LoginView',
+      component: () => import('../views/LoginView.vue')
+    },
+    {
+      path: '/redirect/:path(.*)*',
+      name: 'RedirectPage',
+      component: () => import('@/components/RedirectPage.vue')
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: '404',
+      redirect: '/error/404'
+    }
+  ]
 })
 
 router.beforeEach((to, from, next) => {
-    nprogress.start()
+  nprogress.start()
 
-    next()
+  next()
 })
 
 router.afterEach(() => {
-    nprogress.done()
-    const routeMenuStore=useRouteMenuStore()
-    routeMenuStore.refreshCurrentRouteInfo()
+  nprogress.done()
+  const routeMenuStore = useRouteMenuStore()
+  routeMenuStore.refreshCurrentRouteInfo()
 })
 
 export default router

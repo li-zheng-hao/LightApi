@@ -29,9 +29,13 @@ const handleSelect = (key: any, option: any) => {
       break
   }
 }
+
+const emits=defineEmits(['reloadPage'])
+
 onMounted(() => {
   routeMenuStore.refreshCurrentRouteInfo()
 })
+
 </script>
 
 <template>
@@ -57,8 +61,8 @@ onMounted(() => {
      
          
         
-      <el-tooltip content="刷新页面">
-        <svg-icon name="ReloadOutlined" class="cursor-pointer"></svg-icon>
+      <el-tooltip content="刷新当前页面">
+        <svg-icon name="ReloadOutlined" class="cursor-pointer" @click="emits('reloadPage')"></svg-icon>
       </el-tooltip>
 
       <el-breadcrumb>
@@ -69,7 +73,7 @@ onMounted(() => {
     </div>
     <div class="layout-header-right flex gap-4 pl-4 pr-4 flex-items-center flex-shrink-0">
 
-      <div>LZH</div>
+      <div class="font-2 font-size-4 bg-#2d8cf0 p-1 pt-2 pb-2 rd-2px color-white">LZH</div>
       <div>李正浩</div>
       <el-dropdown class="pt-1px">
         <div><SvgIcon name="SettingOutlined" class="cursor-pointer"></SvgIcon></div>
