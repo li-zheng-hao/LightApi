@@ -2,17 +2,17 @@
 
 ## 介绍
 
-基于vue3+naive-ui的快速前端开发模板，技术栈：
+基于vue3+elementplus的快速前端开发模板，技术栈：
 
 1. vite
 2. typescript
-3. naive-ui
+3. elementplus
 4. pinia
 5. axios
 6. vue-router
 7. unocss
 8. less 
-9. vxe-table
+9. mitt
 
 ## 项目创建流程
 
