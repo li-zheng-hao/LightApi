@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import router from '@/router'
-import _ from 'lodash'
 import { getAllMenus } from '@/config/menu'
+import _ from '@/utils/common'
 
 export const useRouteMenuStore = defineStore('routeMenu', {
   state: () => ({
@@ -95,7 +95,7 @@ export const useRouteMenuStore = defineStore('routeMenu', {
         window.$message.info('当前已经是最后一个页面了')
         return false
       }
-      let index = _.findIndex(this.openedRouteInfo, (item) => item.routePath == routePath)
+      const index = _.findIndex(this.openedRouteInfo, (item) => item.routePath == routePath)
       if (index != -1) {
         this.openedRouteInfo.splice(index, 1)
       }

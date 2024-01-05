@@ -8,7 +8,8 @@ import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 import UnoCSS from 'unocss/vite'
 import { viteMockServe } from 'vite-plugin-mock'
 import path from 'path'
-import vueJsx from '@vitejs/plugin-vue-jsx' // 配置vue使用jsx
+import vueJsx from '@vitejs/plugin-vue-jsx'
+import { visualizer } from 'rollup-plugin-visualizer'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -40,7 +41,11 @@ export default defineConfig({
       // Specify symbolId format
       symbolId: 'icon-[dir]-[name]'
     }),
-    vueJsx()
+    vueJsx(),
+    visualizer({
+      // 打包完成后自动打开浏览器，显示产物体积报告
+      open: true
+    })
   ],
   resolve: {
     alias: {

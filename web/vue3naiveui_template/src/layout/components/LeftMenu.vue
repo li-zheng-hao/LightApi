@@ -1,17 +1,11 @@
 <script lang="tsx" setup>
-import { defineComponent, h, ref, type Component, onMounted } from 'vue'
-import { NIcon } from 'naive-ui'
+import {  ref, onMounted } from 'vue'
 import type { MenuOption } from 'naive-ui'
-import { RouteItem, useRouteMenuStore } from '@/stores/routeMenuStore'
-import SvgIcon from '@/components/icons/SvgIcon.vue'
+import { type RouteItem, useRouteMenuStore } from '@/stores/routeMenuStore'
 import { RouterLink } from 'vue-router'
-import _, { divide } from 'lodash'
 import router from '@/router'
-import Menu from '@/mock/menu'
-function renderIcon(icon: string | null | undefined) {
-  if (!icon) return null
-  return () => h(SvgIcon, { name: icon })
-}
+import _ from '@/utils/common'
+
 const routeMenuStore = useRouteMenuStore()
 
 const data = ref<any>({
@@ -59,7 +53,6 @@ onMounted(() => {
   routeMenuStore.addOpenRoute(router.currentRoute.value.path)
 })
 
-const props = defineProps(['collapsed'])
 </script>
 
 <template>

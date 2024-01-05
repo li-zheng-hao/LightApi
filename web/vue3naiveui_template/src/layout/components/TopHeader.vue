@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import SvgIcon from '@/components/icons/SvgIcon.vue'
-import { computed, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouteMenuStore } from '@/stores/routeMenuStore'
 import router from '@/router'
-import { NButton, NDropdown, type MenuOption } from 'naive-ui'
+import { NDropdown, type MenuOption } from 'naive-ui'
 import { EventBus, EventBusEvents } from '@/utils/eventbus'
 const routeMenuStore = useRouteMenuStore()
 

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { useRouteMenuStore, type RouteItem } from "@/stores/routeMenuStore";
-import { computed, onMounted, ref, watch, h, onUnmounted } from "vue";
+import { onMounted, ref, watch, h, onUnmounted, nextTick } from "vue";
 import router from "@/router";
 import SvgIcon from "@/components/icons/SvgIcon.vue";
 import { NIcon } from "naive-ui";
-import _ from "lodash";
+import _ from '@/utils/common'
 
 const routeMenuStore = useRouteMenuStore();
 const onClose = (item) => {
@@ -71,7 +71,7 @@ const handleContextMenu = (e: MouseEvent,item:any) => {
 watch(() => [...routeMenuStore.openedRouteInfo], () => {
   updateScroll()
 })
-const handleSelect = (value) => {
+const handleSelect = (value: any) => {
   switch (value) {
     case '刷新当前':
       router.push({ path: '/reload' })
@@ -133,7 +133,7 @@ const updateScroll = async () => {
       <div class="scrollbar flex flex-items-center gap-2 overflow-x-hidden overflow-y-hidden" ref="scrollbar">
         <n-tag closable class="cursor-pointer bg-white h-8 p-2 flex-shrink-0"
           v-for="item in  routeMenuStore.openedRouteInfo" :type="router.currentRoute.value.path == item.routePath ? 'info' : ''"
-          @click="onChangeRoute(item)" @close="onClose(item)" @contextmenu="handleContextMenu($event,item)">
+          @click="onChangeRoute(item)" @close="onClose(item)" @contextmenu="handleContextMenu($event,item)" :key="item.key">
           {{ item?.label }}
         </n-tag>
       </div>

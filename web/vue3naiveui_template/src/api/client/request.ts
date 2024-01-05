@@ -1,7 +1,6 @@
 // index.ts
 import axios from "axios";
 import type { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
-import { reject } from "lodash";
 import { handleError } from "./logHandler";
 import type { ApiResult } from "../common";
 

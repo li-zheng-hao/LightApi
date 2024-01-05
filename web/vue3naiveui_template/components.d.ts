@@ -10,6 +10,7 @@ declare module 'vue' {
     ErrorPage: typeof import('./src/components/error/ErrorPage.vue')['default']
     FailResult: typeof import('./src/components/result/FailResult.vue')['default']
     InfoResult: typeof import('./src/components/result/InfoResult.vue')['default']
+    InternalChild: typeof import('./src/components/InternalChild.vue')['default']
     MessageApi: typeof import('./src/components/MessageApi.vue')['default']
     NAvatar: typeof import('naive-ui')['NAvatar']
     NBreadcrumb: typeof import('naive-ui')['NBreadcrumb']

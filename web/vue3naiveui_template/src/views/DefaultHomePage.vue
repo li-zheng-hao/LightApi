@@ -1,21 +1,24 @@
 <script setup lang="ts">
 import TabPage from '@/components/TabPage.vue'
 import { onMounted, ref } from 'vue'
+import InternalChild from '@/components/InternalChild.vue'
 
 const onClick = (row: any) => {
   window.$message.success(row.name)
 }
-
-onMounted(() => {
-  console.log('onMounted')
+const data = ref({
+  num: 0
 })
+
 </script>
 
 <template>
   <tab-page>
-    <div>默认打开的展示页面</div>
-
-    <n-date-picker type="date" />
+    <div class="flex flex-col flex-items-start gap-4">
+      <div>默认打开的展示页面</div>
+      <internal-child v-model:count="data.num"></internal-child>
+      <n-date-picker type="date" />
+    </div>
   </tab-page>
 </template>
 
