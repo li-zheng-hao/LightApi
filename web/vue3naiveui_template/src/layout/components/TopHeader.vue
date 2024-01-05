@@ -4,6 +4,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useRouteMenuStore } from '@/stores/routeMenuStore'
 import router from '@/router'
 import { NButton, NDropdown, type MenuOption } from 'naive-ui'
+import { EventBus, EventBusEvents } from '@/utils/eventbus'
 const routeMenuStore = useRouteMenuStore()
 
 const dropDownOptions = ref<MenuOption[]>([
@@ -30,6 +31,10 @@ const handleSelect = (key: any, option: any) => {
       break
   }
 }
+
+const reload = () => {
+  EventBus.emit(EventBusEvents.RELOAD_PAGE)
+}
 onMounted(() => {
   routeMenuStore.refreshCurrentRouteInfo()
 })
@@ -53,24 +58,21 @@ onMounted(() => {
             @click="routeMenuStore.menuCollapsed = !routeMenuStore.menuCollapsed"
           ></svg-icon>
         </template>
-        {{routeMenuStore.menuCollapsed?"展开":"折叠"}}菜单
+        {{ routeMenuStore.menuCollapsed ? '展开' : '折叠' }}菜单
       </n-tooltip>
-     
-         
-        
+
       <n-tooltip trigger="hover">
         <template #trigger>
-          <svg-icon
-            name="ReloadOutlined"
-            class="cursor-pointer"
-            @click="router.push('/reload')"
-          ></svg-icon>
+          <svg-icon name="ReloadOutlined" class="cursor-pointer" @click="reload"></svg-icon>
         </template>
         刷新页面
       </n-tooltip>
 
       <n-breadcrumb>
-        <n-breadcrumb-item v-for="(value, key) in routeMenuStore.currentRouteInfo?.paths" :key="key">
+        <n-breadcrumb-item
+          v-for="(value, key) in routeMenuStore.currentRouteInfo?.paths"
+          :key="key"
+        >
           {{ value }}
         </n-breadcrumb-item>
       </n-breadcrumb>
@@ -78,7 +80,7 @@ onMounted(() => {
     <div class="layout-header-right flex gap-4 pl-4 pr-4 flex-items-center flex-shrink-0">
       <n-avatar
         :style="{
-          color: 'yellow',
+          color: 'white',
           backgroundColor: '#2d8cf0'
         }"
       >

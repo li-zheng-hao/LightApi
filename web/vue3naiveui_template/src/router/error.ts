@@ -2,17 +2,17 @@ export function getErrorRoutes() {
   return [
     {
       path: '/error/404',
-      name: '无数据',
+      name: 'NotFoundPage',
       component: () => import('../components/error/NotFoundPage.vue')
     },
     {
       path: '/error/403',
-      name: '无权限',
+      name: 'NoPermissionPage',
       component: () => import('../components/error/NoPermissionPage.vue')
     },
     {
       path: '/error/500',
-      name: '系统错误',
+      name: 'ErrorPage',
       component: () => import('../components/error/ErrorPage.vue')
     }
   ]

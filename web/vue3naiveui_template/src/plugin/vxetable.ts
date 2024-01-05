@@ -39,7 +39,7 @@
 //     // Pulldown,
 //
 //     // 表格
-//     Table
+//     TableIcon.svg
 // } from 'vxe-table'
 // import zhCN from 'vxe-table/es/locale/lang/zh-CN'
 // import 'vxe-table/lib/style.css'
@@ -87,5 +87,5 @@
 //         // .use(List)
 //         // .use(Pulldown)
 //         // 安装表格
-//         .use(Table)
+//         .use(TableIcon.svg)
 // }

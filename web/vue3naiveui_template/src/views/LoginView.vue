@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import SvgIcon from '@/components/icons/SvgIcon.vue'
 import router from '@/router'
 import { apiClient } from '@/api/client/request'
+import SvgIconRaw from '@/components/icons/SvgIconRaw.vue'
 const formInline = ref({
   username: '',
   password: ''
@@ -45,7 +46,7 @@ const loading = ref(false)
         <n-input v-model:value="formInline.username" placeholder="请输入用户名">
           <template #prefix>
             <n-icon size="18" color="#808695">
-              <svg-icon name="UserOutlined"></svg-icon>
+              <svg-icon-raw name="UserOutlined"></svg-icon-raw>
             </n-icon>
           </template>
         </n-input>

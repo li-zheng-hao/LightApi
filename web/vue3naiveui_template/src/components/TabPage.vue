@@ -1,6 +1,4 @@
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <n-card>
@@ -8,6 +6,4 @@
   </n-card>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

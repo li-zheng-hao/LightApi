@@ -13,6 +13,8 @@ onMounted(() => {
 
 <template>
   <tab-page>
+    <div>默认打开的展示页面</div>
+
     <n-date-picker type="date" />
   </tab-page>
 </template>

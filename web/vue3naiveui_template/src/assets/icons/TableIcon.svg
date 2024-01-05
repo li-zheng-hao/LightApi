@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32">
+    <path d="M8 18h4v2H8z" fill="currentColor"/>
+    <path d="M14 18h4v2h-4z" fill="currentColor"/>
+    <path d="M8 14h4v2H8z" fill="currentColor"/>
+    <path d="M14 22h4v2h-4z" fill="currentColor"/>
+    <path d="M20 14h4v2h-4z" fill="currentColor"/>
+    <path d="M20 22h4v2h-4z" fill="currentColor"/>
+    <path d="M27 3H5a2.002 2.002 0 0 0-2 2v22a2.002 2.002 0 0 0 2 2h22a2.002 2.002 0 0 0 2-2V5a2.002 2.002 0 0 0-2-2zm0 2v4H5V5zM5 27V11h22v16z"
+          fill="currentColor"/>
+</svg>

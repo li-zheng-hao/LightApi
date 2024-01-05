@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import TabPage from '@/components/TabPage.vue'
+import { onActivated, onDeactivated, ref } from 'vue'
+const count = ref(1)
 </script>
 
 <template>
-  <tab-page> 菜单按钮权限管理 </tab-page>
+  <TabPage>
+    菜单按钮管理页面
+    <n-button @click="() => count++">当前点击次数：{{ count }}次</n-button>
+  </TabPage>
 </template>
 
 <style scoped></style>

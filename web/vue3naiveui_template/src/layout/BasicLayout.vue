@@ -1,31 +1,56 @@
 <script setup lang="ts">
-import LeftMenu from "@/layout/components/LeftMenu.vue";
-import TopHeader from "@/layout/components/TopHeader.vue";
-import TagsBar from "@/layout/components/TagsBar.vue";
+import LeftMenu from '@/layout/components/LeftMenu.vue'
+import TopHeader from '@/layout/components/TopHeader.vue'
+import TagsBar from '@/layout/components/TagsBar.vue'
 
-import {useRouteMenuStore} from "@/stores/routeMenuStore";
+import { useRouteMenuStore } from '@/stores/routeMenuStore'
+import { onMounted, onUnmounted } from 'vue'
+import { EventBus, EventBusEvents } from '@/utils/eventbus'
+import { useRoute } from 'vue-router'
 
 let routeMenuStore = useRouteMenuStore()
+const route = useRoute()
+const data = ref({
+  showComponent: true
+})
+
+const reloadPage = () => {
+  console.log('刷新页面')
+  routeMenuStore.addExcludedKeepAliveComponents(route.name as string)
+  data.value.showComponent = false
+
+  // 模拟出刷新页面重新加载的效果
+  setTimeout(() => {
+    routeMenuStore.clearExcludedKeepAliveComponents()
+    data.value.showComponent = true
+  }, 250)
+}
+onMounted(() => {
+  EventBus.on(EventBusEvents.RELOAD_PAGE, reloadPage)
+})
+onUnmounted(() => {
+  EventBus.off(EventBusEvents.RELOAD_PAGE, reloadPage)
+})
 </script>
 
 <template>
   <n-layout has-sider class="w-full h-full bg-#f5f7f9">
     <n-layout-sider
-        :inverted="true"
-        bordered
-        collapse-mode="width"
-        :collapsed-width="64"
-        :width="200"
-        show-trigger="bar"
-        v-model:collapsed="routeMenuStore.menuCollapsed"
-        :native-scrollbar="false"
+      :inverted="true"
+      bordered
+      collapse-mode="width"
+      :collapsed-width="64"
+      :width="200"
+      show-trigger="bar"
+      v-model:collapsed="routeMenuStore.menuCollapsed"
+      :native-scrollbar="false"
     >
-      <div class=" flex-items-center justify-center flex   h-20 gap-2">
+      <div class="flex-items-center justify-center flex h-20 gap-2">
         <n-avatar
-            :style="{
-      color: 'yellow',
-      backgroundColor: '#2d8cf0'
-    }"
+          :style="{
+            color: 'white',
+            backgroundColor: '#2d8cf0'
+          }"
         >
           LZH
         </n-avatar>
@@ -35,20 +60,28 @@ let routeMenuStore = useRouteMenuStore()
     </n-layout-sider>
     <n-layout class="h-full box-border flex w-full bg-#f5f7f9" content-class="w-full flex flex-col">
       <n-layout-header>
-        <top-header/>
+        <top-header />
       </n-layout-header>
       <tags-bar class="p-2 pb-0"></tags-bar>
       <n-layout-content content-style="box-border" class="h-full box-border bg-#f5f7f9 p-2">
-        <router-view class="w-full h-full" v-slot="{ Component }">
-          <keep-alive>
-            <component :is="Component" />
-          </keep-alive>
-        </router-view>
+        <n-scrollbar>
+          <router-view v-slot="{ Component }">
+            <keep-alive :max="20" :exclude="routeMenuStore.excludedKeepAliveComponentsList">
+              <component :is="Component" :key="route.name" v-if="data.showComponent" />
+            </keep-alive>
+            <div
+              v-if="!data.showComponent"
+              class="w-full h-80vh p-10 flex flex-items-center justify-center"
+            >
+              <n-spin size="large">
+                <template #description> 加载中... </template>
+              </n-spin>
+            </div>
+          </router-view>
+        </n-scrollbar>
       </n-layout-content>
     </n-layout>
   </n-layout>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

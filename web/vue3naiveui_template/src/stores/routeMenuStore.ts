@@ -8,8 +8,11 @@ export const useRouteMenuStore = defineStore('routeMenu', {
     routeMenus: [] as RouteItem[],
     currentRouteInfo: null as CurRouteItem | null,
     openedRouteInfo: [] as RouteItem[],
-    menuCollapsed: false
+    menuCollapsed: false,
+    // 不需要缓存的组件 name 列表
+    excludedKeepAliveComponentsList: []
   }),
+  getters: {},
   actions: {
     getAllRouteInfo(refresh: boolean = false): RouteItem[] {
       if (this.routeMenus.length > 0 && !refresh) return this.routeMenus
@@ -126,6 +129,31 @@ export const useRouteMenuStore = defineStore('routeMenu', {
       this.openedRouteInfo = []
       router.push('/')
       this.openedRouteInfo.push(this.findRouteItem('/'))
+    },
+    /**
+     * 添加不需要缓存的组件
+     * @param name 组件名称
+     */
+    addExcludedKeepAliveComponents(name: string) {
+      if (this.excludedKeepAliveComponentsList.indexOf(name) == -1) {
+        this.excludedKeepAliveComponentsList.push(name)
+      }
+    },
+    /**
+     * 移除不需要缓存的组件
+     * @param name 组件名称
+     */
+    removeExcludedKeepAliveComponents(name: string) {
+      let index = this.excludedKeepAliveComponentsList.indexOf(name)
+      if (index != -1) {
+        this.excludedKeepAliveComponentsList.splice(index, 1)
+      }
+    },
+    /**
+     * 清空不需要缓存的组件列表
+     */
+    clearExcludedKeepAliveComponents() {
+      this.excludedKeepAliveComponentsList.length = 0
     }
   }
 })

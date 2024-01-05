@@ -28,12 +28,12 @@ const router = createRouter({
     },
     {
       path: '/login',
-      name: '登录',
+      name: 'LoginView',
       component: () => import('../views/LoginView.vue')
     },
     {
       path: '/reload',
-      name: '重新加载',
+      name: 'ReloadPage',
       component: () => import('../components/ReloadPage.vue')
     },
     {

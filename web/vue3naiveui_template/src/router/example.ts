@@ -2,13 +2,18 @@ export function getExampleRoutes() {
   return [
     {
       path: '/example/button/button1',
-      name: 'Button示例1',
+      name: 'ButtonExample1',
       component: () => import('../views/ButtonExample1.vue')
     },
     {
       path: '/example/button/button2',
-      name: 'Button示例2',
+      name: 'ButtonExample2',
       component: () => import('../views/ButtonExample2.vue')
+    },
+    {
+      path: '/example/table',
+      name: 'TableExample',
+      component: () => import('../views/TableExample.vue')
     }
   ]
 }
