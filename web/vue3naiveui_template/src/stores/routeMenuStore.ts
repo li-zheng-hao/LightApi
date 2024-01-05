@@ -1,16 +1,17 @@
 import { defineStore } from 'pinia'
-import router from '@/router'
+import router, { GlobalRoutes } from '@/router'
 import { getAllMenus } from '@/config/menu'
-import _ from '@/utils/common'
+import { _ } from '@/utils/common'
+import { findRoute } from '@/utils/route-util'
 
 export const useRouteMenuStore = defineStore('routeMenu', {
   state: () => ({
     routeMenus: [] as RouteItem[],
-    currentRouteInfo: null as CurRouteItem | null,
+    currentRouteInfo: null as CurRouteItem,
     openedRouteInfo: [] as RouteItem[],
     menuCollapsed: false,
-    // 不需要缓存的组件 name 列表
-    excludedKeepAliveComponentsList: []
+    // 需要缓存的组件 name 列表
+    includedKeepAliveComponentsList: []
   }),
   getters: {},
   actions: {
@@ -105,6 +106,8 @@ export const useRouteMenuStore = defineStore('routeMenu', {
       } else {
         router.push(this.openedRouteInfo[this.openedRouteInfo.length - 1].routePath)
       }
+      const route = findRoute(routePath, GlobalRoutes)
+      if (route) this.removeIncludedKeepAliveComponents(route.name)
       return true
     },
     addOpenRoute(key: string) {
@@ -115,45 +118,53 @@ export const useRouteMenuStore = defineStore('routeMenu', {
           this.openedRouteInfo.push(item)
         }
       }
+      const route = findRoute(key, GlobalRoutes)
+      console.log(key, route)
+      if (route) this.addIncludedKeepAliveComponents(route.name)
     },
-    removeOtherOpenRoute(key: string | null | undefined) {
-      if (!key) return
-      let item = this.findRouteItem(key)
+    removeOtherOpenRoute(routePath: string | null | undefined) {
+      if (!routePath) return
+      let item = this.findRouteItem(routePath)
       if (item) {
         this.openedRouteInfo = [item]
+      }
+      const route = findRoute(routePath, GlobalRoutes)
+
+      if (route) {
+        this.clearIncludedKeepAliveComponents()
+        this.addIncludedKeepAliveComponents(route.name)
       }
     },
     removeAllOpenRoute() {
       if (this.openedRouteInfo.length == 0) return
-      if (this.openedRouteInfo.length == 1 && this.openedRouteInfo[0].routePath == '/') return
-      this.openedRouteInfo = []
-      router.push('/')
-      this.openedRouteInfo.push(this.findRouteItem('/'))
+      if (this.openedRouteInfo.length == 1 && this.openedRouteInfo[0].routePath == '/home') return
+      this.openedRouteInfo.length = 0
+      this.clearIncludedKeepAliveComponents()
     },
     /**
-     * 添加不需要缓存的组件
+     * 添加需要缓存的组件
      * @param name 组件名称
      */
-    addExcludedKeepAliveComponents(name: string) {
-      if (this.excludedKeepAliveComponentsList.indexOf(name) == -1) {
-        this.excludedKeepAliveComponentsList.push(name)
+    addIncludedKeepAliveComponents(name: string) {
+      if (this.includedKeepAliveComponentsList.indexOf(name) == -1) {
+        this.includedKeepAliveComponentsList.push(name)
       }
     },
     /**
-     * 移除不需要缓存的组件
+     * 移除需要缓存的组件
      * @param name 组件名称
      */
-    removeExcludedKeepAliveComponents(name: string) {
-      let index = this.excludedKeepAliveComponentsList.indexOf(name)
+    removeIncludedKeepAliveComponents(name: string) {
+      let index = this.includedKeepAliveComponentsList.indexOf(name)
       if (index != -1) {
-        this.excludedKeepAliveComponentsList.splice(index, 1)
+        this.includedKeepAliveComponentsList.splice(index, 1)
       }
     },
     /**
-     * 清空不需要缓存的组件列表
+     * 清空需要缓存的组件列表
      */
-    clearExcludedKeepAliveComponents() {
-      this.excludedKeepAliveComponentsList.length = 0
+    clearIncludedKeepAliveComponents() {
+      this.includedKeepAliveComponentsList.length = 0
     }
   }
 })

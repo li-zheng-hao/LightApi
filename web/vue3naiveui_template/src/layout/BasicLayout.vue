@@ -15,13 +15,13 @@ const data = ref({
 })
 
 const reloadPage = () => {
-  console.log('刷新页面')
-  routeMenuStore.addExcludedKeepAliveComponents(route.name as string)
+  const compName = route.name as string
+  routeMenuStore.removeIncludedKeepAliveComponents(compName)
   data.value.showComponent = false
 
   // 模拟出刷新页面重新加载的效果
   setTimeout(() => {
-    routeMenuStore.clearExcludedKeepAliveComponents()
+    routeMenuStore.addIncludedKeepAliveComponents(compName)
     data.value.showComponent = true
   }, 250)
 }
@@ -66,7 +66,7 @@ onUnmounted(() => {
       <n-layout-content content-style="box-border" class="h-full box-border bg-#f5f7f9 p-2">
         <n-scrollbar>
           <router-view v-slot="{ Component }">
-            <keep-alive :max="20" :exclude="routeMenuStore.excludedKeepAliveComponentsList">
+            <keep-alive :max="20" :include="routeMenuStore.includedKeepAliveComponentsList">
               <component :is="Component" :key="route.name" v-if="data.showComponent" />
             </keep-alive>
             <div

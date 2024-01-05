@@ -3,9 +3,9 @@ import { findIndex } from './findIndex'
 import { isEmpty } from './isEmpty'
 import { throttle } from './throttle'
 
-export default {
+export const _ = {
   isEmpty: isEmpty,
   findIndex: findIndex,
-  debounce:debounce,
-  throttle:throttle
+  debounce: debounce,
+  throttle: throttle
 }

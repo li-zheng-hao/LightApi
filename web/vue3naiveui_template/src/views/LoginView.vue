@@ -60,7 +60,7 @@ const loading = ref(false)
         >
           <template #prefix>
             <n-icon size="18" color="#808695">
-              <SvgIcon name="LockTwotone" />
+              <svg-icon-raw name="LockTwotone" />
             </n-icon>
           </template>
         </n-input>

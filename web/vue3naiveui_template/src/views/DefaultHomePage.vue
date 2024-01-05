@@ -9,7 +9,6 @@ const onClick = (row: any) => {
 const data = ref({
   num: 0
 })
-
 </script>
 
 <template>

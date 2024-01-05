@@ -34,9 +34,6 @@ const themeOverrides: GlobalThemeOverrides = {
       </n-message-provider>
     </n-notification-provider>
   </n-config-provider>
-  <!--  <n-theme-editor>-->
-  <!--    <RouterView />-->
-  <!--  </n-theme-editor>-->
 </template>
 
 <style scoped></style>
