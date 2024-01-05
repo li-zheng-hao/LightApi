@@ -103,6 +103,12 @@ export function getAllMenus() {
           icon: 'TableIcon'
         }
       ]
+    },
+    {
+      label: '第三方内嵌页面',
+      key: '/thirdpart',
+      icon: 'Share',
+      routePath: '/thirdpart'
     }
   ]
 }

@@ -20,6 +20,11 @@ export const GlobalRoutes = [
         path: '/home',
         name: 'DefaultHomePage',
         component: () => import('../views/DefaultHomePage.vue')
+      },
+      {
+        path: '/thirdpart',
+        name: 'ThirdPartPage',
+        component: () => import('../views/ThirdPartPage.vue')
       }
     ],
     redirect: '/home'
@@ -30,9 +35,9 @@ export const GlobalRoutes = [
     component: () => import('../views/LoginView.vue')
   },
   {
-    path: '/reload',
-    name: 'ReloadPage',
-    component: () => import('../components/ReloadPage.vue')
+    path: '/single',
+    name: 'NewSinglePage',
+    component: () => import('../views/NewSinglePage.vue')
   },
   {
     path: '/:pathMatch(.*)*',
