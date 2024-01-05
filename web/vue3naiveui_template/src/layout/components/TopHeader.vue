@@ -35,9 +35,7 @@ const handleSelect = (key: any, option: any) => {
 const reload = () => {
   EventBus.emit(EventBusEvents.RELOAD_PAGE)
 }
-onMounted(() => {
-  routeMenuStore.refreshCurrentRouteInfo()
-})
+
 </script>
 
 <template>

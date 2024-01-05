@@ -13,9 +13,10 @@ export const useRouteMenuStore = defineStore('routeMenu', {
     // 需要缓存的组件 name 列表
     includedKeepAliveComponentsList: []
   }),
+  // 相当于 computed
   getters: {},
   actions: {
-    getAllRouteInfo(refresh: boolean = false): RouteItem[] {
+    getAndUpdateAllRouteInfo(refresh: boolean = false): RouteItem[] {
       if (this.routeMenus.length > 0 && !refresh) return this.routeMenus
       this.routeMenus = getAllMenus()
       return this.routeMenus

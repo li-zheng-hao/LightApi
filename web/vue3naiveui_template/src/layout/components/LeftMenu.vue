@@ -48,7 +48,7 @@ function addMenuOptions(routeInfo: RouteItem[] | null, menuOptions: MenuOption[]
 }
 
 onMounted(() => {
-  const routeInfo = routeMenuStore.getAllRouteInfo()
+  const routeInfo = routeMenuStore.getAndUpdateAllRouteInfo()
   const menuOptions = [] as MenuOption[]
 
   addMenuOptions(routeInfo, menuOptions)
