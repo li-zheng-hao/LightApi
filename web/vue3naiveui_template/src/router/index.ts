@@ -1,16 +1,17 @@
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
 import nprogress from '@/utils/nprogress'
-import { getErrorRoutes } from '@/router/error'
-import { getSystemRoute } from '@/router/sys'
-import { getResultRoutes } from '@/router/result'
+import { getErrorRoutes } from './routeConfig/error'
+import { getSystemRoute } from './routeConfig/sys'
+import { getResultRoutes } from './routeConfig/result'
 import { useRouteMenuStore } from '@/stores/routeMenuStore'
-import { getExampleRoutes } from '@/router/example'
+import { getExampleRoutes } from './routeConfig/example'
+import { useRouterGuard } from './routeGuard'
 
 export const GlobalRoutes = [
   {
     path: '/',
     name: 'BasicLayout',
-    component: () => import('../layout/BasicLayout.vue'),
+    component: () => import('@/layout/BasicLayout.vue'),
     children: [
       ...getResultRoutes(),
       ...getSystemRoute(),
@@ -19,12 +20,12 @@ export const GlobalRoutes = [
       {
         path: '/home',
         name: 'DefaultHomePage',
-        component: () => import('../views/DefaultHomePage.vue')
+        component: () => import('@/views/DefaultHomePage.vue')
       },
       {
         path: '/thirdpart',
         name: 'ThirdPartPage',
-        component: () => import('../views/ThirdPartPage.vue')
+        component: () => import('@/views/ThirdPartPage.vue')
       }
     ],
     redirect: '/home'
@@ -32,12 +33,12 @@ export const GlobalRoutes = [
   {
     path: '/login',
     name: 'LoginView',
-    component: () => import('../views/LoginView.vue')
+    component: () => import('@/views/LoginView.vue')
   },
   {
     path: '/single',
     name: 'NewSinglePage',
-    component: () => import('../views/NewSinglePage.vue')
+    component: () => import('@/views/NewSinglePage.vue')
   },
   {
     path: '/:pathMatch(.*)*',
@@ -50,15 +51,7 @@ const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: GlobalRoutes
 })
-router.beforeEach((to, from, next) => {
-  nprogress.start()
-  next()
-})
 
-router.afterEach(() => {
-  nprogress.done()
-  const routeMenuStore = useRouteMenuStore()
-  routeMenuStore.refreshCurrentRouteInfo()
-})
+useRouterGuard(router)
 
 export default router
