@@ -15,6 +15,7 @@ export default defineConfig({
         vue(), AutoImport({
             imports: [
                 'vue',
+                'vue-router',
                 {
                     'naive-ui': [
                         'useDialog',
@@ -26,6 +27,7 @@ export default defineConfig({
             ]
         }),
         Components({
+            dirs: ['src/components'],
             resolvers: [NaiveUiResolver()]
         }),
         UnoCSS(),

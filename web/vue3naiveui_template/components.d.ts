@@ -8,6 +8,8 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     ErrorPage: typeof import('./src/components/error/ErrorPage.vue')['default']
+    FailResult: typeof import('./src/components/result/FailResult.vue')['default']
+    InfoResult: typeof import('./src/components/result/InfoResult.vue')['default']
     MessageApi: typeof import('./src/components/MessageApi.vue')['default']
     NAvatar: typeof import('naive-ui')['NAvatar']
     NBreadcrumb: typeof import('naive-ui')['NBreadcrumb']
@@ -34,7 +36,9 @@ declare module 'vue' {
     ReloadPage: typeof import('./src/components/ReloadPage.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SuccessResult: typeof import('./src/components/result/SuccessResult.vue')['default']
     SvgIcon: typeof import('./src/components/icons/SvgIcon.vue')['default']
+    SvgIconRaw: typeof import('./src/components/icons/SvgIconRaw.vue')['default']
     TabPage: typeof import('./src/components/TabPage.vue')['default']
   }
 }

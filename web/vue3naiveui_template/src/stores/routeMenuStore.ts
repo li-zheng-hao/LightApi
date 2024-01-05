@@ -113,7 +113,7 @@ export const useRouteMenuStore = defineStore('routeMenu', {
         }
       }
     },
-    removeOtherOpenRoute(key: string|null|undefined) {
+    removeOtherOpenRoute(key: string | null | undefined) {
       if (!key) return
       let item = this.findRouteItem(key)
       if (item) {

@@ -1,28 +1,24 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import SvgIcon from "@/components/icons/SvgIcon.vue";
-import router from "@/router";
-import { apiClient } from '@/api/client/request';
+import SvgIcon from '@/components/icons/SvgIcon.vue'
+import router from '@/router'
+import { apiClient } from '@/api/client/request'
 const formInline = ref({
   username: '',
-  password: '',
+  password: ''
 })
 const rules = ref({
-  username: [
-    { required: true, message: '请输入用户名', trigger: 'blur' },
-  ],
-  password: [
-    { required: true, message: '请输入密码', trigger: 'blur' },
-  ],
+  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+  password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
 })
 const formRef = ref(null)
 const handleSubmit = () => {
-  formRef.value?.validate(async (errors) => {
+  formRef.value?.validate(async (errors: unknown) => {
     if (!errors) {
       let apiResult = await apiClient.post('/user/login', formInline.value)
       router.push({ path: '/home' })
     } else {
-      window.$message.error("用户名密码填写格式错误")
+      window.$message.error('用户名密码填写格式错误')
       return false
     }
   })
@@ -33,13 +29,18 @@ const loading = ref(false)
 <template>
   <div class="login-box w-100vw h-100vh flex flex-col">
     <div class="login-title flex flex-items-center mb-4 gap-2">
-      <n-avatar color="#2d8cf0">
-        LZH
-      </n-avatar>
+      <n-avatar color="#2d8cf0"> LZH </n-avatar>
       <span class="text-4xl">Vue3模板</span>
     </div>
     <div class="mb-4 color-gray">小小的项目描述</div>
-    <n-form ref="formRef" label-placement="left" class="login-form" size="large" :model="formInline" :rules="rules">
+    <n-form
+      ref="formRef"
+      label-placement="left"
+      class="login-form"
+      size="large"
+      :model="formInline"
+      :rules="rules"
+    >
       <n-form-item path="username">
         <n-input v-model:value="formInline.username" placeholder="请输入用户名">
           <template #prefix>
@@ -50,7 +51,12 @@ const loading = ref(false)
         </n-input>
       </n-form-item>
       <n-form-item path="password">
-        <n-input v-model:value="formInline.password" type="password" showPasswordOn="click" placeholder="请输入密码">
+        <n-input
+          v-model:value="formInline.password"
+          type="password"
+          showPasswordOn="click"
+          placeholder="请输入密码"
+        >
           <template #prefix>
             <n-icon size="18" color="#808695">
               <SvgIcon name="LockTwotone" />

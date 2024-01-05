@@ -1,11 +1,7 @@
 <script setup lang="ts">
-import {ref} from 'vue'
 import LeftMenu from "@/layout/components/LeftMenu.vue";
 import TopHeader from "@/layout/components/TopHeader.vue";
 import TagsBar from "@/layout/components/TagsBar.vue";
-import TabPage from "@/components/TabPage.vue";
-import DefaultHomePage from "@/views/DefaultHomePage.vue";
-import router from "@/router";
 
 import {useRouteMenuStore} from "@/stores/routeMenuStore";
 
@@ -43,7 +39,6 @@ let routeMenuStore = useRouteMenuStore()
       </n-layout-header>
       <tags-bar class="p-2 pb-0"></tags-bar>
       <n-layout-content content-style="box-border" class="h-full box-border bg-#f5f7f9 p-2">
-        <DefaultHomePage v-if="router.currentRoute.value.path=='/'" class="w-full h-full"/>
         <router-view class="w-full h-full" v-slot="{ Component }">
           <keep-alive>
             <component :is="Component" />
