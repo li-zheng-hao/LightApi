@@ -33,8 +33,8 @@ const data = ref({
       disabled: false
     },
     {
-      key: '关闭当前',
-      label: '关闭当前',
+      key: '关闭选择',
+      label: '关闭选择',
       icon() {
         return h(NIcon, null, {
           default: () => h(SvgIcon, { name: 'IosClose', scale: 1.4 })
@@ -69,7 +69,6 @@ const data = ref({
 const onClickOutside = () => {
   data.value.showDropdown = false
   data.value.menuOptions[0].disabled = false
-  data.value.menuOptions[1].disabled = false
 }
 const handleContextMenu = (e: MouseEvent, item: any) => {
   e.preventDefault()
@@ -77,7 +76,6 @@ const handleContextMenu = (e: MouseEvent, item: any) => {
   data.value.showDropdown = false
   if (item && item.routePath != router.currentRoute.value.fullPath) {
     data.value.menuOptions[0].disabled = true
-    data.value.menuOptions[1].disabled = true
   }
   nextTick().then(() => {
     data.value.showDropdown = true
@@ -96,7 +94,7 @@ const handleSelect = (value: any) => {
     case '刷新当前':
       EventBus.emit(EventBusEvents.RELOAD_PAGE)
       break
-    case '关闭当前':
+    case '关闭选择':
       routeMenuStore.removeOpenRoute(data.value.rightClickItem?.routePath)
       break
     case '关闭其他':
