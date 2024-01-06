@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useRouteMenuStore, type RouteItem } from '@/stores/routeMenuStore'
+import { useRouteMenuStore, type MenuItem } from '@/stores/routeMenuStore'
 import { onMounted, ref, watch, h, onUnmounted, nextTick } from 'vue'
 import router from '@/router'
 import SvgIcon from '@/components/icons/SvgIcon.vue'
@@ -9,7 +9,7 @@ import { EventBus, EventBusEvents } from '@/utils/eventbus'
 
 const routeMenuStore = useRouteMenuStore()
 const onClose = (item) => {
-  routeMenuStore.removeOpenRoute(item.routePath)
+  routeMenuStore.removeOpenTab(item.routePath)
 }
 
 const onChangeRoute = (item) => {
@@ -62,7 +62,7 @@ const data = ref({
     }
   ],
   enableScroll: false,
-  rightClickItem: null as RouteItem | null,
+  rightClickItem: null as MenuItem | null,
   enableReloadCurrentPage: true
 })
 
@@ -84,7 +84,7 @@ const handleContextMenu = (e: MouseEvent, item: any) => {
   })
 }
 watch(
-  () => [...routeMenuStore.openedRouteInfo],
+  () => [...routeMenuStore.openedTabs],
   () => {
     updateScroll()
   }
@@ -95,18 +95,18 @@ const handleSelect = (value: any) => {
       EventBus.emit(EventBusEvents.RELOAD_PAGE)
       break
     case '关闭选择':
-      routeMenuStore.removeOpenRoute(data.value.rightClickItem?.routePath)
+      routeMenuStore.removeOpenTab(data.value.rightClickItem?.routePath)
       break
     case '关闭其他':
       const deleteCurRoutePath =
         data.value.rightClickItem?.routePath ?? router.currentRoute.value.fullPath
-      routeMenuStore.removeOtherOpenRoute(deleteCurRoutePath)
+      routeMenuStore.removeOtherOpenTabs(deleteCurRoutePath)
 
       if (deleteCurRoutePath != router.currentRoute.value.fullPath)
         router.push({ path: data.value.rightClickItem?.routePath ?? '/' })
       break
     case '关闭所有':
-      routeMenuStore.removeAllOpenRoute()
+      routeMenuStore.removeAllOpenTabs()
       router.push({ path: '/home' })
       break
   }
@@ -156,7 +156,7 @@ const updateScroll = async () => {
         <n-tag
           closable
           class="cursor-pointer bg-white h-8 p-2 flex-shrink-0"
-          v-for="item in routeMenuStore.openedRouteInfo"
+          v-for="item in routeMenuStore.openedTabs"
           :type="router.currentRoute.value.path == item.routePath ? 'info' : ''"
           @click="onChangeRoute(item)"
           @close="onClose(item)"

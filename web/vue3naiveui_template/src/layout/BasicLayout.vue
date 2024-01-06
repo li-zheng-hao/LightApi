@@ -4,7 +4,7 @@ import TopHeader from '@/layout/components/TopHeader.vue'
 import TagsBar from '@/layout/components/TagsBar.vue'
 
 import { useRouteMenuStore } from '@/stores/routeMenuStore'
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { EventBus, EventBusEvents } from '@/utils/eventbus'
 import { useRoute } from 'vue-router'
 
@@ -13,7 +13,19 @@ const route = useRoute()
 const data = ref({
   showComponent: true
 })
+// 初始化菜单面包屑信息
+routeMenuStore.refreshAllMenuInfo()
+routeMenuStore.refreshCurrentBreadcrumbInfo()
 
+// 监听路由变化，更新当前面包屑信息和标签页
+watch(
+  () => route.fullPath,
+  (newValue) => {
+    console.log('route.fullPath', newValue)
+    routeMenuStore.addOpenTab(newValue)
+    routeMenuStore.refreshCurrentBreadcrumbInfo()
+  }
+)
 const reloadPage = () => {
   const compName = route.name as string
   routeMenuStore.removeIncludedKeepAliveComponents(compName)

@@ -68,7 +68,7 @@ const reload = () => {
 
       <n-breadcrumb>
         <n-breadcrumb-item
-          v-for="(value, key) in routeMenuStore.currentRouteInfo?.paths"
+          v-for="(value, key) in routeMenuStore.currentBreadcrumbInfo?.paths"
           :key="key"
         >
           {{ value }}

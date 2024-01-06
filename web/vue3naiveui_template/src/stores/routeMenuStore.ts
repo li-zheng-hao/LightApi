@@ -6,9 +6,11 @@ import { findRoute } from '@/utils/route-util'
 
 export const useRouteMenuStore = defineStore('routeMenu', {
   state: () => ({
-    routeMenus: [] as RouteItem[],
-    currentRouteInfo: null as CurRouteItem,
-    openedRouteInfo: [] as RouteItem[],
+    // 所有的菜单项
+    routeMenus: [] as MenuItem[],
+    // 当前面包屑
+    currentBreadcrumbInfo: null as CurMenuItem,
+    openedTabs: [] as MenuItem[],
     menuCollapsed: false,
     // 需要缓存的组件 name 列表
     includedKeepAliveComponentsList: []
@@ -16,12 +18,12 @@ export const useRouteMenuStore = defineStore('routeMenu', {
   // 相当于 computed
   getters: {},
   actions: {
-    getAndUpdateAllRouteInfo(refresh: boolean = false): RouteItem[] {
+    refreshAllMenuInfo(refresh: boolean = false): MenuItem[] {
       if (this.routeMenus.length > 0 && !refresh) return this.routeMenus
       this.routeMenus = getAllMenus()
       return this.routeMenus
     },
-    findRouteItem(key: string): RouteItem | null {
+    findMenuItem(key: string): MenuItem | null {
       let res = null
       this.routeMenus.some((item) => {
         if (item.key == key) {
@@ -50,13 +52,13 @@ export const useRouteMenuStore = defineStore('routeMenu', {
       })
       return res
     },
-    refreshCurrentRouteInfo(): CurRouteItem {
-      let res = <CurRouteItem>{ paths: [], routePath: '' }
+    refreshCurrentBreadcrumbInfo(): CurMenuItem {
+      let res = <CurMenuItem>{ paths: [], routePath: '' }
       let cur = router.currentRoute
       if (!cur) return cur
       this.routeMenus.some((item) => {
         if (item.routePath == cur.value.path) {
-          res = <CurRouteItem>{
+          res = <CurMenuItem>{
             paths: [item.label],
             routePath: item.routePath
           }
@@ -65,21 +67,24 @@ export const useRouteMenuStore = defineStore('routeMenu', {
         if (item.children) {
           item.children.some((child) => {
             if (child.routePath == cur.value.path) {
-              res = <CurRouteItem>{
+              res = <CurMenuItem>{
                 paths: [item.label, child.label],
                 routePath: child.routePath
               }
+
               return true
             }
             if (child.children) {
               child.children.some((grandChild) => {
                 if (grandChild.routePath == cur.value.path) {
-                  res = <CurRouteItem>{
+                  res = <CurMenuItem>{
                     paths: [item.label, child.label, grandChild.label],
                     routePath: grandChild.routePath
                   }
+
                   return true
                 }
+
                 return false
               })
             }
@@ -88,46 +93,46 @@ export const useRouteMenuStore = defineStore('routeMenu', {
         }
         return false
       })
-      this.currentRouteInfo = res
+      this.currentBreadcrumbInfo = res
       return res
     },
-    removeOpenRoute(routePath: string | null | undefined): boolean {
+    removeOpenTab(routePath: string | null | undefined): boolean {
       if (!routePath) return false
-      if (this.openedRouteInfo?.length == 1) {
+      if (this.openedTabs?.length == 1) {
         window.$message.info('当前已经是最后一个页面了')
         return false
       }
-      const index = _.findIndex(this.openedRouteInfo, (item) => item.routePath == routePath)
+      const index = _.findIndex(this.openedTabs, (item) => item.routePath == routePath)
       if (index != -1) {
-        this.openedRouteInfo.splice(index, 1)
+        this.openedTabs.splice(index, 1)
       }
-      if (this.openedRouteInfo.length == 0) {
-        router.push('/')
-        this.openedRouteInfo.push(this.findRouteItem('/'))
+      if (this.openedTabs.length == 0) {
+        router.push('/home')
+        this.openedTabs.push(this.findMenuItem('/home'))
       } else {
-        router.push(this.openedRouteInfo[this.openedRouteInfo.length - 1].routePath)
+        router.push(this.openedTabs[this.openedTabs.length - 1].routePath)
       }
       const route = findRoute(routePath, GlobalRoutes)
       if (route) this.removeIncludedKeepAliveComponents(route.name)
       return true
     },
-    addOpenRoute(key: string) {
-      let item = this.findRouteItem(key)
+    addOpenTab(key: string) {
+      const item = this.findMenuItem(key)
       if (item) {
-        let index = _.findIndex(this.openedRouteInfo, (item) => item.routePath == key)
+        const index = _.findIndex(this.openedTabs, (item) => item.routePath == key)
         if (index == -1) {
-          this.openedRouteInfo.push(item)
+          this.openedTabs.push(item)
         }
       }
       const route = findRoute(key, GlobalRoutes)
       console.log(key, route)
       if (route) this.addIncludedKeepAliveComponents(route.name)
     },
-    removeOtherOpenRoute(routePath: string | null | undefined) {
+    removeOtherOpenTabs(routePath: string | null | undefined) {
       if (!routePath) return
-      let item = this.findRouteItem(routePath)
+      const item = this.findMenuItem(routePath)
       if (item) {
-        this.openedRouteInfo = [item]
+        this.openedTabs = [item]
       }
       const route = findRoute(routePath, GlobalRoutes)
 
@@ -136,10 +141,10 @@ export const useRouteMenuStore = defineStore('routeMenu', {
         this.addIncludedKeepAliveComponents(route.name)
       }
     },
-    removeAllOpenRoute() {
-      if (this.openedRouteInfo.length == 0) return
-      if (this.openedRouteInfo.length == 1 && this.openedRouteInfo[0].routePath == '/home') return
-      this.openedRouteInfo.length = 0
+    removeAllOpenTabs() {
+      if (this.openedTabs.length == 0) return
+      if (this.openedTabs.length == 1 && this.openedTabs[0].routePath == '/home') return
+      this.openedTabs.length = 0
       this.clearIncludedKeepAliveComponents()
     },
     /**
@@ -167,18 +172,22 @@ export const useRouteMenuStore = defineStore('routeMenu', {
     clearIncludedKeepAliveComponents() {
       this.includedKeepAliveComponentsList.length = 0
     }
+  },
+  persist: {
+    paths: ['currentBreadcrumbInfo','openedTabs','includedKeepAliveComponentsList'],
   }
+
 })
 
-export interface RouteItem {
+export interface MenuItem {
   label: string
   key: string
   icon: string | null
   routePath: string | null | undefined
-  children: RouteItem[] | null
+  children: MenuItem[] | null
 }
 
-export interface CurRouteItem {
+export interface CurMenuItem {
   paths: string[]
   routePath: string
 }

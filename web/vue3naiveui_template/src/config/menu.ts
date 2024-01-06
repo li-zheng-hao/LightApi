@@ -1,4 +1,7 @@
 // 全局的菜单配置 (根据当前登录用户权限生成左侧菜单栏)
+
+import type { MenuItem } from "@/stores/routeMenuStore";
+
 // 也可以从后端获取
 export function getAllMenus() {
   return [
@@ -110,5 +113,5 @@ export function getAllMenus() {
       icon: 'Share',
       routePath: '/thirdpart'
     }
-  ]
+  ] as MenuItem[]
 }

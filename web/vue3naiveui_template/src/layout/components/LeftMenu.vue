@@ -1,7 +1,7 @@
 <script lang="tsx" setup>
 import { ref, onMounted, watch } from 'vue'
 import type { MenuOption } from 'naive-ui'
-import { type RouteItem, useRouteMenuStore } from '@/stores/routeMenuStore'
+import { type MenuItem, useRouteMenuStore } from '@/stores/routeMenuStore'
 import { RouterLink } from 'vue-router'
 import router from '@/router'
 import { _ } from '@/utils/common'
@@ -13,14 +13,7 @@ const data = ref<any>({
   menuOptions: [] as MenuOption[],
   expandKeys: ['/sys/menu']
 })
-
-watch(
-  () => routeMenuStore.currentRouteInfo,
-  (newValue, oldValue) => {
-    routeMenuStore.addOpenRoute(newValue.routePath)
-  }
-)
-function addMenuOptions(routeInfo: RouteItem[] | null, menuOptions: MenuOption[]) {
+function addMenuOptions(routeInfo: MenuItem[] | null, menuOptions: MenuOption[]) {
   if (!routeInfo) return
   routeInfo.forEach((value, key) => {
     const menuOption = {
@@ -48,20 +41,21 @@ function addMenuOptions(routeInfo: RouteItem[] | null, menuOptions: MenuOption[]
 }
 
 onMounted(() => {
-  const routeInfo = routeMenuStore.getAndUpdateAllRouteInfo()
+  const routeInfo = routeMenuStore.refreshAllMenuInfo()
   const menuOptions = [] as MenuOption[]
 
   addMenuOptions(routeInfo, menuOptions)
 
   data.value.menuOptions = menuOptions
-  routeMenuStore.addOpenRoute(router.currentRoute.value.path)
+  routeMenuStore.addOpenTab(router.currentRoute.value.path)
+  console.log('a',routeMenuStore.currentBreadcrumbInfo.routePath)
 })
 </script>
 
 <template>
   <n-menu
     :inverted="true"
-    v-model:value="routeMenuStore.currentRouteInfo.routePath"
+    v-model:value="routeMenuStore.currentBreadcrumbInfo.routePath"
     :collapsed="routeMenuStore.menuCollapsed"
     :collapsed-width="64"
     :options="data.menuOptions"

@@ -14,7 +14,6 @@ export function useRouterGuard(router: Router) {
 
   router.afterEach(() => {
     nprogress.done()
-    const routeMenuStore = useRouteMenuStore()
-    routeMenuStore.refreshCurrentRouteInfo()
+   
   })
 }
