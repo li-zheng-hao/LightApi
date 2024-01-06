@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { useRouteMenuStore, type MenuItem } from '@/stores/routeMenuStore'
-import { onMounted, ref, watch, h, onUnmounted, nextTick } from 'vue'
+import {useRouteMenuStore, type MenuItem} from '@/stores/routeMenuStore'
+import {onMounted, ref, watch, h, onUnmounted, nextTick} from 'vue'
 import router from '@/router'
 import SvgIcon from '@/components/icons/SvgIcon.vue'
-import { NIcon } from 'naive-ui'
-import { _ } from '@/utils/common'
-import { EventBus, EventBusEvents } from '@/utils/eventbus'
+import {NIcon} from 'naive-ui'
+import {_} from '@/utils/common'
+import {EventBus, EventBusEvents} from '@/utils/eventbus'
+import SvgIconRaw from "@/components/icons/SvgIconRaw.vue";
 
 const routeMenuStore = useRouteMenuStore()
 const onClose = (item) => {
@@ -13,7 +14,7 @@ const onClose = (item) => {
 }
 
 const onChangeRoute = (item) => {
-  router.push({ path: item.routePath })
+  router.push({path: item.routePath})
 }
 const scrollbar = ref(null)
 
@@ -27,7 +28,7 @@ const data = ref({
       label: '刷新当前',
       icon() {
         return h(NIcon, null, {
-          default: () => h(SvgIcon, { name: 'ReloadOutlined' })
+          default: () => h(SvgIcon, {name: 'ReloadOutlined'})
         })
       },
       disabled: false
@@ -37,7 +38,7 @@ const data = ref({
       label: '关闭选择',
       icon() {
         return h(NIcon, null, {
-          default: () => h(SvgIcon, { name: 'IosClose', scale: 1.4 })
+          default: () => h(SvgIcon, {name: 'IosClose', scale: 1.4})
         })
       },
       disabled: false
@@ -47,7 +48,7 @@ const data = ref({
       label: '关闭其他',
       icon() {
         return h(NIcon, null, {
-          default: () => h(SvgIcon, { name: 'CloseCircleOutlined' })
+          default: () => h(SvgIcon, {name: 'CloseCircleOutlined'})
         })
       }
     },
@@ -56,7 +57,7 @@ const data = ref({
       label: '关闭所有',
       icon() {
         return h(NIcon, null, {
-          default: () => h(SvgIcon, { name: 'ExclamationOutlined' })
+          default: () => h(SvgIcon, {name: 'ExclamationOutlined'})
         })
       }
     }
@@ -84,10 +85,10 @@ const handleContextMenu = (e: MouseEvent, item: any) => {
   })
 }
 watch(
-  () => [...routeMenuStore.openedTabs],
-  () => {
-    updateScroll()
-  }
+    () => [...routeMenuStore.openedTabs],
+    () => {
+      updateScroll()
+    }
 )
 const handleSelect = (value: any) => {
   switch (value) {
@@ -99,15 +100,15 @@ const handleSelect = (value: any) => {
       break
     case '关闭其他':
       const deleteCurRoutePath =
-        data.value.rightClickItem?.routePath ?? router.currentRoute.value.fullPath
+          data.value.rightClickItem?.routePath ?? router.currentRoute.value.fullPath
       routeMenuStore.removeOtherOpenTabs(deleteCurRoutePath)
 
       if (deleteCurRoutePath != router.currentRoute.value.fullPath)
-        router.push({ path: data.value.rightClickItem?.routePath ?? '/' })
+        router.push({path: data.value.rightClickItem?.routePath ?? '/'})
       break
     case '关闭所有':
       routeMenuStore.removeAllOpenTabs()
-      router.push({ path: '/home' })
+      router.push({path: '/home'})
       break
   }
   data.value.showDropdown = false
@@ -150,18 +151,18 @@ const updateScroll = async () => {
         <svg-icon name="ArrowBackIosNewRound"></svg-icon>
       </div>
       <div
-        class="scrollbar flex flex-items-center gap-2 overflow-x-hidden overflow-y-hidden"
-        ref="scrollbar"
+          class="scrollbar flex flex-items-center gap-2 overflow-x-hidden overflow-y-hidden"
+          ref="scrollbar"
       >
         <n-tag
-          closable
-          class="cursor-pointer bg-white h-8 p-2 flex-shrink-0"
-          v-for="item in routeMenuStore.openedTabs"
-          :type="router.currentRoute.value.path == item.routePath ? 'info' : ''"
-          @click="onChangeRoute(item)"
-          @close="onClose(item)"
-          @contextmenu="handleContextMenu($event, item)"
-          :key="item.key"
+            closable
+            class="cursor-pointer bg-white h-8 p-2 flex-shrink-0"
+            v-for="item in routeMenuStore.openedTabs"
+            :type="router.currentRoute.value.path == item.routePath ? 'info' : ''"
+            @click="onChangeRoute(item)"
+            @close="onClose(item)"
+            @contextmenu="handleContextMenu($event, item)"
+            :key="item.key"
         >
           {{ item?.label }}
         </n-tag>
@@ -170,18 +171,18 @@ const updateScroll = async () => {
         <svg-icon name="ArrowForwardIosRound"></svg-icon>
       </div>
     </div>
-    <div class="cursor-pointer" @mouseenter="handleContextMenu">
-      <svg-icon name="ArrowDown12Regular"></svg-icon>
+    <div class="cursor-pointer" @click="handleContextMenu($event,null)">
+      <svg-icon name="ArrowDown12Regular" :scale="1.2"></svg-icon>
     </div>
     <n-dropdown
-      placement="bottom-start"
-      trigger="manual"
-      :x="data.xPos"
-      :y="data.yPos"
-      :options="data.menuOptions"
-      :show="data.showDropdown"
-      :on-clickoutside="onClickOutside"
-      @select="handleSelect"
+        placement="bottom-start"
+        trigger="manual"
+        :x="data.xPos"
+        :y="data.yPos"
+        :options="data.menuOptions"
+        :show="data.showDropdown"
+        :on-clickoutside="onClickOutside"
+        @select="handleSelect"
     ></n-dropdown>
   </div>
 </template>
@@ -191,13 +192,12 @@ const updateScroll = async () => {
   display: flex;
   align-items: center;
   gap: 10px;
+  justify-content: space-between;
+  padding-right: 1rem;
 
   > div:nth-child(1) {
-    width: 98%;
+    overflow-x: hidden;
   }
 
-  > div:nth-child(2) {
-    width: 2%;
-  }
 }
 </style>
