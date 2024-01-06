@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     ErrorPage: typeof import('./src/components/error/ErrorPage.vue')['default']
     FailResult: typeof import('./src/components/result/FailResult.vue')['default']
+    GlobalModal: typeof import('./src/components/GlobalModal.vue')['default']
     InfoResult: typeof import('./src/components/result/InfoResult.vue')['default']
     InternalChild: typeof import('./src/components/InternalChild.vue')['default']
     MessageApi: typeof import('./src/components/MessageApi.vue')['default']
@@ -26,6 +27,7 @@ declare module 'vue' {
     NLayoutSider: typeof import('naive-ui')['NLayoutSider']
     NMenu: typeof import('naive-ui')['NMenu']
     NMessageProvider: typeof import('naive-ui')['NMessageProvider']
+    NModal: typeof import('naive-ui')['NModal']
     NNotificationProvider: typeof import('naive-ui')['NNotificationProvider']
     NoPermissionPage: typeof import('./src/components/error/NoPermissionPage.vue')['default']
     NotFoundPage: typeof import('./src/components/error/NotFoundPage.vue')['default']

@@ -5,6 +5,7 @@ import { NConfigProvider, type GlobalThemeOverrides, zhCN, dateZhCN } from 'naiv
 import { lighten } from '@/utils/light'
 import { onMounted } from 'vue'
 import MessageApi from '@/components/MessageApi.vue'
+import GlobalModal from '@/components/GlobalModal.vue'
 const lightenStr = lighten('2d8cf0', 6)
 const appTheme = '#2d8cf0'
 const themeOverrides: GlobalThemeOverrides = {
@@ -31,6 +32,7 @@ const themeOverrides: GlobalThemeOverrides = {
       <n-message-provider>
         <message-api></message-api>
         <RouterView />
+        <GlobalModal />
       </n-message-provider>
     </n-notification-provider>
   </n-config-provider>
