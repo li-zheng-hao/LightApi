@@ -5,7 +5,7 @@ import { NConfigProvider, type GlobalThemeOverrides, zhCN, dateZhCN } from 'naiv
 import { lighten } from '@/utils/light'
 import { onMounted } from 'vue'
 import MessageApi from '@/components/MessageApi.vue'
-import GlobalModal from '@/components/GlobalModal.vue'
+import GlobalModal from '@/components/GlobalDialog.vue'
 const lightenStr = lighten('2d8cf0', 6)
 const appTheme = '#2d8cf0'
 const themeOverrides: GlobalThemeOverrides = {
