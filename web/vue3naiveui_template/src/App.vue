@@ -1,22 +1,19 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-// import { NThemeEditor } from 'naive-ui'
 import { NConfigProvider, type GlobalThemeOverrides, zhCN, dateZhCN } from 'naive-ui'
 import { lighten } from '@/utils/light'
-import { onMounted } from 'vue'
-import MessageApi from '@/components/MessageApi.vue'
 import GlobalModal from '@/components/GlobalDialog.vue'
-const lightenStr = lighten('2d8cf0', 6)
-const appTheme = '#2d8cf0'
+import {useDesignSettingStore} from "@/stores/designSettingStore";
+const designSettingStore=useDesignSettingStore();
 const themeOverrides: GlobalThemeOverrides = {
   common: {
-    primaryColor: appTheme,
-    primaryColorHover: lightenStr,
-    primaryColorPressed: lightenStr,
-    primaryColorSuppl: appTheme
+    primaryColor: designSettingStore.appTheme,
+    primaryColorHover: lighten(designSettingStore.appTheme, 6),
+    primaryColorPressed: lighten(designSettingStore.appTheme, 6),
+    primaryColorSuppl: designSettingStore.appTheme
   },
   LoadingBar: {
-    colorLoading: appTheme
+    colorLoading: designSettingStore.appTheme
   }
 }
 </script>
@@ -30,7 +27,6 @@ const themeOverrides: GlobalThemeOverrides = {
   >
     <n-notification-provider>
       <n-message-provider>
-        <message-api></message-api>
         <RouterView />
         <GlobalModal />
       </n-message-provider>

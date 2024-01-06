@@ -1,4 +1,3 @@
-import { fileURLToPath, URL } from 'node:url'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
@@ -55,12 +54,11 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      "@": path.join(__dirname, "./src"), // path记得引入
     }
   },
   server: {
     port: 8080,
-    host: '0.0.0.0',
     proxy: {
       '/api': {
         target: 'http://localhost:8910',

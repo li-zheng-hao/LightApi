@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import SvgIcon from '@/components/icons/SvgIcon.vue'
 import router from '@/router'
-import { apiClient } from '@/api/client/request'
+import { apiClient } from '@/api/client/apiClient'
 import SvgIconRaw from '@/components/icons/SvgIconRaw.vue'
 const formInline = ref({
   username: '',
@@ -16,10 +16,14 @@ const formRef = ref(null)
 const handleSubmit = () => {
   formRef.value?.validate(async (errors: unknown) => {
     if (!errors) {
-      let apiResult = await apiClient.post('/user/login', formInline.value)
+      let apiResult = await apiClient.request({
+        url:'/user/login',
+        method:'post',
+        data:formInline.value
+      })
       router.push({ path: '/home' })
     } else {
-      window.$message.error('用户名密码填写格式错误')
+      window['$message'].error('用户名密码填写格式错误')
       return false
     }
   })

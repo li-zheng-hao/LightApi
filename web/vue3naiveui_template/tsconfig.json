@@ -1,12 +1,18 @@
 {
-  "files": [],
-  "include": ["src/**/*.ts"],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    },
-    {
-      "path": "./tsconfig.app.json"
+  "compilerOptions": {
+    // ...
+    "baseUrl": "./",  // 这里需要配置
+    "paths": {
+      "@/*": ["./src/*"]  // 这里需要配置
     }
-  ]
+    // 如果baseUrl设置为'src',那paths就应该配置为{"@/*": "./*"},如下：
+    // "baseUrl": "src",
+    // "paths": {
+    //  "@/*": ["./*"]
+    // }
+    // 相关baseUrl，paths说明请查看官方文档
+  },
+  // include也需要配置以下：
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "exclude": ["node_modules"]
 }

@@ -1,7 +1,7 @@
 import router from "@/router";
 import type { AxiosResponse } from "axios";
 
-export function handleError(error: AxiosResponse | undefined) {
+export function handleHttpError(error: AxiosResponse | undefined) {
 
     if (!error) return
     // 这里用来处理http常见错误，进行全局提示
@@ -52,5 +52,5 @@ export function handleError(error: AxiosResponse | undefined) {
     if(error.status>=400){
         message+="，请检查网络或者联系管理员"
     }
-    window.$message.error(`${message}`, { duration: 6000, closable: true })
+    window['$message'].error(`${message}`, { duration: 6000, closable: true })
 }
