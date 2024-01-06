@@ -15,5 +15,11 @@ export function getExampleRoutes() {
       name: 'TableExample',
       component: () => import('@/views/TableExample.vue')
     }
+    ,
+    {
+      path: '/example/xtable',
+      name: 'XTableExample',
+      component: () => import('@/views/XTableExample.vue')
+    }
   ]
 }

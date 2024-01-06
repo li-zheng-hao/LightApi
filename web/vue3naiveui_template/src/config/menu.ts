@@ -104,6 +104,12 @@ export function getAllMenus() {
           key: '/example/table',
           routePath: '/example/table',
           icon: 'TableIcon'
+        },
+        {
+          label: 'XTable表格示例',
+          key: '/example/xtable',
+          routePath: '/example/xtable',
+          icon: 'TableIcon'
         }
       ]
     },

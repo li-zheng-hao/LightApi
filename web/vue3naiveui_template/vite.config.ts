@@ -10,6 +10,9 @@ import { viteMockServe } from 'vite-plugin-mock'
 import path from 'path'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import { visualizer } from 'rollup-plugin-visualizer'
+
+import unpluginVueComponents from 'unplugin-vue-components/vite';
+import { XNaiveUIResolver } from '@skit/x.naive-ui/unplugin';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -28,6 +31,9 @@ export default defineConfig({
       extensions: ['vue'],
       deep: true,
       resolvers: [NaiveUiResolver()]
+    }),
+    unpluginVueComponents({
+      resolvers: [XNaiveUIResolver()]
     }),
     UnoCSS(),
     viteMockServe({
