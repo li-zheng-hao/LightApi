@@ -110,6 +110,12 @@ export function getAllMenus() {
           key: '/example/xtable',
           routePath: '/example/xtable',
           icon: 'TableIcon'
+        },
+        {
+          label: '图表示例',
+          key: '/example/echarts',
+          routePath:'/example/echarts',
+          icon: 'TableIcon'
         }
       ]
     },

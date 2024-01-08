@@ -16,6 +16,7 @@
     "@skit/x.naive-ui": "^0.14.0",
     "axios": "^1.6.2",
     "axios-jwt": "^4.0.0",
+    "echarts": "^5.4.3",
     "mitt": "^3.0.1",
     "nprogress": "^0.2.0",
     "pinia": "^2.1.7",

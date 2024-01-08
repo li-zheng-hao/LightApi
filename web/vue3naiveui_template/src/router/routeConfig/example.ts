@@ -14,12 +14,16 @@ export function getExampleRoutes() {
       path: '/example/table',
       name: 'TableExample',
       component: () => import('@/views/TableExample.vue')
-    }
-    ,
+    },
     {
       path: '/example/xtable',
       name: 'XTableExample',
       component: () => import('@/views/XTableExample.vue')
+    },
+    {
+      path: '/example/echarts',
+      name: 'EchartsExample',
+      component: () => import('@/views/EchartsExample.vue')
     }
   ]
 }
