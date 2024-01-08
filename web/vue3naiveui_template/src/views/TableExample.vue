@@ -1,7 +1,16 @@
 <template>
   <tab-page>
     <h1>表格展示页面</h1>
-      <n-data-table :columns="columns" :data="data" :pagination="pageData" remote class="h-70vh" flex-height/>
+    <n-data-table
+      :columns="columns"
+      :data="data"
+      :pagination="pageData"
+      remote
+      class="h-70vh"
+      flex-height
+      :loading="isLoading"
+      @update:sorter="handleSorterChange"
+    />
   </tab-page>
 </template>
 <script setup lang="tsx">
@@ -12,7 +21,7 @@ import { onMounted } from 'vue'
 import { ref } from 'vue'
 
 const data = ref<User[]>([])
-
+const isLoading = ref(false)
 const columns = [
   {
     title: '编号',
@@ -24,7 +33,8 @@ const columns = [
   },
   {
     title: '年龄',
-    key: 'age'
+    key: 'age',
+    sorter: true
   },
   {
     title: '地址',
@@ -69,24 +79,31 @@ const pageData = ref({
 })
 
 async function fetchUserData() {
-  const res = await apiClient.request<User[]>({
-    url: '/user',
-    method: 'get'
-  })
-  data.value = res.slice(
-    (pageData.value.page - 1) * pageData.value.pageSize,
-    pageData.value.page * pageData.value.pageSize
-  )
-  pageData.value.pageCount = Math.ceil(res.length / pageData.value.pageSize)
+  isLoading.value = true
+  try {
+    const res = await apiClient.request<User[]>({
+      url: '/user',
+      method: 'get'
+    })
+    data.value = res.slice(
+      (pageData.value.page - 1) * pageData.value.pageSize,
+      pageData.value.page * pageData.value.pageSize
+    )
+    pageData.value.pageCount = Math.ceil(res.length / pageData.value.pageSize)
+  } finally {
+    isLoading.value = false
+  }
 }
 const onClick = (row: any) => {
   window.$message.success(JSON.stringify(row))
 }
+function handleSorterChange(sorter: any) {
+  console.log(sorter)
 
+  fetchUserData()
+}
 onMounted(() => {
   fetchUserData()
 })
 </script>
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -29,7 +29,8 @@ export default [
                     ]
                 }).list
             };
-        }
+        },
+        timeout: Mock.Random.integer(500, 2000)
     },
     {
         url:'/api/user/login',

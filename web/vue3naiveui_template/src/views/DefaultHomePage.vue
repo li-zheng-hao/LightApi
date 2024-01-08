@@ -18,6 +18,7 @@ onMounted(async () => {
   window.$notification.info({
     title: '请求成功',
     description: JSON.stringify(res),
+    duration: 3000
   })
 
 })
