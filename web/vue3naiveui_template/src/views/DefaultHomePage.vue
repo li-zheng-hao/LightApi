@@ -3,40 +3,29 @@ import TabPage from '@/components/TabPage.vue'
 import {onMounted, ref} from 'vue'
 import InternalChild from '@/components/InternalChild.vue'
 import router from '@/router'
-import {useGlobalDialog} from "@/stores/globalDialog";
 import {apiClient} from "@/api/client/apiClient";
 import type {User} from "@/api/user/info";
-
 
 const data = ref({
   num: 0
 })
 
 onMounted(async () => {
-  const res = await apiClient.request<User[]>({
+  const res = await apiClient.request<any>({
         url: '/user',
         method: 'get'
-      },
-      {
-        throwBusinessError: false
       })
-  console.log(res)
+  window.$notification.info({
+    title: '请求成功',
+    description: JSON.stringify(res),
+  })
+
 })
 
 
 function openDialog() {
 
-  const globalDialog = useGlobalDialog()
-  globalDialog.show(
-      '标题',
-      '内容',
-      () => {
-        window['$message'].success('确定')
-      },
-      () => {
-        window['$message'].error('取消')
-      }
-  )
+ 
 }
 </script>
 

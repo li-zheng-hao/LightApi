@@ -2,7 +2,6 @@
 import { RouterView } from 'vue-router'
 import { NConfigProvider, type GlobalThemeOverrides, zhCN, dateZhCN } from 'naive-ui'
 import { lighten } from '@/utils/light'
-import GlobalModal from '@/components/GlobalDialog.vue'
 import {useDesignSettingStore} from "@/stores/designSettingStore";
 const designSettingStore=useDesignSettingStore();
 const themeOverrides: GlobalThemeOverrides = {
@@ -28,7 +27,6 @@ const themeOverrides: GlobalThemeOverrides = {
     <n-notification-provider>
       <n-message-provider>
         <RouterView />
-        <GlobalModal />
       </n-message-provider>
     </n-notification-provider>
   </n-config-provider>

@@ -52,5 +52,5 @@ export function handleHttpError(error: AxiosResponse | undefined) {
     if(error.status>=400){
         message+="，请检查网络或者联系管理员"
     }
-    window['$message'].error(`${message}`, { duration: 6000, closable: true })
+    window['$message'].error(`${message}`, { duration: 6000, closable: true ,keepAliveOnHover:true})
 }

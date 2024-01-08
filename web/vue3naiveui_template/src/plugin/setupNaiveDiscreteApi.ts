@@ -31,7 +31,6 @@ export function setupNaiveDiscreteApi() {
             configProviderProps: configProviderPropsRef,
         }
     );
-
     window['$message'] = message;
     window['$dialog'] = dialog;
     window['$notification'] = notification;

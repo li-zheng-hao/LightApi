@@ -10,9 +10,9 @@ export default [
             return {
                 success:Mock.Random.boolean(),
                 code: 200,
-                msg: '接口返回的消息',
+                msg: '请求错误,原因未知',
                 data: Mock.mock({
-                    'list|20': [
+                    'list|5': [
                         {
                             id: '@id',
                             name: '@cname',

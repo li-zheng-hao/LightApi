@@ -1,3 +1,5 @@
+import { DialogApi, MessageApi, NotificationApi } from 'naive-ui';
+import { LoadingBarInst } from 'naive-ui/es/loading-bar/src/LoadingBarProvider';
 import type {
     ComponentRenderProxy,
     VNode,
@@ -93,6 +95,7 @@ declare global {
             [elem: string]: any;
         }
     }
+
 }
 
 declare module 'vue' {
