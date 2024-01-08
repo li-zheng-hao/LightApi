@@ -21,7 +21,6 @@ routeMenuStore.refreshCurrentBreadcrumbInfo()
 watch(
   () => route.fullPath,
   (newValue) => {
-    console.log('route.fullPath', newValue)
     routeMenuStore.addOpenTab(newValue)
     routeMenuStore.refreshCurrentBreadcrumbInfo()
   }

@@ -4,6 +4,8 @@ import SvgIcon from '@/components/icons/SvgIcon.vue'
 import router from '@/router'
 import { apiClient } from '@/api/client/apiClient'
 import SvgIconRaw from '@/components/icons/SvgIconRaw.vue'
+import { setAuthTokens } from 'axios-jwt'
+import { useUserStore } from '@/stores/user'
 const formInline = ref({
   username: '',
   password: ''
@@ -16,11 +18,9 @@ const formRef = ref(null)
 const handleSubmit = () => {
   formRef.value?.validate(async (errors: unknown) => {
     if (!errors) {
-      let apiResult = await apiClient.request({
-        url:'/user/login',
-        method:'post',
-        data:formInline.value
-      })
+      const userStore=useUserStore()
+      await userStore.login(formInline.value.username, formInline.value.password)
+      
       router.push({ path: '/home' })
     } else {
       window['$message'].error('用户名密码填写格式错误')
@@ -76,7 +76,7 @@ const loading = ref(false)
         </n-button>
       </n-form-item>
       <n-form-item class="default-color">
-        <div class="flex view-account-other">
+        <div class="flex view-account-other gap-2">
           <div class="flex-initial">
             <span>其它登录方式</span>
           </div>

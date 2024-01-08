@@ -9,7 +9,7 @@ html, body {
 
 a{
     text-decoration: none;
-    color: rgba(68, 68, 68, 0.92);
+    color: rgba(68, 68, 68, 0.6);
 }
 
 *{
@@ -17,3 +17,8 @@ a{
     outline: none; /*消除点击边框*/
 }
 
+/* fix bug https://github.com/tusen-ai/naive-ui/issues/5123*/
+.n-input input {
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: var(--n-text-color);
+  }

@@ -1,23 +1,17 @@
 <template>
   <tab-page>
-    <div>表格展示页面</div>
-
-    <n-data-table :columns="columns" :data="data" :single-line="false" />
+    <h1>表格展示页面</h1>
+      <n-data-table :columns="columns" :data="data" :pagination="pageData" remote class="h-70vh" flex-height/>
   </tab-page>
 </template>
 <script setup lang="tsx">
+import { apiClient } from '@/api/client/apiClient'
+import type { User } from '@/api/user/info'
 import TabPage from '@/components/TabPage.vue'
-type UserInfo = {
-  id: number
-  name: string
-  age: number
-  address: string
-}
-const data: UserInfo[] = [
-  { id: 3, name: 'Wonderwall', age: 11, address: '北京' },
-  { id: 4, name: "Don't Look Back in Anger", age: 12, address: '上海' },
-  { id: 12, name: 'Champagne Supernova', age: 13, address: '海南' }
-]
+import { onMounted } from 'vue'
+import { ref } from 'vue'
+
+const data = ref<User[]>([])
 
 const columns = [
   {
@@ -39,7 +33,7 @@ const columns = [
   {
     title: '操作',
     key: 'action',
-    render: (row: UserInfo) => {
+    render: (row: User) => {
       return (
         <div class="flex gap-2">
           <n-button type="primary" onClick={() => onClick(row)}>
@@ -52,11 +46,47 @@ const columns = [
         </div>
       )
     },
-    width: '200px'
+    width: '250px'
   }
 ]
-const onClick = (row: any) => {
-  window.$message.success(row.name)
+
+const pageData = ref({
+  page: 1,
+  pageCount: 1,
+  pageSize: 20,
+  showSizePicker: true,
+  pageSizes: [3, 20, 50],
+  onChange: (page: number) => {
+    fetchUserData()
+    pageData.value.page = page
+  },
+  onUpdatePageSize: (pageSize: number) => {
+    pageData.value.pageSize = pageSize
+    pageData.value.page = 1
+    window.$message.info(`切换每页${pageSize}条`)
+    fetchUserData()
+  }
+})
+
+async function fetchUserData() {
+  const res = await apiClient.request<User[]>({
+    url: '/user',
+    method: 'get'
+  })
+  data.value = res.slice(
+    (pageData.value.page - 1) * pageData.value.pageSize,
+    pageData.value.page * pageData.value.pageSize
+  )
+  pageData.value.pageCount = Math.ceil(res.length / pageData.value.pageSize)
 }
+const onClick = (row: any) => {
+  window.$message.success(JSON.stringify(row))
+}
+
+onMounted(() => {
+  fetchUserData()
+})
 </script>
-<style scoped></style>
+<style scoped>
+
+</style>

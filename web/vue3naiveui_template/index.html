@@ -124,8 +124,6 @@
             navigator.userAgent.match(/Android/i) ||
             navigator.userAgent.match(/iPhone/i)
         ) {
-            console.log(window.location.href)
-
             let src = window.location.href;
             if(src.startsWith('http://m.')||src.startsWith('https://m.')){
                 return;

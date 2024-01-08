@@ -2,9 +2,9 @@ import { defineStore } from 'pinia'
 import router, { GlobalRoutes } from '@/router'
 import { getAllMenus } from '@/config/menu'
 import { _ } from '@/utils/common'
-import { findRoute } from '@/utils/route-util'
+import { findRoute } from '../utils/routeUtil'
 
-export const useRouteMenuStore = defineStore('routeMenu', {
+export const useRouteMenuStore = defineStore('app-menu', {
   state: () => ({
     // 所有的菜单项
     routeMenus: [] as MenuItem[],
@@ -125,7 +125,6 @@ export const useRouteMenuStore = defineStore('routeMenu', {
         }
       }
       const route = findRoute(key, GlobalRoutes)
-      console.log(key, route)
       if (route) this.addIncludedKeepAliveComponents(route.name)
     },
     removeOtherOpenTabs(routePath: string | null | undefined) {

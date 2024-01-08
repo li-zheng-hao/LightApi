@@ -5,6 +5,7 @@ import { useRouteMenuStore } from '@/stores/routeMenuStore'
 import router from '@/router'
 import { NDropdown, type MenuOption } from 'naive-ui'
 import { EventBus, EventBusEvents } from '@/utils/eventbus'
+import { useUserStore } from '@/stores/user'
 const routeMenuStore = useRouteMenuStore()
 
 const dropDownOptions = ref<MenuOption[]>([
@@ -23,8 +24,11 @@ const dropDownOptions = ref<MenuOption[]>([
 ])
 
 const handleSelect = (key: any, option: any) => {
+  const user=useUserStore()
+
   switch (key) {
     case '退出登录':
+      user.logOut()
       router.push('/login')
       break
     default:
