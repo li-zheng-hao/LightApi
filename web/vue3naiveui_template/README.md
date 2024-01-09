@@ -10,9 +10,13 @@
 4. pinia
 5. axios
 6. vue-router
-7. unocss
+7. unocss：css原子化
 8. less 
-9. vxe-table
+9. idmp：接口幂等，防重复调用
+10. axios-jwt：权限认证
+11. echarts：图表
+12. mitt：事件总线
+13. x.naive-ui：naiveui扩展插槽写法
 
 ## 项目创建流程
 
