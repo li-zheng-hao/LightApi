@@ -20,7 +20,7 @@ function addMenuOptions(routeInfo: MenuItem[] | null, menuOptions: MenuOption[])
       label:
         value.children?.length ?? 0 > 0
           ? () => <div> {value.label}</div>
-          : () => <RouterLink to={value.routePath ?? ''}>{value.label}</RouterLink>,
+          : () => <RouterLink to={value.routePath ?? '' }  >{value.label}</RouterLink>,
       key: value.key,
       icon: () =>
         value.icon ? (

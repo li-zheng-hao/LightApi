@@ -7,6 +7,7 @@ import { handleBusinessError } from '@/api/client/businessErrorHandler'
 import { useJwt } from './jwtAuth'
 import { generateRequestKey } from './helper'
 import idmp, { type IdmpOptions } from 'idmp'
+import { error } from 'console'
 
 export type ApiResult<T> = {
   code: number
@@ -39,6 +40,11 @@ export interface RequestConfig {
   useIdmp?: boolean | undefined | null
 
   /**
+   * 是否在请求之前刷新idmp请求key
+   */
+  refreshIdmpRequestKey?: boolean | undefined | null
+
+  /**
    * idmp相关配置
    */
   idmpOptions?: IdmpOptions | undefined | null
@@ -55,13 +61,7 @@ export class ApiClient {
   /**
    * 默认请求配置
    */
-  defaultRequestConfig: RequestConfig = {
-    showError: true,
-    unwrapResult: true,
-    returnRawAxiosResponse: false,
-    throwBusinessError: true,
-    useIdmp: true
-  }
+  defaultRequestConfig: RequestConfig = {}
 
   constructor(config: AxiosRequestConfig, requestConfig?: RequestConfig) {
     this.defaultRequestConfig = Object.assign(this.defaultRequestConfig, requestConfig ?? {})
@@ -101,14 +101,23 @@ export class ApiClient {
    */
   public request<T>(config: AxiosRequestConfig, requestConfig?: RequestConfig): Promise<T> {
     const targetConfig = deepMerge<RequestConfig>(this.defaultRequestConfig, requestConfig)
+
+    let requestKey = null
+    // 如果需要刷新idmp请求key
+    if (targetConfig.refreshIdmpRequestKey) {
+      requestKey ??= generateRequestKey(config)
+      idmp.flush(requestKey)
+    }
+    // 使用idmp请求
     if (targetConfig.useIdmp) {
-      const requestKey = generateRequestKey(config)
+      requestKey ??= generateRequestKey(config)
       return idmp(
         requestKey,
         () => this.internalRequest<T>(config, targetConfig),
         targetConfig.idmpOptions ?? undefined
       )
     }
+    // 直接使用axios请求
     return this.internalRequest<T>(config, targetConfig)
   }
 
@@ -119,21 +128,38 @@ export class ApiClient {
    * @returns
    */
   private internalRequest<T>(config: AxiosRequestConfig, requestConfig: RequestConfig): Promise<T> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       this.axiosInstance
         .request<any, AxiosResponse<ApiResult<T>>>(config)
-        .then((res: AxiosResponse<ApiResult<T>>) => {
-          if (!res.data.success) handleBusinessError(res.data, requestConfig)
-          if (res.data.success && requestConfig.unwrapResult) return resolve(res.data.data)
-          else if (requestConfig?.returnRawAxiosResponse) return resolve(res as any)
-          else return resolve(res.data as any)
-        })
+        .then(
+          (res: AxiosResponse<ApiResult<T>>) => {
+            if (!res.data.success) handleBusinessError(res.data, requestConfig)
+            if (res.data.success && requestConfig.unwrapResult) return resolve(res.data.data)
+            else if (requestConfig?.returnRawAxiosResponse) return resolve(res as any)
+            else return resolve(res.data as any)
+          },
+          (err) => reject(err)
+        )
+        .catch((err) => reject(err))
     })
   }
 }
 
 // 如果有需要可以配置多个
-const apiClient = new ApiClient({})
+const apiClient = new ApiClient(
+  {},
+  {
+    showError: true,
+    unwrapResult: true,
+    returnRawAxiosResponse: false,
+    throwBusinessError: true,
+    useIdmp: true,
+    idmpOptions: {
+      maxRetry: 0,
+      maxAge: 1000
+    }
+  }
+)
 
 useJwt(apiClient)
 

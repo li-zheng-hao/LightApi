@@ -5,6 +5,7 @@ const click = () => {
   window.$message.success('Hello')
 }
 function onClick2() {
+  
 }
 </script>
 
