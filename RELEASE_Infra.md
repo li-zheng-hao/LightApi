@@ -1,5 +1,9 @@
 # Infra框架发布记录
 
+## 2024年1月15日 0.7.0
+
+1. 新增AddOperationIdAttribute,用于给日志上下文新增一个OperationId字段，方便日志查询过滤
+
 ## 2023年12月15日 0.6.0
 
 1. ProcessInvokeHelper 新增TimeOut参数
