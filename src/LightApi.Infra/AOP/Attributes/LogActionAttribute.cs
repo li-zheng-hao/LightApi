@@ -1,4 +1,5 @@
-﻿using LightApi.Infra.Extension;
+﻿using LightApi.Infra.Constant;
+using LightApi.Infra.Extension;
 using LightApi.Infra.Http;
 using LightApi.Infra.Json;
 using LightApi.Infra.Options;
@@ -23,14 +24,10 @@ public class LogActionAttribute : ActionFilterAttribute
 
     private readonly string _description;
 
-    private IDictionary<string, object?> _args;
-
     private readonly bool _logOnError;
 
     private IOptions<InfrastructureOptions> _options;
     
-    private DateTime _beginTime { get; set; }
-
     /// <summary>
     /// 最大日志长度 设置为0时则使用InfrastructureOptions中的值
     /// </summary>
@@ -52,8 +49,6 @@ public class LogActionAttribute : ActionFilterAttribute
         _svc = actionContext.HttpContext.RequestServices;
         _options = _svc.GetRequiredService<IOptions<InfrastructureOptions>>();
         _logger = _svc.GetService<ILogger<LogActionAttribute>>();
-        _args = actionContext.ActionArguments;
-        _beginTime = DateTime.Now;
     }
 
     public override void OnActionExecuted(ActionExecutedContext actionExecutedContext)
@@ -99,7 +94,7 @@ public class LogActionAttribute : ActionFilterAttribute
 
         }
         
-        var paramStr = JsonConvert.SerializeObject(_args,new JsonSerializerSettings(){ContractResolver =new DynamicContractResolver()});
+        var paramStr = JsonConvert.SerializeObject(actionExecutedContext.HttpContext.GetItem<object>(RequestContext.REQUEST_PARAMS),new JsonSerializerSettings(){ContractResolver =new DynamicContractResolver()});
 
         paramStr = paramStr.SafeSubString(MaxLogLength);
         resultStr = resultStr.SafeSubString(MaxLogLength);
@@ -112,7 +107,7 @@ public class LogActionAttribute : ActionFilterAttribute
         var user = actionExecutedContext.HttpContext.RequestServices.GetService<IUser>();
 
         _logger.LogError(actionExecutedContext.Exception,
-            $"\r\n------------------------------------\r\n请求记录 \r\n描述: {_description} \r\n用户：{user?.UserName??"未登录"} \r\n请求路由: {actionExecutedContext.HttpContext.Request.Path}  \r\n请求时间: {_beginTime} \r\n结束时间: {DateTime.Now} \r\n请求参数: {paramStr} \r\n出现异常: {actionExecutedContext.Exception?.Message}\r\n------------------------------------");
+            $"\r\n------------------------------------\r\n请求记录 \r\n描述: {_description} \r\n用户：{user?.UserName??"未登录"} \r\n请求路由: {actionExecutedContext.HttpContext.Request.Path}  \r\n请求时间: {actionExecutedContext.HttpContext.GetItem<string>(RequestContext.REQUEST_BEGIN_TIME)} \r\n结束时间: {DateTime.Now} \r\n请求参数: {paramStr} \r\n出现异常: {actionExecutedContext.Exception?.Message}\r\n------------------------------------");
 
     }
 
@@ -121,7 +116,7 @@ public class LogActionAttribute : ActionFilterAttribute
         var user = actionExecutedContext.HttpContext.RequestServices.GetService<IUser>();
 
         _logger.LogInformation(
-            $"\r\n------------------------------------\r\n请求记录 \r\n描述: {_description} \r\n用户：{user?.UserName??"未登录"} \r\n请求路由: {actionExecutedContext.HttpContext.Request.Path}  \r\n请求时间: {_beginTime} \r\n结束时间: {DateTime.Now} \r\n请求参数: {paramStr} \r\n返回结果: {resultStr} \r\n------------------------------------");
+            $"\r\n------------------------------------\r\n请求记录 \r\n描述: {_description} \r\n用户：{user?.UserName??"未登录"} \r\n请求路由: {actionExecutedContext.HttpContext.Request.Path}  \r\n请求时间: {actionExecutedContext.HttpContext.GetItem<string>(RequestContext.REQUEST_BEGIN_TIME)} \r\n结束时间: {DateTime.Now} \r\n请求参数: {paramStr} \r\n返回结果: {resultStr} \r\n------------------------------------");
 
     }
 }
