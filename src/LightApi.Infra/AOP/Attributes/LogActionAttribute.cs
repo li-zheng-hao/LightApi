@@ -107,7 +107,7 @@ public class LogActionAttribute : ActionFilterAttribute
         var user = actionExecutedContext.HttpContext.RequestServices.GetService<IUser>();
 
         _logger.LogError(actionExecutedContext.Exception,
-            $"\r\n------------------------------------\r\n请求记录 \r\n描述: {_description} \r\n用户：{user?.UserName??"未登录"} \r\n请求路由: {actionExecutedContext.HttpContext.Request.Path}  \r\n请求时间: {actionExecutedContext.HttpContext.GetItem<string>(RequestContext.REQUEST_BEGIN_TIME)} \r\n结束时间: {DateTime.Now} \r\n请求参数: {paramStr} \r\n出现异常: {actionExecutedContext.Exception?.Message}\r\n------------------------------------");
+            $"\r\n------------------------------------\r\n请求记录 \r\n描述: {_description} \r\n用户：{user?.UserName??"未登录"} \r\n请求路由: {actionExecutedContext.HttpContext.Request.Path}  \r\n请求时间: {actionExecutedContext.HttpContext.GetItem<DateTime>(RequestContext.REQUEST_BEGIN_TIME)} \r\n结束时间: {DateTime.Now} \r\n请求参数: {paramStr} \r\n出现异常: {actionExecutedContext.Exception?.Message}\r\n------------------------------------");
 
     }
 
@@ -116,7 +116,7 @@ public class LogActionAttribute : ActionFilterAttribute
         var user = actionExecutedContext.HttpContext.RequestServices.GetService<IUser>();
 
         _logger.LogInformation(
-            $"\r\n------------------------------------\r\n请求记录 \r\n描述: {_description} \r\n用户：{user?.UserName??"未登录"} \r\n请求路由: {actionExecutedContext.HttpContext.Request.Path}  \r\n请求时间: {actionExecutedContext.HttpContext.GetItem<string>(RequestContext.REQUEST_BEGIN_TIME)} \r\n结束时间: {DateTime.Now} \r\n请求参数: {paramStr} \r\n返回结果: {resultStr} \r\n------------------------------------");
+            $"\r\n------------------------------------\r\n请求记录 \r\n描述: {_description} \r\n用户：{user?.UserName??"未登录"} \r\n请求路由: {actionExecutedContext.HttpContext.Request.Path}  \r\n请求时间: {actionExecutedContext.HttpContext.GetItem<DateTime>(RequestContext.REQUEST_BEGIN_TIME)} \r\n结束时间: {DateTime.Now} \r\n请求参数: {paramStr} \r\n返回结果: {resultStr} \r\n------------------------------------");
 
     }
 }

@@ -93,7 +93,7 @@ public class GlobalExceptionsFilter : IExceptionFilter, IActionFilter
         var user = context.HttpContext.RequestServices.GetService<IUser>();
 
         _logger.LogError(context.Exception,
-            $"\r\n------------------------------------\r\n未捕获异常  \r\n用户：{user?.UserName ?? "未登录"} \r\n请求路由: {context.HttpContext.Request.Path} \r\n请求时间: {context.HttpContext.GetItem<string>(RequestContext.REQUEST_BEGIN_TIME)} \r\n请求参数: {requestBody} \r\n出现异常: {context.Exception?.Message}\r\n------------------------------------");
+            $"\r\n------------------------------------\r\n未捕获异常  \r\n用户：{user?.UserName ?? "未登录"} \r\n请求路由: {context.HttpContext.Request.Path} \r\n请求时间: {context.HttpContext.GetItem<DateTime>(RequestContext.REQUEST_BEGIN_TIME)} \r\n请求参数: {requestBody} \r\n出现异常: {context.Exception?.Message}\r\n------------------------------------");
     }
 
 

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace LightApi.Infra.Extension;
 
-public static  class HttpContextExtension
+public static class HttpContextExtension
 {
     /// <summary>
     /// 从HttpContext.Items中获取值
@@ -15,6 +15,11 @@ public static  class HttpContextExtension
     public static T? GetItem<T>(this HttpContext context, string key)
     {
         context.Items.TryGetValue(key, out var value);
-        return Convert.ChangeType(value, typeof(T)) is T result ? result : default;
+        return value switch
+        {
+            null => default,
+            T t => t,
+            _ => throw new ArgumentException("类型不匹配")
+        };
     }
 }
