@@ -5,6 +5,7 @@ using LightApi.Core.Helper;
 using LightApi.Infra;
 using LightApi.Infra.AOP.Attributes;
 using LightApi.Infra.Helper;
+using LightApi.Infra.InfraException;
 using LightApi.Infra.RabbitMQ;
 using Microsoft.AspNetCore.Mvc;
 using StackExchange.Profiling;
@@ -22,6 +23,7 @@ public class FileController : ControllerBase
     [HttpGet("test")]
     public string test()
     {
+        throw new Exception("custom exception");
         return "from v1";
     }
     /// <summary>

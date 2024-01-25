@@ -58,8 +58,16 @@ public class InfrastructureOptions
     /// 将第一个模型验证错误消息作为业务错误消息
     /// </summary>
     public bool UseFirstModelValidateErrorMessage { get; set; } = false;
-    
 
+    /// <summary>
+    /// 是否在出现未处理异常时接口附加错误信息
+    /// </summary>
+    public bool IncludeUnCatchExceptionTraceInfo { get; set; } = true;
+    
+    /// <summary>
+    /// 在<see cref="IncludeUnCatchExceptionTraceInfo"/>为true的前提下，是否需要包含错误的堆栈信息，在生产环境下建议关闭，否则可能会泄露服务器信息
+    /// </summary>
+    public bool IncludeExceptionStack { get; set; } = true;
 
     /// <summary>
     /// 是否开启全局权限校验

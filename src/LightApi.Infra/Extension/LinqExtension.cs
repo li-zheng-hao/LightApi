@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
+using LightApi.Infra.Internal;
 
 namespace LightApi.Infra.LinqExtension;
 
@@ -109,10 +110,11 @@ public static class LinqExtension
         Expression expr = arg;
         foreach (string prop in props)
         {
+            var propUpper = prop.ToFirstUpper();
             // use reflection (not ComponentModel) to mirror LINQ
-            PropertyInfo? pi = type.GetProperty(prop);
+            PropertyInfo? pi = type.GetProperty(propUpper);
             if (pi == null)
-                throw new KeyNotFoundException($"未找到属性{prop}");
+                throw new KeyNotFoundException($"未找到属性{propUpper}");
             expr = Expression.Property(expr, pi);
             type = pi.PropertyType;
         }

@@ -16,10 +16,10 @@ public class DefaultUnifyResultProvider : IUnifyResultProvider
     /// <param name="msg"></param>
     /// <param name="httpStatusCode"></param>
     /// <returns></returns>
-    public object Success(object? data, int code = 200, string? msg = "success",
+    public IUnifyResult Success(object? data, int code = 200, string? msg = "success",
         HttpStatusCode httpStatusCode = HttpStatusCode.OK)
     {
-        return Unify.UnifyResult.Success(data, code);
+        return UnifyResult.Success(data, code);
     }
 
     /// <summary>
@@ -30,9 +30,15 @@ public class DefaultUnifyResultProvider : IUnifyResultProvider
     /// <param name="msg"></param>
     /// <param name="httpStatusCode"></param>
     /// <returns></returns>
-    public object Failure(object? data, int code, string? msg,
+    public IUnifyResult Failure(object? data, int code, string? msg,
         HttpStatusCode httpStatusCode = HttpStatusCode.BadRequest)
     {
-        return Unify.UnifyResult.Failure(msg,data, httpStatusCode, code);
+        return UnifyResult.Failure(msg,data, httpStatusCode, code);
+    }
+
+    public IUnifyResult Failure(object? data, int code, string? msg, object? extraInfo,
+        HttpStatusCode httpStatusCode = HttpStatusCode.BadRequest)
+    {
+        return UnifyResult.Failure(msg,data,extraInfo, httpStatusCode, code);
     }
 }

@@ -60,15 +60,31 @@ public class GlobalExceptionsFilter : IExceptionFilter, IActionFilter
 
             LogError(context, paramString);
 
-            //处理各种异常
-            var jm = _unifyResultProvider.Failure(null, _options.Value.UnCatchExceptionBusinessCode,
-                _options.Value.DefaultErrorMessage);
-
+            object? result;
+            
+            if (_options.Value.IncludeUnCatchExceptionTraceInfo)
+            {
+                context.HttpContext.Items.TryGetValue(RequestContext.REQUEST_ID, out var requestId);
+                ExceptionExtensions.ExceptionTracker tracker = new ExceptionExtensions.ExceptionTracker()
+                {
+                    RequestId = requestId?.ToString()??string.Empty,
+                    ExceptionInfo = new ExceptionExtensions.ExceptionInfo(context.Exception, true,
+                        _options.Value.IncludeExceptionStack)
+                };
+                result=_unifyResultProvider.Failure(null, _options.Value.UnCatchExceptionBusinessCode,
+                    _options.Value.DefaultErrorMessage,tracker);
+            }
+            else
+            {
+                result = _unifyResultProvider.Failure(null, _options.Value.UnCatchExceptionBusinessCode,
+                    _options.Value.DefaultErrorMessage);
+            }
+           
             context.HttpContext.Response.StatusCode = (int)_options.Value.DefaultUnCatchErrorHttpStatusCode;
 
             context.ExceptionHandled = true;
 
-            context.Result = new JsonResult(jm);
+            context.Result = new JsonResult(result);
         }
     }
 

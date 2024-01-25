@@ -1,5 +1,12 @@
 # Infra框架发布记录
 
+## 2024年1月25日 1.0.0 (不兼容升级)
+
+1. 统一结果包装新增附加信息字段
+2. 框架配置新增选项IncludeUnCatchExceptionTraceInfo、IncludeExceptionStack，用于配置是否返回错误信息
+3. DynamicOrder首字母统一转大写
+4. 删除旧的OrderExpressExtension类
+
 ## 2024年1月25日 0.10.0
 
 1. ExcelHelper新增ThrowIfAny
