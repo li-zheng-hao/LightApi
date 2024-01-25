@@ -1,5 +1,9 @@
 # Infra框架发布记录
 
+## 2024年1月25日 0.9.0
+
+1. Linq扩展，支持DynamicOrderIf，WhereIf
+
 ## 2024年1月18日 0.8.0
 
 1. 新增ExcelHelper，用于校验和导入excel数据

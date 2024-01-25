@@ -11,6 +11,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceCollectionExtension
 {
+    [Obsolete("请使用AddInfrastructureEfCoreSqlServer<TAppContext>")]
     public static IServiceCollection AddInfrastructureEfCoreSqlServer(this IServiceCollection services, Action<DbContextOptionsBuilder> optionsBuilder, Assembly entityAssembly = null)
     {
         if (entityAssembly is null)
@@ -61,6 +62,35 @@ public static class ServiceCollectionExtension
         services.AddDbContext<TAppContext>((sp, op) =>
         {
             optionsBuilder(op);
+            op.AddInterceptors(new SoftDeleteInterceptor());
+        });
+
+        return services;
+    }
+    
+    public static IServiceCollection AddInfrastructureEfCoreSqlServer<TAppContext>(this IServiceCollection services, Action<IServiceProvider,DbContextOptionsBuilder> optionsBuilder, Assembly entityAssembly = null)
+        where TAppContext : AppDbContext
+    {
+        if (entityAssembly is null)
+            entityAssembly = Assembly.GetExecutingAssembly();
+
+        var serviceType = typeof(IEntityInfo);
+        var implType = entityAssembly.ExportedTypes.FirstOrDefault(type => type.IsAssignableTo(serviceType) && type.IsNotAbstractClass(true));
+
+        if (implType is null)
+            throw new NotImplementedException($"模型所在程序集必须继承{nameof(IEntityInfo)}接口,或者直接派生{nameof(AbstractSharedEntityInfo)}类");
+        else
+            services.AddSingleton(serviceType, implType);
+
+        services.AddScoped<AppDbContext>(sp=>sp.GetService<TAppContext>());
+        
+        services.TryAddScoped<IUnitOfWork, SqlServerUnitOfWork<TAppContext>>();
+
+        services.TryAddScoped(typeof(IEfRepository<>), typeof(EfRepository<>));
+
+        services.AddDbContext<TAppContext>((sp, op) =>
+        {
+            optionsBuilder(sp,op);
             op.AddInterceptors(new SoftDeleteInterceptor());
         });
 

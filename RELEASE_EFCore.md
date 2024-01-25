@@ -1,5 +1,9 @@
 # EFCore框架发布记录
 
+## 2024年1月6日 MySql+SqlServer扩展 0.2.0
+
+1. ServiceExtension新增参数IServiceProvider
+
 ## 2024年1月6日 0.4.0
 
 1. ID字段在System.Text.Json和Newtonsoft.Json序列化时，排在第一位（优先序号为-10）
