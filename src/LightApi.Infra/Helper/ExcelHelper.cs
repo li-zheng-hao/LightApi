@@ -4,6 +4,9 @@ using MiniExcelLibs;
 
 namespace LightApi.Infra.Helper;
 
+/// <summary>
+/// Excel处理工具类
+/// </summary>
 public static class ExcelHelper
 {
     /// <summary>
@@ -186,6 +189,27 @@ public static class ExcelHelper
             if (!validValues.Contains(rows[i][columnIndex].ToString()??string.Empty))
             {
                 throw new BusinessException(string.Format(errFormatString,i+2,columnIndex+1));
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 判断是否有任何一列满足条件，满足则抛出异常
+    /// </summary>
+    /// <param name="dataTable"></param>
+    /// <param name="columnIndex"></param>
+    /// <param name="predicate"></param>
+    /// <param name="errorMessage">错误信息会传递两个参数，依次为行号、列号</param>
+    /// <exception cref="BusinessException"></exception>
+    public static void ThrowIfAny(DataTable dataTable,int columnIndex,Func<string,bool> predicate,string errorMessage)
+    {
+        var rows = dataTable.Rows;
+        for (int i = 0; i < rows.Count; i++)
+        {
+            var hasError = predicate(rows[i][columnIndex].ToString()??string.Empty);
+            if (hasError)
+            {
+                throw new BusinessException(string.Format(errorMessage,i+2,columnIndex+1));
             }
         }
     }

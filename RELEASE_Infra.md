@@ -1,5 +1,9 @@
 # Infra框架发布记录
 
+## 2024年1月25日 0.10.0
+
+1. ExcelHelper新增ThrowIfAny
+
 ## 2024年1月25日 0.9.0
 
 1. Linq扩展，支持DynamicOrderIf，WhereIf
