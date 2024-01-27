@@ -1,5 +1,9 @@
 # EFCore框架发布记录
 
+## 2024年1月27日 EFCore、MySql、SqlServer扩展 1.0.0 （不兼容更新）
+
+1. 支持多库
+
 ## 2024年1月6日 MySql+SqlServer扩展 0.2.0
 
 1. ServiceExtension新增参数IServiceProvider

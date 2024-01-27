@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using LightApi.EFCore.EFCore.DbContext;
 using LightApi.EFCore.Entities;
 
 namespace LightApi.EFCore.Repository
@@ -7,8 +8,9 @@ namespace LightApi.EFCore.Repository
     /// Ef默认的、全功能的仓储实现
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
-    public partial class EfRepository<TEntity>: ISqlQueryRepository
-        where TEntity : class, IEfEntity, new()
+    /// <typeparam name="TDbContext"></typeparam>
+    public  partial class EfRepository<TEntity> : IEfRepository<TEntity>
+        where TEntity : class, IEfEntity, new() 
     {
      
         public Task<IEnumerable<T>> QueryAsync<T>(string sql, object parameters = null, int timeout = 30)

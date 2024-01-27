@@ -2,6 +2,9 @@
 
 namespace LightApi.EFCore.Entities;
 
+/// <summary>
+/// 软删除标记 需要在表第一次建立的时候加，如果是后加上去的用V2版本
+/// </summary>
 public interface ISoftDelete
 {
     public bool IsDeleted { get; set; }

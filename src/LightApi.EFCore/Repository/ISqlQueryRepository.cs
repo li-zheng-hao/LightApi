@@ -1,5 +1,8 @@
 ﻿namespace LightApi.EFCore.Repository;
 
+/// <summary>
+/// 
+/// </summary>
 public interface ISqlQueryRepository
 {
     /// <summary>

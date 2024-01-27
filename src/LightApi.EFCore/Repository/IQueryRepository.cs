@@ -1,8 +1,13 @@
-﻿using LightApi.EFCore.Entities;
+﻿using LightApi.EFCore.EFCore.DbContext;
+using LightApi.EFCore.Entities;
 
 namespace LightApi.EFCore.Repository;
 
-public interface IQueryRepository<TEntity> where TEntity : class, IEfEntity
+/// <summary>
+/// 
+/// </summary>
+/// <typeparam name="TEntity"></typeparam>
+public interface IQueryRepository<TEntity> where TEntity : class
 {
     /// <summary>
     /// 根据主键获取实体

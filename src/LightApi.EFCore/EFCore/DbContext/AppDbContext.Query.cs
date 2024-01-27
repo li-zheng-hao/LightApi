@@ -2,7 +2,7 @@
 
 namespace LightApi.EFCore.EFCore.DbContext;
 
-public partial class AppDbContext
+public partial class AppDbContext 
 {
     public virtual DbSet<TEntity> Entities<TEntity>() where TEntity : class,IEfEntity
     {

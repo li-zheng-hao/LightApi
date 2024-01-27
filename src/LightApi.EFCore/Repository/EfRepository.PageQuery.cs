@@ -1,10 +1,11 @@
-﻿using LightApi.EFCore.Entities;
+﻿using LightApi.EFCore.EFCore.DbContext;
+using LightApi.EFCore.Entities;
 using LightApi.EFCore.Util;
 
 namespace LightApi.EFCore.Repository;
 
-public partial class EfRepository<TEntity> : IPageQueryRepository<TEntity>
-    where TEntity : class, IEfEntity, new()
+public  partial class EfRepository<TEntity> : IEfRepository<TEntity>
+    where TEntity : class, IEfEntity, new() 
 {
      public async Task<PageList<TEntity>> PageQueryAsync<TKey>(Expression<Func<TEntity, bool>> condition, int pageIndex,
         int pageSize, Expression<Func<TEntity, TKey>> orderExp = null, bool isAsc = true)

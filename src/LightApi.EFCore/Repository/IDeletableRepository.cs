@@ -1,8 +1,13 @@
-﻿using LightApi.EFCore.Entities;
+﻿using LightApi.EFCore.EFCore.DbContext;
+using LightApi.EFCore.Entities;
 
 namespace LightApi.EFCore.Repository;
 
-public interface IDeleteableRepository<TEntity> where TEntity : class, IEfEntity
+/// <summary>
+/// 
+/// </summary>
+/// <typeparam name="TEntity"></typeparam>
+public interface IDeletableRepository<TEntity> where TEntity : class, IEfEntity
 {
    /// <summary>
    /// 删除一条

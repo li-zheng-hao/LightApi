@@ -4,6 +4,7 @@ using LightApi.EFCore.Config;
 using LightApi.EFCore.EFCore.DbContext;
 using LightApi.EFCore.Entities;
 using LightApi.EFCore.Interceptors;
+using LightApi.EFCore.Internal;
 using LightApi.EFCore.Repository;
 using LightApi.EFCore.SqlServer.Transaction;
 
@@ -11,83 +12,49 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceCollectionExtension
 {
-    [Obsolete("请使用AddInfrastructureEfCoreSqlServer<TAppContext>")]
-    public static IServiceCollection AddInfrastructureEfCoreSqlServer(this IServiceCollection services, Action<DbContextOptionsBuilder> optionsBuilder, Assembly entityAssembly = null)
-    {
-        if (entityAssembly is null)
-            entityAssembly = Assembly.GetEntryAssembly();
-
-        var serviceType = typeof(IEntityInfo);
-        var implType = entityAssembly.ExportedTypes.FirstOrDefault(type => type.IsAssignableTo(serviceType) && type.IsNotAbstractClass(true));
-
-        if (implType is null)
-            throw new NotImplementedException($"模型所在程序集必须继承{nameof(IEntityInfo)}接口,或者直接派生{nameof(AbstractSharedEntityInfo)}类");
-        else
-            services.AddSingleton(serviceType, implType);
-
-        services.TryAddScoped<IUnitOfWork, SqlServerUnitOfWork<AppDbContext>>();
-
-        services.TryAddScoped(typeof(IEfRepository<>), typeof(EfRepository<>));
-
-
-        services.AddDbContext<AppDbContext>((sp, op) =>
-        {
-            optionsBuilder(op);
-            op.AddInterceptors(new SoftDeleteInterceptor());
-        });
-
-        return services;
-    }
-
-    public static IServiceCollection AddInfrastructureEfCoreSqlServer<TAppContext>(this IServiceCollection services, Action<DbContextOptionsBuilder> optionsBuilder, Assembly entityAssembly = null)
+    /// <summary>
+    /// 注册EfCore仓储服务
+    /// </summary>
+    /// <param name="services">服务容器</param>
+    /// <param name="optionsBuilder">定义数据库provider及aop等配置</param>
+    /// <param name="entityInfoType">
+    /// 每个项目必须至少有一个EntityInfo类，继承<see cref="AbstractSharedEntityInfo"/>来实现获取模型类.
+    /// 如果是多库的话且不同库使用了不同的表，则需要写多个EntityInfo，并覆盖默认的GetEntityTypes实现，从而实现获取不同的表
+    /// </param>
+    /// <param name="isMasterDbContext">
+    /// 是否为默认的主库对应的上下文，使用了true的这个上下文，也就是默认的主库可以使用IEfRepository[TEntity]仓储，多库的话使用IEfRepository[TEntity,TDbContext]仓储</param>
+    /// <typeparam name="TAppContext">上下文类型</typeparam>
+    /// <returns></returns>
+    public static IServiceCollection AddInfrastructureEfCoreSqlServer<TAppContext>(
+        this IServiceCollection services
+        , Action<IServiceProvider,DbContextOptionsBuilder> optionsBuilder
+        ,Type entityInfoType,bool isMasterDbContext=true)
         where TAppContext : AppDbContext
     {
-        if (entityAssembly is null)
-            entityAssembly = Assembly.GetExecutingAssembly();
-
-        var serviceType = typeof(IEntityInfo);
-        var implType = entityAssembly.ExportedTypes.FirstOrDefault(type => type.IsAssignableTo(serviceType) && type.IsNotAbstractClass(true));
-
-        if (implType is null)
-            throw new NotImplementedException($"模型所在程序集必须继承{nameof(IEntityInfo)}接口,或者直接派生{nameof(AbstractSharedEntityInfo)}类");
-        else
-            services.AddSingleton(serviceType, implType);
-
-        services.AddScoped<AppDbContext>(sp=>sp.GetService<TAppContext>());
         
-        services.TryAddScoped<IUnitOfWork, SqlServerUnitOfWork<TAppContext>>();
+        
+        var serviceType = typeof(IEntityInfo);
+       
+        services.AddSingleton(serviceType, entityInfoType);
+        
+        services.AddSingleton(entityInfoType);
 
-        services.TryAddScoped(typeof(IEfRepository<>), typeof(EfRepository<>));
-
-        services.AddDbContext<TAppContext>((sp, op) =>
+        if (isMasterDbContext)
         {
-            optionsBuilder(op);
-            op.AddInterceptors(new SoftDeleteInterceptor());
-        });
+            services.AddScoped<AppDbContext>(sp=>sp.GetRequiredService<TAppContext>());
+            
+            services.TryAddScoped<IUnitOfWork, SqlServerUnitOfWork<TAppContext>>();
+        }
+        services.TryAddScoped<SqlServerUnitOfWork<TAppContext>>();
 
-        return services;
-    }
-    
-    public static IServiceCollection AddInfrastructureEfCoreSqlServer<TAppContext>(this IServiceCollection services, Action<IServiceProvider,DbContextOptionsBuilder> optionsBuilder, Assembly entityAssembly = null)
-        where TAppContext : AppDbContext
-    {
-        if (entityAssembly is null)
-            entityAssembly = Assembly.GetExecutingAssembly();
+        Db.AddDbContextModelMap(typeof(TAppContext),entityInfoType);
 
-        var serviceType = typeof(IEntityInfo);
-        var implType = entityAssembly.ExportedTypes.FirstOrDefault(type => type.IsAssignableTo(serviceType) && type.IsNotAbstractClass(true));
-
-        if (implType is null)
-            throw new NotImplementedException($"模型所在程序集必须继承{nameof(IEntityInfo)}接口,或者直接派生{nameof(AbstractSharedEntityInfo)}类");
-        else
-            services.AddSingleton(serviceType, implType);
-
-        services.AddScoped<AppDbContext>(sp=>sp.GetService<TAppContext>());
-        
-        services.TryAddScoped<IUnitOfWork, SqlServerUnitOfWork<TAppContext>>();
+        Db.AddDbContextUnitOfWorkMap(typeof(TAppContext),typeof(SqlServerUnitOfWork<TAppContext>));
 
         services.TryAddScoped(typeof(IEfRepository<>), typeof(EfRepository<>));
 
+        services.TryAddScoped(typeof(IEfRepository<,>), typeof(MultiContextEfRepository<,>));
+        
         services.AddDbContext<TAppContext>((sp, op) =>
         {
             optionsBuilder(sp,op);

@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using LightApi.EFCore.EFCore.DbContext;
 using LightApi.EFCore.Entities;
 
 namespace LightApi.EFCore.Repository
@@ -7,7 +8,8 @@ namespace LightApi.EFCore.Repository
     /// Ef默认的、全功能的仓储实现
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
-    public partial class EfRepository<TEntity> : IQueryRepository<TEntity> where TEntity : class, IEfEntity, new()
+    /// <typeparam name="TDbContext"></typeparam>
+    public  partial class EfRepository<TEntity> where TEntity : class, IEfEntity, new() 
     {
       private static readonly MethodInfo ContainsMethod = typeof(Enumerable).GetMethods()
             .FirstOrDefault(m => m.Name == "Contains"
@@ -120,19 +122,19 @@ namespace LightApi.EFCore.Repository
             if (useFilter)
                 return FirstOrDefaultAsync(condition, useTracking);
 
-            var queryable = AsQueryable(useTracking);
+            var queryable = DbContext.AsQueryable<TEntity>(useTracking);
 
             return queryable.FirstOrDefaultAsync(condition);
         }
 
         public Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> condition, bool useTracking = false)
         {
-            return AsQueryable(useTracking).FirstOrDefaultAsync(condition);
+            return DbContext.AsQueryable<TEntity>(useTracking).FirstOrDefaultAsync(condition);
         }
 
         public IQueryable<TEntity> IncludeAll(bool useTracking = false)
         {
-            var queryable = AsQueryable(useTracking);
+            var queryable = DbContext.AsQueryable<TEntity>(useTracking);
             var type = typeof(TEntity);
             var properties = type.GetProperties();
 
@@ -151,7 +153,7 @@ namespace LightApi.EFCore.Repository
 
         public IQueryable<TEntity> Where(Expression<Func<TEntity, bool>> condition, bool useTracking = false)
         {
-            return AsQueryable(useTracking).Where(condition);
+            return DbContext.AsQueryable<TEntity>(useTracking).Where(condition);
         }
     }
 }

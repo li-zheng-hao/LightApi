@@ -15,6 +15,11 @@ public abstract class AbstractSharedEntityInfo : IEntityInfo
 
     protected abstract Assembly GetCurrentAssembly();
 
+    /// <summary>
+    /// 如果是多库且不同库表不同的情况下，需要重新实现这个方法
+    /// </summary>
+    /// <param name="assembly"></param>
+    /// <returns></returns>
     protected virtual IEnumerable<Type> GetEntityTypes(Assembly assembly)
     {
         var typeList = assembly.GetTypes().Where(m =>

@@ -22,6 +22,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightApi.SqlSugar", "LightA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightApi.UnitTest", "LightApi.UnitTest\LightApi.UnitTest.csproj", "{1EB2433E-5D94-4E5C-B60E-52013F1280BD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiEfCoreDbContextSample", "..\samples\MultiEfCoreDbContextSample\MultiEfCoreDbContextSample.csproj", "{BEF7095D-56D9-4128-BBD0-1E4D85B6CAF3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{71D073E8-619F-493F-B911-24B1C73E8D4B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,5 +60,12 @@ Global
 		{1EB2433E-5D94-4E5C-B60E-52013F1280BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EB2433E-5D94-4E5C-B60E-52013F1280BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EB2433E-5D94-4E5C-B60E-52013F1280BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEF7095D-56D9-4128-BBD0-1E4D85B6CAF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEF7095D-56D9-4128-BBD0-1E4D85B6CAF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEF7095D-56D9-4128-BBD0-1E4D85B6CAF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEF7095D-56D9-4128-BBD0-1E4D85B6CAF3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BEF7095D-56D9-4128-BBD0-1E4D85B6CAF3} = {71D073E8-619F-493F-B911-24B1C73E8D4B}
 	EndGlobalSection
 EndGlobal

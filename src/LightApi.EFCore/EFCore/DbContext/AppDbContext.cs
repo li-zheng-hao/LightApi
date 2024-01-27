@@ -1,14 +1,23 @@
 ﻿using LightApi.EFCore.Entities;
+using LightApi.EFCore.Internal;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LightApi.EFCore.EFCore.DbContext;
 
-public partial class AppDbContext : Microsoft.EntityFrameworkCore.DbContext
+public partial class AppDbContext: Microsoft.EntityFrameworkCore.DbContext
 {
+    private readonly IServiceProvider? _serviceProvider;
     protected IEntityInfo? _entityInfo;
     
-    public AppDbContext(DbContextOptions options) : base(options)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="options"></param>
+    /// <param name="serviceProvider">外部服务提供者</param>
+    public AppDbContext(DbContextOptions options,IServiceProvider serviceProvider) : base(options)
     {
+        _serviceProvider = serviceProvider;
         // Database.AutoTransactionsEnabled = false;
         // ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         // Database.AutoTransactionBehavior = AutoTransactionBehavior.WhenNeeded;
@@ -46,9 +55,11 @@ public partial class AppDbContext : Microsoft.EntityFrameworkCore.DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        if(_entityInfo is null)
-            _entityInfo = this.GetService<IEntityInfo>();
-        _entityInfo.OnModelCreating(modelBuilder);
+        Type entityInfoType= Db.GetEntityInfoType(this);
+
+        _entityInfo ??= _serviceProvider!.GetService(entityInfoType) as IEntityInfo;
+        
+        _entityInfo!.OnModelCreating(modelBuilder);
     }
 
     protected virtual int SetAuditFields()

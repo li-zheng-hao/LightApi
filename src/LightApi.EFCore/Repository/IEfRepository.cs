@@ -1,19 +1,30 @@
 ﻿using System.Data.Common;
+using LightApi.EFCore.EFCore.DbContext;
 using LightApi.EFCore.Entities;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace LightApi.EFCore.Repository;
 
 public interface IEfRepository<TEntity> :
-    IPageQueryRepository<TEntity>, ISqlQueryRepository, IQueryRepository<TEntity>, IInsertableRepository<TEntity>,
-    IDeleteableRepository<TEntity>
+    IPageQueryRepository<TEntity>,
+    ISqlQueryRepository,
+    IQueryRepository<TEntity>,
+    IInsertableRepository<TEntity>,
+    IDeletableRepository<TEntity>
     where TEntity : class, IEfEntity
 {
     /// <summary>
+    /// 切换仓储
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    IEfRepository<T> Change<T>() where T : class, IEfEntity;
+    
+    /// <summary>
     /// EFCore的DBContext
     /// </summary>
-    LightApi.EFCore.EFCore.DbContext.AppDbContext DbContext { get; }
-
+    AppDbContext DbContext { get; set; }
+    
     /// <summary>
     /// 数据库操作对象
     /// </summary>
@@ -36,12 +47,7 @@ public interface IEfRepository<TEntity> :
     /// </summary>
     DbConnection DbConnection { get; }
 
-    /// <summary>
-    /// 切换仓储
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
-    IEfRepository<T> Change<T>() where T : class, IEfEntity;
+
 
     /// <summary>
     /// 构建查询分析器
@@ -62,9 +68,9 @@ public interface IEfRepository<TEntity> :
 
     DbSet<TEntity> GetDbSet();
 
-    Task SaveChangeAsync();
+    Task SaveChangesAsync();
 
-    void SaveChange();
+    void SaveChanges();
 
     void Add(object entity);
 
@@ -90,4 +96,21 @@ public interface IEfRepository<TEntity> :
     /// 清除所有跟踪数据
     /// </summary>
     void ClearAllTracks();
+}
+
+/// <summary>
+/// 仓储接口
+/// </summary>
+/// <typeparam name="TEntity"></typeparam>
+/// <typeparam name="TDbContext"></typeparam>
+public interface IEfRepository<TEntity, out TDbContext> : IEfRepository<TEntity>
+    where TEntity : class, IEfEntity
+    where TDbContext : AppDbContext
+{
+    /// <summary>
+    /// 切换仓储
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    IEfRepository<T,TDbContext> Change<T>() where T : class, IEfEntity;
 }

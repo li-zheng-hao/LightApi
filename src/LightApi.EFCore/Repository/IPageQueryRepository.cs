@@ -1,8 +1,13 @@
-﻿using LightApi.EFCore.Entities;
+﻿using LightApi.EFCore.EFCore.DbContext;
+using LightApi.EFCore.Entities;
 using LightApi.EFCore.Util;
 
 namespace LightApi.EFCore.Repository;
 
+/// <summary>
+/// 
+/// </summary>
+/// <typeparam name="TEntity"></typeparam>
 public interface IPageQueryRepository<TEntity> where TEntity : class, IEfEntity
 {
     /// <summary>

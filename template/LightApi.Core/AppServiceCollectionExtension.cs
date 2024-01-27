@@ -417,7 +417,7 @@ public static class AppServiceCollectionExtension
 
         services.AddScoped<AppDbContext>(sp => sp.GetService<FbAppContext>());
 
-        services.TryAddScoped(typeof(IEfRepository<>), typeof(EfRepository<>));
+        services.TryAddScoped(typeof(IEfRepository<,>), typeof(EfRepository<,>));
 
         services.AddDbContext<FbAppContext>((sp, op) =>
         {
