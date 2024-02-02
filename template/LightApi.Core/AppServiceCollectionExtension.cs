@@ -7,6 +7,9 @@ using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
 using LightApi.Core.Aop;
 using LightApi.Core.Authorization;
+using LightApi.Core.Authorization.Api;
+using LightApi.Core.Authorization.Hybrid;
+using LightApi.Core.Authorization.Jwt;
 using LightApi.Core.Autofac;
 using LightApi.Core.Converter;
 using LightApi.Core.FileProvider;
@@ -19,11 +22,13 @@ using LightApi.EFCore.EFCore.DbContext;
 using LightApi.EFCore.Entities;
 using LightApi.EFCore.Interceptors;
 using LightApi.EFCore.Repository;
+using LightApi.Infra;
 using LightApi.Infra.DependencyInjections;
 using LightApi.Infra.Extension;
 using Masuit.Tools.Systems;
 using Medallion.Threading;
 using Medallion.Threading.FileSystem;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -124,14 +129,37 @@ public static class AppServiceCollectionExtension
         //         .RequireAuthenticatedUser()
         //         .Build();
         // });
-        // serviceCollection.AddAuthentication(option =>
-        //     {
-        //         option.DefaultScheme = CustomAuthorizationSchemes.HybridSchemeName;
-        //     })
-        //     .AddScheme<CustomHybridAuthSchemeOptions, CustomHybridAuthHandler>(CustomAuthorizationSchemes.HybridSchemeName,
-        //         i => { })
-        //     .AddScheme<CustomJwtAuthSchemeOptions, CustomJwtAuthHandler>(CustomAuthorizationSchemes.JwtSchemeName, i => { })
-        //     .AddScheme<CustomApiAuthSchemeOptions, CustomApiAuthHandler>(CustomAuthorizationSchemes.ApiSchemeName, i => { });
+        serviceCollection.AddAuthentication(option =>
+            {
+                // 默认混合方式 支持jwt cookie api token三种方式，优先级为cookie>>jwt>>api
+                option.DefaultScheme = CustomAuthorizationSchemes.HybridSchemeName;
+            })
+            .AddScheme<CustomHybridAuthSchemeOptions, CustomHybridAuthHandler>(
+                CustomAuthorizationSchemes.HybridSchemeName,
+                i => { })
+            .AddScheme<CustomJwtAuthSchemeOptions, CustomJwtAuthHandler>(CustomAuthorizationSchemes.JwtSchemeName,
+                i => { })
+            .AddScheme<CustomApiAuthSchemeOptions, CustomApiAuthHandler>(CustomAuthorizationSchemes.ApiSchemeName,
+                i => { })
+            .AddCookie(options =>
+            {
+                options.Cookie.HttpOnly = true;
+                // 滑动过期 24小时
+                options.ExpireTimeSpan = TimeSpan.FromHours(24);
+                options.SlidingExpiration = true;
+                // 系统名称
+                options.Cookie.Name = "LightApi";
+                options.Events.OnRedirectToLogin = context =>
+                {
+                    context.Response.StatusCode = 401;
+                    return Task.CompletedTask;
+                };
+                options.Events.OnRedirectToAccessDenied = context =>
+                {
+                    context.Response.StatusCode = 401;
+                    return Task.CompletedTask;
+                };
+            });
         return serviceCollection;
     }
 
@@ -403,46 +431,15 @@ public static class AppServiceCollectionExtension
 
     public static IServiceCollection AddEfCoreSqliteSetup(this IServiceCollection services)
     {
-        var serviceType = typeof(IEntityInfo);
-        var implType =
-            typeof(FbAppContext).Assembly.ExportedTypes.FirstOrDefault(type => type.IsAssignableTo(serviceType));
-
-        if (implType is null)
-            throw new NotSupportedException(
-                $"模型所在程序集必须继承 {nameof(IEntityInfo)} 接口,或者直接派生 {nameof(AbstractSharedEntityInfo)} 类");
-        else
-            services.AddSingleton(serviceType, implType);
-
-        // services.TryAddScoped<IUnitOfWork, SqliteUnitOfWork<FbAppContext>>();
-
-        services.AddScoped<AppDbContext>(sp => sp.GetService<FbAppContext>());
-
-        services.TryAddScoped(typeof(IEfRepository<,>), typeof(EfRepository<,>));
-
-        services.AddDbContext<FbAppContext>((sp, op) =>
+        services.AddInfrastructureEfCoreSqlite<FbAppContext>((sp, op) =>
         {
-            var env = sp.GetService<IWebHostEnvironment>();
-            // if (env.IsDevelopment())
-            // {
-            // op.UseSqlite("DataSource=file::memory:?cache=shared", b => b.MigrationsAssembly("FB.AppSrv"));
-            // }
-            // else
-            // {
-            op.UseSqlite( "Data Source=lightapi_data.db;", b => b.MigrationsAssembly("LightApi.Api"));
-
-            // }
-            // op.UseLoggerFactory(LoggerFactory.Create(builder =>
-            // {
-            // builder.AddFilter(_ => false);
-            // }));
-            // 自定义日志
-            // op.LogTo(Log.Information,LogLevel.Information);
+            var dbPath=Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "lightapi_data.db");
+            op.UseSqlite( $"Data Source={dbPath};", b => b.MigrationsAssembly("LightApi.Api"));
             op.EnableSensitiveDataLogging();
             op.EnableDetailedErrors();
-            op.AddInterceptors(new SoftDeleteInterceptor());
             op.AddInterceptors(new SlowQueryLogInterceptor());
             op.ReplaceService<IMigrationsModelDiffer, MigrationsModelDifferWithoutForeignKey>();
-        });
+        },typeof(EntityInfo));
         return services;
     }
     public static WebApplicationBuilder AddSerilogSetup(this WebApplicationBuilder builder)

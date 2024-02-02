@@ -41,19 +41,19 @@ public class CustomApiAuthHandler : AuthenticationHandler<CustomApiAuthSchemeOpt
             
             var validateResult=Validate(Context,token);
             
-            if(validateResult.code==1)
-                return Task.FromResult(AuthenticateResult.Fail(BusinessErrorCode.Code401.GetDescription()));
-            if(validateResult.code==2)
-                return Task.FromResult(AuthenticateResult.Fail(BusinessErrorCode.Code402.GetDescription()));
+            // if(validateResult.code==1)
+            //     return Task.FromResult(AuthenticateResult.Fail(BusinessErrorCode.Code401.GetDescription()));
+            // if(validateResult.code==2)
+            //     return Task.FromResult(AuthenticateResult.Fail(BusinessErrorCode.Code402.GetDescription()));
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, validateResult.context.UserName),
-                new Claim(ClaimTypes.Role, validateResult.context.Roles),
+                new Claim(ClaimTypes.Name, validateResult.context?.UserName??""),
+                new Claim(ClaimTypes.Role, validateResult.context?.Roles??""),
             };
             
             var claimsIdentity = new ClaimsIdentity(claims,
-                nameof(CustomApiAuthHandler));
+                Scheme.Name);
 
             // generate AuthenticationTicket from the Identity
             // and current authentication scheme

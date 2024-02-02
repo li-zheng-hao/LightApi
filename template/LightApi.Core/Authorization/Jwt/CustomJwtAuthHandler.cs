@@ -57,7 +57,7 @@ public class CustomJwtAuthHandler : AuthenticationHandler<CustomJwtAuthSchemeOpt
 
 
             var claimsIdentity = new ClaimsIdentity(claims,
-                nameof(CustomJwtAuthHandler));
+                Scheme.Name);
 
             var ticket = new AuthenticationTicket(
                 new ClaimsPrincipal(claimsIdentity), Scheme.Name);

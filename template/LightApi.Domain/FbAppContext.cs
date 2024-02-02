@@ -5,7 +5,7 @@ namespace LightApi.Domain;
 
 public class FbAppContext:AppDbContext
 {
-    public FbAppContext(DbContextOptions<FbAppContext> options) : base(options)
+    public FbAppContext(DbContextOptions<FbAppContext> options,IServiceProvider serviceProvider) : base(options,serviceProvider)
     {
     }
 

@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\LightApi.EFCore.Sqlite\LightApi.EFCore.Sqlite.csproj" />
+      <ProjectReference Include="..\LightApi.Api\LightApi.Api.csproj" />
+      <ProjectReference Include="..\LightApi.Core\LightApi.Core.csproj" />
+      <ProjectReference Include="..\LightApi.Domain\LightApi.Domain.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+    </ItemGroup>
+
+</Project>

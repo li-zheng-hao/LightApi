@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -17,17 +18,22 @@ public class CustomHybridAuthHandler : AuthenticationHandler<CustomHybridAuthSch
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
 #if DEBUG
-        if (Request.Headers["Referer"].ToString().Contains("swagger")&&string.IsNullOrWhiteSpace(Request.Headers.Authorization.ToString()))
-        {
-            var claimsIdentity = new ClaimsIdentity(default,
-                nameof(CustomAuthorizationSchemes.JwtSchemeName));
-
-            var ticket = new AuthenticationTicket(
-                new ClaimsPrincipal(claimsIdentity), Scheme.Name);
-            return Task.FromResult(AuthenticateResult.Success(ticket));
-
-        }
+        // if (Request.Headers["Referer"].ToString().Contains("swagger")&&string.IsNullOrWhiteSpace(Request.Headers.Authorization.ToString()))
+        // {
+        //     var claimsIdentity = new ClaimsIdentity(default,
+        //         nameof(CustomAuthorizationSchemes.JwtSchemeName));
+        //
+        //     var ticket = new AuthenticationTicket(
+        //         new ClaimsPrincipal(claimsIdentity), Scheme.Name);
+        //     return Task.FromResult(AuthenticateResult.Success(ticket));
+        //
+        // }
 #endif
+        if (Request.Cookies.ContainsKey("LightApi"))
+        {
+            return Context.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        }
+        
         
         var header = Request.Headers[HeaderNames.Authorization].ToString();
 

@@ -19,7 +19,6 @@
         <PackageReference Include="Evolve" Version="3.2.0"/>
         <PackageReference Include="Flurl.Http" Version="3.2.4"/>
         <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.1"/>
-        <PackageReference Include="MiniExcel" Version="1.31.2"/>
         <PackageReference Include="Minio" Version="5.0.0"/>
         <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.3.8"/>
         <PackageReference Include="MiniProfiler.EntityFrameworkCore" Version="4.3.8"/>
@@ -33,6 +32,7 @@
         <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="7.1.0" />
     </ItemGroup>
     <ItemGroup>
+        <ProjectReference Include="..\..\src\LightApi.EFCore.Sqlite\LightApi.EFCore.Sqlite.csproj" />
         <ProjectReference Include="..\..\src\LightApi.EFCore.SqlServer\LightApi.EFCore.SqlServer.csproj"/>
         <ProjectReference Include="..\..\src\LightApi.EFCore\LightApi.EFCore.csproj"/>
         <ProjectReference Include="..\..\src\LightApi.Infra\LightApi.Infra.csproj"/>

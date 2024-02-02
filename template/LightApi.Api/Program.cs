@@ -1,9 +1,12 @@
 using LightApi.Core;
+using LightApi.Core.Authorization;
+using LightApi.Core.Authorization.Hybrid;
 using LightApi.Core.Options;
 using LightApi.Domain;
 using LightApi.Infra;
 using LightApi.Infra.DependencyInjections;
 using LightApi.Infra.Helper;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Prometheus;

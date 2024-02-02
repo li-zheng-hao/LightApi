@@ -1,10 +1,17 @@
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+using LightApi.Core.Authorization;
+using LightApi.Core.Authorization.Hybrid;
 using LightApi.Domain;
 using LightApi.Domain.Entities;
+using LightApi.EFCore.Repository;
 using LightApi.Infra.AOP.Attributes;
 using LightApi.Infra.Extension;
 using LightApi.Service;
 using Mapster;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,24 +29,42 @@ public class TestController : ControllerBase
     private readonly ILogger<TestController> _logger;
     private readonly FbAppContext _fbAppContext;
     private readonly StudentService _studentService;
+    private readonly IEfRepository<School> _repository;
 
-    public TestController(ILogger<TestController> logger,FbAppContext fbAppContext,StudentService studentService)
+    public TestController(ILogger<TestController> logger,FbAppContext fbAppContext,StudentService studentService,
+        IEfRepository<School> repository)
     {
         _logger = logger;
         _fbAppContext = fbAppContext;
         _studentService = studentService;
+        _repository = repository;
     }
-    
+
+    [HttpPost]
+    public async Task LoginCookie()
+    {
+        var claims = new[]
+        {
+            new Claim(ClaimTypes.Name, "demo"),
+            new Claim(ClaimTypes.Role, "admin,123"),
+        };
+            
+        var claimsIdentity = new ClaimsIdentity(claims,
+            CookieAuthenticationDefaults.AuthenticationScheme);
+
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+        
+    }
     /// <summary>
     /// 获取学校
     /// </summary>
     /// <returns></returns>
     [HttpGet()]
     [LogAction("获取学校")]
+    [Authorize]
     public IActionResult GetSchool()
     {
-        throw new Exception("11");
-        return Ok(_fbAppContext.Entities<School>().ToList());
+        return Ok(_repository.AsQueryable().ToList());
     }
     /// <summary>
     /// 新增学校
