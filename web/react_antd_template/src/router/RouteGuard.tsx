@@ -19,12 +19,13 @@ const getCurrentRouterMap = (routers: RouteInfo[], path: string): RouteInfo => {
 export const RouteGuard = ({ children }: any) => {
   const location = useLocation();
   const navigator = useNavigate();
+
   useEffect(() => {
     nprogress.done();
     return () => nprogress.start();
   });
   useEffect(() => {
-    // TODO 权限校验或其它前置校验    
+    // TODO 权限校验或其它前置校验
     // const router = getCurrentRouterMap(routes, location.pathname);
     // if (router.isAuth) {
       // navigator("/login");

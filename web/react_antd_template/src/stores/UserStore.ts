@@ -1,7 +1,7 @@
 import { makeAutoObservable } from "mobx";
 
 class UserStore{
-    token:string 
+    token:string
     count:number = 1
     constructor(){
         this.token = ''
@@ -12,12 +12,6 @@ class UserStore{
     }
     desc(){
         this.count--
-    }
-    setToken(token:string){
-        this.token = token
-    }
-    getToken(){
-        return this.token
     }
     logOut(){
         this.token = ''

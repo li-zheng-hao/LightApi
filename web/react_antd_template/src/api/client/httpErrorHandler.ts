@@ -1,7 +1,6 @@
-import router from "@/router";
 import type { AxiosResponse } from "axios";
-
-export function handleError(error: AxiosResponse | undefined) {
+export function handleHttpError(error: AxiosResponse | undefined) {
+    // navigator
 
     if (!error) return
     // 这里用来处理http常见错误，进行全局提示
@@ -14,7 +13,8 @@ export function handleError(error: AxiosResponse | undefined) {
             message = "未授权，请重新登录(401)";
             // 这里可以做清空storage并跳转到登录页的操作
             localStorage.clear()
-            router.push('/login')
+            window
+                .location.href = "/login"
             break;
         case 403:
             message = "权限不足(403)";
@@ -52,5 +52,5 @@ export function handleError(error: AxiosResponse | undefined) {
     if(error.status>=400){
         message+="，请检查网络或者联系管理员"
     }
-    window.$message.error(`${message}`, { duration: 6000, closable: true })
+    // window['$message'].error(`${message}`, { duration: 6000, closable: true ,keepAliveOnHover:true})
 }
