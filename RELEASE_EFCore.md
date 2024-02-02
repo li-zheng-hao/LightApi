@@ -1,5 +1,9 @@
 # EFCore框架发布记录
 
+## 2024年2月2日 EFCore
+
+1. 新增Sqlite扩展
+
 ## 2024年1月27日 EFCore、MySql、SqlServer扩展 1.0.0 （不兼容更新）
 
 1. 支持多库
