@@ -1,4 +1,5 @@
 import React, { ReactNode } from "react";
+import { createBrowserRouter } from "react-router-dom";
 
 const Home = React.lazy(() => import("../views/Home"));
 const Login = React.lazy(() => import("../views/Login"));
@@ -14,23 +15,23 @@ export interface RouteInfo {
   children?: RouteInfo[];
 }
 
-export function generateRouter(routes: RouteInfo[]): import("react-router-dom").RouteObject[] {
-    return routes.map((route) => {
-      const obj: import("react-router-dom").RouteObject = {
-        path: route.path,
-        element: route.element,
-      };
-      if (route.children) {
-        obj.children = generateRouter(route.children);
-      }
-      return obj;
-    });
-  }
+// export function generateRouter(routes: RouteInfo[]): import("react-router-dom").RouteObject[] {
+//     return routes.map((route) => {
+//       const obj: import("react-router-dom").RouteObject = {
+//         path: route.path,
+//         element: route.element,
+//       };
+//       if (route.children) {
+//         obj.children = generateRouter(route.children);
+//       }
+//       return obj;
+//     });
+//   }
   
 
 export const routes: RouteInfo[] = [
   {
-    path: "/home",
+    path: "/",
     name: "home",
     element: <Home />,
     isAuth: true,
@@ -62,3 +63,8 @@ export const routes: RouteInfo[] = [
     isAuth: true,
   },
 ];
+
+
+const router = createBrowserRouter(routes);
+
+export default router;

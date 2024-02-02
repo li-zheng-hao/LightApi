@@ -1,5 +1,5 @@
 import { Button } from "antd";
-import { Outlet,  useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 
 const HongPage = () => {
   const navigator = useNavigate();
@@ -12,7 +12,6 @@ const HongPage = () => {
       <h1>Home</h1>
       <Button onClick={() => goPage("page1")}>Page1</Button>
       <Button onClick={() => goPage("page2")}>Page2</Button>
-      <Outlet/>
     </div>
   );
 };
