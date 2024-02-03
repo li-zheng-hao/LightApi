@@ -1,0 +1,71 @@
+.login-box {
+  width: 100vw;
+  height: 100vh;
+  background: url("@/assets/images/login.svg") no-repeat center center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 500px;
+
+  .login-card {
+    width: 500px;
+    height: 500px;
+
+    .login-title {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+
+      div:first-child {
+        background: #2d8cf0;
+        width: 40px;
+        height: 40px;
+        border-radius: 2px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 18px;
+        color: white;
+        text-align: center;
+      }
+
+      div:last-child {
+        height: 40px;
+        font-size: 30px;
+        color: #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    .login-subtitle {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      font-size: 14px;
+      color: #666;
+      margin-top: 10px;
+    }
+
+    .login-form {
+      margin-top: 30px;
+
+      :global .ant-form-item-row {
+        display: flex;
+        justify-content: center;
+      }
+
+      :global .ant-form-item-control-input-content {
+        display: flex;
+        gap: 20px;
+      }
+
+    }
+
+
+  }
+}
+

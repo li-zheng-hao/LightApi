@@ -1,21 +1,20 @@
 import { makeAutoObservable } from "mobx";
 
 class UserStore{
-    token:string
-    count:number = 1
+    userid:number = -1
+    nickName:string = ''
     constructor(){
-        this.token = ''
         makeAutoObservable(this);
     }
-    inc(){
-        this.count=this.count+1
+
+    setUserId(value:number){
+        this.userid = value;
     }
-    desc(){
-        this.count--
+
+    setNickName(value:string){
+        this.nickName = value;
     }
-    logOut(){
-        this.token = ''
-    }
+
 
 }
 

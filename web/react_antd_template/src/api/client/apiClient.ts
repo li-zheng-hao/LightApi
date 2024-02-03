@@ -2,10 +2,10 @@
 import axios from 'axios'
 import type { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { handleHttpError } from './httpErrorHandler'
-import { deepMerge } from '@/utils'
-import { handleBusinessError } from '@/api/client/businessErrorHandler'
 import { generateRequestKey } from './helper'
 import idmp, { type IdmpOptions } from 'idmp'
+import {handleBusinessError} from "./businessErrorHandler.ts";
+import {deepMerge} from "../../utils";
 
 export type ApiResult<T> = {
   code: number
@@ -66,22 +66,6 @@ export class ApiClient {
     // 使用axios.create创建axios实例
     this.axiosInstance = axios.create(Object.assign(this.baseConfig, config))
 
-    // 改为使用axios-jwt库进行token的管理
-    // this.axiosInstance.interceptors.request.use(
-    //     (config: any) => {
-    //         // 一般会请求拦截里面加token，用于后端的验证
-    //         const token = localStorage.getItem("token") as string
-    //         if(token) {
-    //             config.headers!.Authorization = token;
-    //         }
-    //         return config;
-    //     },
-    //     (err: any) => {
-    //         // 请求错误，这里可以用全局提示框进行提示
-    //         return Promise.reject(err);
-    //     }
-    // );
-
     this.axiosInstance.interceptors.response.use(undefined, (err: AxiosError) => {
       handleHttpError(err.response)
       return Promise.reject(err)
@@ -128,13 +112,13 @@ export class ApiClient {
   private internalRequest<T>(config: AxiosRequestConfig, requestConfig: RequestConfig): Promise<T> {
     return new Promise((resolve, reject) => {
       this.axiosInstance
-        .request<any, AxiosResponse<ApiResult<T>>>(config)
+        .request<never, AxiosResponse<ApiResult<T>>>(config)
         .then(
           (res: AxiosResponse<ApiResult<T>>) => {
             if (!res.data.success) handleBusinessError(res.data, requestConfig)
             if (res.data.success && requestConfig.unwrapResult) return resolve(res.data.data)
-            else if (requestConfig?.returnRawAxiosResponse) return resolve(res as any)
-            else return resolve(res.data as any)
+            else if (requestConfig?.returnRawAxiosResponse) return resolve(res as never)
+            else return resolve(res.data as never)
           },
           (err) => reject(err)
         )
@@ -158,7 +142,5 @@ const apiClient = new ApiClient(
     }
   }
 )
-
-useJwt(apiClient)
 
 export { apiClient }

@@ -2,10 +2,15 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  outline: none;
 }
 
 
 
 #nprogress .bar {
   background: #4096ff !important;
+}
+
+input {
+  -webkit-background-clip: text !important;
 }
