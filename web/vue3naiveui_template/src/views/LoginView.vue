@@ -2,9 +2,7 @@
 import { ref } from 'vue'
 import SvgIcon from '@/components/icons/SvgIcon.vue'
 import router from '@/router'
-import { apiClient } from '@/api/client/apiClient'
 import SvgIconRaw from '@/components/icons/SvgIconRaw.vue'
-import { setAuthTokens } from 'axios-jwt'
 import { useUserStore } from '@/stores/user'
 const formInline = ref({
   username: '',
@@ -107,7 +105,7 @@ const loading = ref(false)
   background-size: 100%;
   display: flex;
   align-items: center;
-  margin-top: 15vh;
+  padding-top: 15vh;
 }
 
 .login-form {

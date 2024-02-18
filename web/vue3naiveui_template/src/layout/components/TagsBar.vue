@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useRouteMenuStore, type MenuItem} from '@/stores/routeMenuStore'
+import {useRouteMenuStore, type MenuItem} from '@/stores/menuStore'
 import {onMounted, ref, watch, h, onUnmounted, nextTick} from 'vue'
 import router from '@/router'
 import SvgIcon from '@/components/icons/SvgIcon.vue'

@@ -38,7 +38,8 @@ export default defineConfig({
     viteMockServe({
       mockPath: './src/mock',
       watchFiles: true,
-      logger: true
+      logger: true,
+      localEnabled:false // 本地开发环境是否启用
     }),
     createSvgIconsPlugin({
       // Specify the icon folder to be cached
@@ -62,7 +63,7 @@ export default defineConfig({
     host: '0.0.0.0',
     proxy: {
       '/api': {
-        target: 'http://localhost:8910',
+        target: 'http://localhost:5162',
         changeOrigin: true
         // rewrite: (path) => path.replace(/^\/api/, '')
       }

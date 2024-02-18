@@ -8,5 +8,13 @@
     {
       "path": "tsconfig.app.json"
     }
-  ]
+  ],
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
 }

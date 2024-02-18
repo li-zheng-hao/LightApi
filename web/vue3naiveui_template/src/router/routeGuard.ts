@@ -1,11 +1,11 @@
-import { useRouteMenuStore } from '@/stores/routeMenuStore'
+import { useRouteMenuStore } from '@/stores/menuStore'
 import { useUserStore } from '@/stores/user'
 import nprogress from '@/utils/nprogress'
 import type { Router } from 'vue-router'
 
 /**
  * 配置全局导航守卫
- * @param router 
+ * @param router
  */
 export function useRouterGuard(router: Router) {
   router.beforeEach(async (to, from, next) => {
@@ -25,6 +25,6 @@ export function useRouterGuard(router: Router) {
 
   router.afterEach(() => {
     nprogress.done()
-   
+
   })
 }

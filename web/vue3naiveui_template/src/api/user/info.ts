@@ -24,14 +24,3 @@ export interface User {
     date: string
 }
 
-// /**
-//  * 查询用户
-//  * @param fetchRequest
-//  */
-// export const fetchUserList = async (fetchRequest: FetchUserRequest) => {
-//     const res = await apiClient.get<User[]>('/api/user',{
-//          params:fetchRequest
-//     })
-//     return res;
-//
-// }

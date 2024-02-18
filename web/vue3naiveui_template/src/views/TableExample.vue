@@ -82,7 +82,7 @@ async function fetchUserData() {
   isLoading.value = true
   try {
     const res = await apiClient.request<User[]>({
-      url: '/user',
+      url: '/user/info',
       method: 'get'
     })
     data.value = res.slice(

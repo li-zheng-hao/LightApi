@@ -1,4 +1,5 @@
 import router from "@/router";
+import { isEmpty } from "@/utils/common/isEmpty";
 import type { AxiosResponse } from "axios";
 
 export function handleHttpError(error: AxiosResponse | undefined) {
@@ -11,7 +12,6 @@ export function handleHttpError(error: AxiosResponse | undefined) {
             message = "请求错误(400)";
             break;
         case 401:
-            message = "未授权，请重新登录(401)";
             // 这里可以做清空storage并跳转到登录页的操作
             localStorage.clear()
             router.push('/login')
@@ -49,8 +49,9 @@ export function handleHttpError(error: AxiosResponse | undefined) {
         default:
             message = `操作失败(${error.status})`;
     }
-    if(error.status>=400){
+    if(error.status>=500){
         message+="，请检查网络或者联系管理员"
     }
-    window['$message'].error(`${message}`, { duration: 6000, closable: true ,keepAliveOnHover:true})
+    if(!isEmpty(message))
+        window['$message'].error(`${message}`, { duration: 6000, closable: true ,keepAliveOnHover:true})
 }

@@ -38,7 +38,7 @@ onMounted(() => {
 
   window.addEventListener('resize', function () {
     myChart.resize()
-  })
+  },{passive:true})
 })
 
 onUnmounted(() => {

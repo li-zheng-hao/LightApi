@@ -1,6 +1,6 @@
 // 全局的菜单配置 (根据当前登录用户权限生成左侧菜单栏)
 
-import type { MenuItem } from "@/stores/routeMenuStore";
+import type { MenuItem } from "@/stores/menuStore";
 
 // 也可以从后端获取
 export function getAllMenus() {
@@ -124,6 +124,13 @@ export function getAllMenus() {
       key: '/thirdpart',
       icon: 'Share',
       routePath: '/thirdpart'
+    }
+    ,
+    {
+      label: '外部页面',
+      key: '/baidu',
+      icon: 'Share',
+      routePath: 'https://www.baidu.com'
     }
   ] as MenuItem[]
 }

@@ -156,11 +156,11 @@ const apiClient = new ApiClient(
     useIdmp: true,
     idmpOptions: {
       maxRetry: 0,
-      maxAge: 1000
+      maxAge: 500
     }
   }
 )
 
-useJwt(apiClient)
+// useJwt(apiClient)
 
 export { apiClient }

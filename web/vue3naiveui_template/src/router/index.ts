@@ -3,7 +3,7 @@ import nprogress from '@/utils/nprogress'
 import { getErrorRoutes } from './routeConfig/error'
 import { getSystemRoute } from './routeConfig/sys'
 import { getResultRoutes } from './routeConfig/result'
-import { useRouteMenuStore } from '@/stores/routeMenuStore'
+import { useRouteMenuStore } from '@/stores/menuStore'
 import { getExampleRoutes } from './routeConfig/example'
 import { useRouterGuard } from './routeGuard'
 
@@ -26,6 +26,10 @@ export const GlobalRoutes = [
         path: '/thirdpart',
         name: 'ThirdPartPage',
         component: () => import('@/views/ThirdPartPage.vue')
+      },{
+        path: '/usersetting',
+        name: 'UserSettingView',
+        component: () => import('@/views/UserSettingView.vue')
       }
     ],
     redirect: '/home'
@@ -48,7 +52,7 @@ export const GlobalRoutes = [
 ]
 
 const router = createRouter({
-  history: createWebHashHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: GlobalRoutes
 })
 

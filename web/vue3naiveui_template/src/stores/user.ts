@@ -1,4 +1,6 @@
 import { apiClient } from '@/api/client/apiClient'
+import { PermissionCode } from '@/enums/permissionCode'
+import axios from 'axios'
 import { clearAuthTokens, getAccessToken, setAuthTokens } from 'axios-jwt'
 import { defineStore } from 'pinia'
 
@@ -56,9 +58,9 @@ export const useUserStore = defineStore({
             url: '/user/info',
             method: 'get'
         })
-        this.setAvatar(userInfo.avator)
-        this.setNickname(userInfo.username)
-        this.setPermissions(userInfo.permissions)
+        this.setAvatar(userInfo.avatar)
+        this.setNickname(userInfo.nickName)
+        this.setPermissions(userInfo.userPermissions)
     },
     setNickname(nickname: string): void {
         this.username = nickname
@@ -69,10 +71,23 @@ export const useUserStore = defineStore({
     setPermissions(permissions: string[]): void {
         this.permissions = permissions
     },
-    logOut(): void {
+    async logOut(): Promise<void> {
+        await apiClient.request({
+          url:'/user/logout',
+          method:'post'
+        });
         window.localStorage.clear()
+    },
+    hasPermission(codes: string[]): boolean {
+      return this.permissions.some((it) => {
+        for (let index = 0; index < codes.length; index++) {
+          const code = codes[index]
+          // 拥有指定权限或者是系统管理员权限
+          if (it === code || it === PermissionCode.SUPER_ADMIN) return true
+        }
+        return false
+      })
     }
-
   },
   persist:{}
 })

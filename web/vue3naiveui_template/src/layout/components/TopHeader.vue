@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import SvgIcon from '@/components/icons/SvgIcon.vue'
 import { onMounted, ref } from 'vue'
-import { useRouteMenuStore } from '@/stores/routeMenuStore'
+import { useRouteMenuStore } from '@/stores/menuStore'
 import router from '@/router'
 import { NDropdown, type MenuOption } from 'naive-ui'
 import { EventBus, EventBusEvents } from '@/utils/eventbus'
@@ -24,9 +24,12 @@ const dropDownOptions = ref<MenuOption[]>([
 ])
 
 const handleSelect = (key: any, option: any) => {
-  const user=useUserStore()
+  const user = useUserStore()
 
   switch (key) {
+    case '个人设置':
+      router.push('/usersetting')
+      break
     case '退出登录':
       user.logOut()
       router.push('/login')
@@ -34,10 +37,6 @@ const handleSelect = (key: any, option: any) => {
     default:
       break
   }
-}
-
-const reload = () => {
-  EventBus.emit(EventBusEvents.RELOAD_PAGE)
 }
 
 </script>
@@ -61,13 +60,6 @@ const reload = () => {
           ></svg-icon>
         </template>
         {{ routeMenuStore.menuCollapsed ? '展开' : '折叠' }}菜单
-      </n-tooltip>
-
-      <n-tooltip trigger="hover">
-        <template #trigger>
-          <svg-icon name="ReloadOutlined" class="cursor-pointer" @click="reload"></svg-icon>
-        </template>
-        刷新页面
       </n-tooltip>
 
       <n-breadcrumb>
@@ -108,7 +100,9 @@ const reload = () => {
   align-items: center;
   padding: 0;
   height: 64px;
-  box-shadow: 0 1px 4px rgb(0 21 41 / 8%);
+  margin-bottom: 10px;
+  background-color: white;
+  box-shadow: 0 1px 4px rgb(0 21 41 / 28%);
   transition: all 0.2s ease-in-out;
   width: 100%;
   z-index: -1;

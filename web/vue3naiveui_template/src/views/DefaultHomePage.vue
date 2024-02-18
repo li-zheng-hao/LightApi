@@ -11,7 +11,7 @@ const data = ref({
 const divData=ref()
 onMounted(async () => {
   const res = await apiClient.request<any>({
-    url: '/user',
+    url: '/user/info',
     method: 'get'
   })
   divData.value=res;
@@ -25,7 +25,7 @@ async function openDialog() {
         method: 'get'
       })
   }
- 
+
 }
 </script>
 

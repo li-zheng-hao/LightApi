@@ -146,7 +146,8 @@ try
 
     app.MapMetrics();
 
-    app.MapControllers();
+    // 全局开启权限校验
+    app.MapControllers().RequireAuthorization();
 
     #endregion
 
