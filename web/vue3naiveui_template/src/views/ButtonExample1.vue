@@ -3,8 +3,8 @@ import TabPage from '@/components/TabPage.vue'
 import { useUserStore } from '@/stores/user';
 import { NButton, NDatePicker } from 'naive-ui';
 
-const userStore=useUserStore()
 
+const userStore=useUserStore()
 const click = () => {
   window.$message.success('Hello')
 }

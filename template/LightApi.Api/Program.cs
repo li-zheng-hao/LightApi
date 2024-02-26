@@ -1,3 +1,4 @@
+using LightApi.Api;
 using LightApi.Core;
 using LightApi.Core.Authorization;
 using LightApi.Core.Authorization.Hybrid;
@@ -89,8 +90,9 @@ try
     {
         // 上传文件大小500MB
         it.Limits.MaxRequestBodySize = 524288000;
-    }); 
+    });
 
+    builder.Services.AddHostedService<RabbitMqConsumerA>();
     #endregion
 
     var app = builder.Build();
