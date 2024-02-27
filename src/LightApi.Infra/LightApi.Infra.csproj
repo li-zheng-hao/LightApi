@@ -7,7 +7,7 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeSymbols>true</IncludeSymbols>
-        <Version>2.0.0-preview1</Version>
+        <Version>2.0.0-preview2</Version>
         <Title>LightApi.Infra</Title>
         <Authors>lizhenghao</Authors>
         <Description>AspNetCore项目开发库</Description>

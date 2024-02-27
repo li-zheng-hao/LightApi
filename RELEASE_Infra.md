@@ -1,5 +1,9 @@
 # Infra框架发布记录
 
+## 2024年2月27日 2.0.0-preview2
+
+1. RabbitMqManager调整，方便替换服务
+
 ## 2024年2月26日 2.0.0-preview1 (不兼容升级) 
 
 1. RabbitMq调整,不使用EasyNetQ，直接用RabbitMQ.Client库

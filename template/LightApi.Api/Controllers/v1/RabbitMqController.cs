@@ -13,7 +13,7 @@ public class RabbitMqController:ControllerBase
     [HttpPost]
     public IActionResult AS()
     {
-        App.GetService<RabbitMqManager>()!.GetPublisher().BasicPublish<string>("test_a","aaa");
+        App.GetService<RabbitMqManager>()!.GetPublisher().Publish<string>("test_a","aaa");
         return Ok();
     }
 }

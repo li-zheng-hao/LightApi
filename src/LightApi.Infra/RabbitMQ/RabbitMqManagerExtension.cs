@@ -17,6 +17,8 @@ public class RabbitMqManagerExtension:IInfrastructureOptionsExtension
     {
         services.Configure<RabbitMqOptions>(_configuration.GetSection(RabbitMqOptions.Section));
 
+        services.AddTransient<IRabbitMqPublisher, RabbitMqPublisher>();
+        
         services.AddSingleton<RabbitMqManager>(sp =>
         {
             var rabbitMqManager = new RabbitMqManager();
@@ -25,10 +27,17 @@ public class RabbitMqManagerExtension:IInfrastructureOptionsExtension
                
             if (options?.Value.Configs == null)
                 return rabbitMqManager;
-               
+
             foreach (var config in options.Value.Configs)
-                rabbitMqManager.AddConnection(config.Key,new RabbitMqConnection(config));
+            {
+                var connection = new RabbitMqConnection(config);
+                var rabbitMqPublisher = sp.GetService<IRabbitMqPublisher>();
+                rabbitMqPublisher!.InitConnection(connection.Connection);
+                rabbitMqManager.AddConnection(config.Key,connection);
+                rabbitMqManager.AddPublisher(config.Key,rabbitMqPublisher);
+            }
             return rabbitMqManager;
         });
+        
     }
 }

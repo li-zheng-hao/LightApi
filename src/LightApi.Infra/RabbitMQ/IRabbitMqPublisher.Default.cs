@@ -7,16 +7,16 @@ using Serilog;
 
 namespace LightApi.Infra.RabbitMQ
 {
-    public class RabbitMqPublisher : IDisposable
+    public class RabbitMqPublisher : IDisposable,IRabbitMqPublisher
     {
-        private readonly IModel? _channel;
+        protected IModel? _channel;
 
-        public RabbitMqPublisher(IRabbitMqConnection rabbitMqConnection)
+        public void InitConnection(IConnection connection)
         {
-            _channel = rabbitMqConnection.Connection.CreateModel();
+            _channel = connection.CreateModel();
         }
 
-        public virtual void BasicPublish<TMessage>(
+        public virtual void Publish<TMessage>(
              string routingKey
             , TMessage message
              , string exchange="amq.direct"
@@ -24,6 +24,8 @@ namespace LightApi.Infra.RabbitMQ
             , bool mandatory = false
         )
         {
+            if(_channel==null) throw new ArgumentNullException(nameof(_channel),"channel is null");
+            
             Policy.Handle<Exception>()
                   .WaitAndRetry(3, retryAttempt => TimeSpan.FromSeconds(1), (ex, time, retryCount, content) =>
                   {
