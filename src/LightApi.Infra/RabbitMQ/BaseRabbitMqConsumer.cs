@@ -55,7 +55,7 @@ namespace LightApi.Infra.RabbitMQ
             this.RegisterDeadExchange(exchange.DeadExchangeName, queue.DeadQueueName, routingKeys, queue.Durable);
             
             //声明交换机
-            if(!exchange.Name.StartsWith("amq"))
+            if(exchange.AutoCreate)
                 _channel.ExchangeDeclare(exchange.Name, type: exchange.Type.ToString().ToLower());
 
             //声明队列
