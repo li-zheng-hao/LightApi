@@ -68,7 +68,7 @@ public static class ExcelHelper
     /// 检查某一列是否有数据为空
     /// </summary>
     /// <param name="dataTable"></param>
-    /// <param name="columnIndex"></param>
+    /// <param name="columnIndex">从0开始</param>
     public static void ThrowIfEmptyColumn(DataTable dataTable,int columnIndex)
     {
         var rows = dataTable.Rows;
@@ -85,7 +85,7 @@ public static class ExcelHelper
     /// 检查某一列是否有数据不是正浮点数
     /// </summary>
     /// <param name="dataTable"></param>
-    /// <param name="columnIndex"></param>
+    /// <param name="columnIndex">从0开始</param>
     /// <param name="includeZero">是否包含0</param>
     public static void ThrowIfNotPositiveDouble(DataTable dataTable,int columnIndex,bool includeZero=true)
     {
@@ -114,7 +114,7 @@ public static class ExcelHelper
     /// 检查某一列是否有数据不是正整数
     /// </summary>
     /// <param name="dataTable"></param>
-    /// <param name="columnIndex"></param>
+    /// <param name="columnIndex">从0开始</param>
     /// <param name="includeZero">是否包含0</param>
     public static void ThrowIfNotPositiveInt(DataTable dataTable,int columnIndex,bool includeZero=true)
     {
@@ -140,7 +140,7 @@ public static class ExcelHelper
     /// 检查某一列是否有数据不是数字
     /// </summary>
     /// <param name="dataTable"></param>
-    /// <param name="columnIndex"></param>
+    /// <param name="columnIndex">从0开始</param>
     public static void ThrowIfNotDouble(DataTable dataTable,int columnIndex)
     {
         string errFormatString = "第{0}行{1}列数据无效,必须为有效数字";
@@ -158,7 +158,7 @@ public static class ExcelHelper
     /// 检查某一列是否有数据不是整数
     /// </summary>
     /// <param name="dataTable"></param>
-    /// <param name="columnIndex"></param>
+    /// <param name="columnIndex">从0开始</param>
     public static void ThrowIfNotInt(DataTable dataTable,int columnIndex)
     {
         string errFormatString = "第{0}行{1}列数据无效,必须为有效整数数字";
@@ -177,18 +177,18 @@ public static class ExcelHelper
     /// 检查某一列是否有数据不在有效范围内
     /// </summary>
     /// <param name="dataTable"></param>
-    /// <param name="columnIndex"></param>
+    /// <param name="columnIndex">从0开始</param>
     /// <param name="validValues">有效数据</param>
     public static void ThrowIfNotInRange(DataTable dataTable,int columnIndex,params string[] validValues)
     {
-        string errFormatString = "第{0}行{1}列数据不在有效范围内";
+        string errFormatString = "第{0}行{1}列数据不在有效范围内,有效数据为{2}";
         
         var rows = dataTable.Rows;
         for (int i = 0; i < rows.Count; i++)
         {
             if (!validValues.Contains(rows[i][columnIndex].ToString()??string.Empty))
             {
-                throw new BusinessException(string.Format(errFormatString,i+2,columnIndex+1));
+                throw new BusinessException(string.Format(errFormatString,i+2,columnIndex+1,string.Join(",",validValues)));
             }
         }
     }
@@ -197,7 +197,7 @@ public static class ExcelHelper
     /// 判断是否有任何一列满足条件，满足则抛出异常
     /// </summary>
     /// <param name="dataTable"></param>
-    /// <param name="columnIndex"></param>
+    /// <param name="columnIndex">从0开始</param>
     /// <param name="predicate"></param>
     /// <param name="errorMessage">错误信息会传递两个参数，依次为行号、列号</param>
     /// <exception cref="BusinessException"></exception>
@@ -212,5 +212,21 @@ public static class ExcelHelper
                 throw new BusinessException(string.Format(errorMessage,i+2,columnIndex+1));
             }
         }
+    }
+
+    /// <summary>
+    /// 创建表格
+    /// </summary>
+    /// <param name="columns"></param>
+    /// <returns></returns>
+    public static DataTable CreateDatatable(params string[] columns)
+    {
+        var dataTable = new DataTable();
+        foreach (var column in columns)
+        {
+            dataTable.Columns.Add(column);
+        }
+
+        return dataTable;
     }
 }

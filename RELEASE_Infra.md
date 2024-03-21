@@ -1,5 +1,9 @@
 # Infra框架发布记录
 
+## 2024年3月21日 2.0.1
+
+1. ExcelHelper修改
+
 ## 2024年2月27日 2.0.0
 
 1. RabbitMq ExchangeConfig调整，新增AutoCreate选项
