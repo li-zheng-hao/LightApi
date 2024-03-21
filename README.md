@@ -37,3 +37,9 @@ AspNetCore Webapi项目框架及前后端快速开发模板，包含几个模块
 2. [EFCore模块发布记录](RELEASE_EFCore.md)
 3. [MongoDB模块发布记录](RELEASE_Mongo.md)
 4. [SqlSugar模块发布记录](RELEASE_SqlSugar.md)
+
+# 感谢
+
+本项目使用Rider进行开发：
+
+![JB Logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)
