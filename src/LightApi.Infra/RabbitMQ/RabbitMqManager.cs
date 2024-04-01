@@ -1,8 +1,4 @@
-﻿using LightApi.Infra.DependencyInjections.Core;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace LightApi.Infra.RabbitMQ;
+﻿namespace LightApi.Infra.RabbitMQ;
 
 public class RabbitMqManager
 {

@@ -1,4 +1,5 @@
-﻿namespace Adnc.Infra.EventBus.RabbitMq
+﻿
+namespace LightApi.Infra.RabbitMQ
 {
     public class ExchageConfig
     {

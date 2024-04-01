@@ -1,8 +1,4 @@
-﻿using System.Text;
-using Newtonsoft.Json;
-using Polly;
-using RabbitMQ.Client;
-using Serilog;
+﻿using RabbitMQ.Client;
 
 namespace LightApi.Infra.RabbitMQ;
 

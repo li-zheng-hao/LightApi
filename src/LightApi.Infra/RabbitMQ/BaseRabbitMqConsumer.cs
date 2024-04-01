@@ -1,11 +1,10 @@
 ﻿using System.Text;
-using Adnc.Infra.EventBus.RabbitMq;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Serilog;
-using ExchangeType = Adnc.Infra.EventBus.RabbitMq.ExchangeType;
+using ExchangeType = LightApi.Infra.RabbitMQ.ExchangeType;
 
 namespace LightApi.Infra.RabbitMQ
 {
