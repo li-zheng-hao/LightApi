@@ -80,14 +80,14 @@ public partial class EfRepository<TEntity> : IEfRepository<TEntity>
         return DbContext.Set<TEntity>();
     }
 
-    public Task SaveChangesAsync()
+    public Task<int> SaveChangesAsync()
     {
         return DbContext.SaveChangesAsync();
     }
 
-    public void SaveChanges()
+    public int SaveChanges()
     {
-        DbContext.SaveChanges();
+        return DbContext.SaveChanges();
     }
 
     public void Add(object entity)

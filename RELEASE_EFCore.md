@@ -1,5 +1,9 @@
 # EFCore框架发布记录
 
+## 2024年4月2日 EFCore 1.0.1
+
+1. SaveChanges返回值修改为Task<int>
+
 ## 2024年2月2日 EFCore
 
 1. 新增Sqlite扩展

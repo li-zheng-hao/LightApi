@@ -68,9 +68,9 @@ public interface IEfRepository<TEntity> :
 
     DbSet<TEntity> GetDbSet();
 
-    Task SaveChangesAsync();
+    Task<int> SaveChangesAsync();
 
-    void SaveChanges();
+    int SaveChanges();
 
     void Add(object entity);
 
