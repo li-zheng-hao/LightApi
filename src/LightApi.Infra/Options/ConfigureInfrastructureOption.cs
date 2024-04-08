@@ -43,10 +43,10 @@ public class ConfigureInfrastructureOption :
         options.ModelBindingMessageProvider.SetValueIsInvalidAccessor(val => $"输入值{val}无效"); 
         options.ModelBindingMessageProvider.SetMissingBindRequiredValueAccessor(val => $"缺少必要输入值"); 
         options.ModelBindingMessageProvider.SetValueMustBeANumberAccessor(val => $"$输入值{val}无效"); 
-        options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(val => $"$缺少必要输入值"); 
-        options.ModelBindingMessageProvider.SetMissingKeyOrValueAccessor(() => $"$缺少必要输入值"); 
-        options.ModelBindingMessageProvider.SetNonPropertyValueMustBeANumberAccessor(() => $"$缺少必要输入值"); 
-        options.ModelBindingMessageProvider.SetMissingRequestBodyRequiredValueAccessor(() => $"$缺少必要输入值"); 
+        options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(val => $"缺少必要输入值"); 
+        options.ModelBindingMessageProvider.SetMissingKeyOrValueAccessor(() => $"缺少必要输入值"); 
+        options.ModelBindingMessageProvider.SetNonPropertyValueMustBeANumberAccessor(() => $"缺少必要输入值"); 
+        options.ModelBindingMessageProvider.SetMissingRequestBodyRequiredValueAccessor(() => $"缺少必要输入值"); 
         options.ModelBindingMessageProvider.SetNonPropertyAttemptedValueIsInvalidAccessor((val) => $"输入值{val}无效"); 
         
         options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = _options.Value.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes;
