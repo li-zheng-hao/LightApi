@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq.Expressions;
 using System.Runtime.ExceptionServices;
 using LightApi.Infra.InfraException;
 
@@ -108,4 +109,14 @@ public static class Check
             ExceptionDispatchInfo.Capture(ex).Throw();
         }
     }
+    /// <summary>
+    /// 空的话抛出业务异常
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="errorMessage"></param>
+    public static void NotNullOrEmptyEx(this object? source,string errorMessage="数据不存在")
+    {
+        NotNullOrEmpty(source,errorMessage);
+    }
+
 }

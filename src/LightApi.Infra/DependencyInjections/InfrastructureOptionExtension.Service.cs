@@ -124,23 +124,6 @@ public static partial class InfrastructureOptionExtension
         return option;
     }
 
-    // /// <summary>
-    // /// 使用NewtonSoftJson作为默认的json序列化库
-    // /// </summary>
-    // /// <param name="option"></param>
-    // /// <param name="action">MVC使用Json序列化的配置</param>
-    // /// <param name="configure">JsonConvert的默认序列化配置</param>
-    // /// <returns></returns>
-    // public static InfrastructureSetupOption UseNewtonSoftJsonSupport(this InfrastructureSetupOption option,
-    //     Action<MvcNewtonsoftJsonOptions> configure = null, Action<JsonSerializerSettings> settingsConfigure = null)
-    // {
-    //     var serviceCollection = option.ServiceCollection;
-    //
-    //     option.RegisterExtension(new NewtonSoftJsonServiceCollectionExtension(configure, settingsConfigure));
-    //
-    //     return option;
-    // }
-
     /// <summary>
     /// 自定义统一返回包装类服务，不调用本方法则会使用默认的UnifyResult <see cref="UnifyResult"/>
     /// </summary>

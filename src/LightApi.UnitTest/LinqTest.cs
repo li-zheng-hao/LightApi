@@ -1,9 +1,17 @@
-﻿using LightApi.Infra.LinqExtension;
+﻿using LightApi.Infra.Extension;
+using LightApi.Infra.InfraException;
+using LightApi.Infra.LinqExtension;
 
 namespace LightApi.UnitTest;
 
 public class LinqTest
 {
+    [Fact]
+    public void CheckEx()
+    {
+        int? a = null;
+        Assert.Throws<BusinessException>(()=>a.NotNullOrEmptyEx());
+    }
     [Fact]
     public void TestLinq()
     {
