@@ -189,6 +189,7 @@ public static partial class InfrastructureOptionExtension
     {
         var serviceCollection = option.ServiceCollection;
         serviceCollection.AddScoped<IUser, T>();
+        serviceCollection.AddScoped<T>();
         return option;
     }
 }
