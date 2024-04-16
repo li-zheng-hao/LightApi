@@ -8,23 +8,31 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeSymbols>true</IncludeSymbols>
-        <Version>1.0.1</Version>
+        <Version>1.1.0-preview</Version>
         <Title>LightApi.EFCore</Title>
         <Authors>lizhenghao</Authors>
         <Description>AspNetCore项目开发库</Description>
         <Copyright>lizhenghao</Copyright>
         <PackageProjectUrl>https://github.com/li-zheng-hao/LightApi</PackageProjectUrl>
         <RepositoryUrl>https://github.com/li-zheng-hao/LightApi</RepositoryUrl>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFrameworks>net7.0;net8.0</TargetFrameworks>
     </PropertyGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
+        <PackageReference Include="EFCore.BulkExtensions" Version="7.8.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.18"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.18"/>
+    </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+        <PackageReference Include="EFCore.BulkExtensions" Version="8.0.2" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.4"/>
+    </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Dapper" Version="2.0.138"/>
-        <PackageReference Include="DotNetCore.CAP" Version="7.2.0"/>
         <FrameworkReference Include="Microsoft.AspNetCore.App"/>
-        <PackageReference Include="EFCore.BulkExtensions" Version="7.1.0" />
+        <PackageReference Include="Dapper" Version="2.1.35" />
+        <PackageReference Include="Dapper.SqlBuilder" Version="2.0.78" />
+        <PackageReference Include="DotNetCore.CAP" Version="7.2.0"/>
         <PackageReference Include="Mapster" Version="7.3.0"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.5"/>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
     </ItemGroup>
 </Project>

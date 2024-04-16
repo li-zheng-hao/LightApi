@@ -1,5 +1,11 @@
 # EFCore框架发布记录
 
+## 2024年4月16日 EFCore、MySql、SqlServer扩展 1.1.0-preview
+
+1. .NET7、.NET8多目标输出,在.NET8下使用EFCore 8
+2. 升级Dapper版本
+3. 新增Dapper.SqlBuilder依赖，新增SqlBuilder WhereIf扩展
+
 ## 2024年4月2日 EFCore 1.0.1
 
 1. SaveChanges返回值修改为Task<int>

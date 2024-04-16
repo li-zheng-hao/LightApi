@@ -47,8 +47,6 @@ public interface IEfRepository<TEntity> :
     /// </summary>
     DbConnection DbConnection { get; }
 
-
-
     /// <summary>
     /// 构建查询分析器
     /// </summary>
@@ -62,7 +60,6 @@ public interface IEfRepository<TEntity> :
     /// <param name="tracking">是否跟踪实体,默认不跟踪</param>
     /// <returns>IQueryable{TEntity}</returns>
     IQueryable<OtherEntity> AsQueryable<OtherEntity>(bool tracking = false) where OtherEntity : class, IEfEntity;
-
 
     DbSet<T> GetDbSet<T>() where T : class, IEfEntity;
 

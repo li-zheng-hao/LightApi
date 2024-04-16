@@ -22,8 +22,6 @@ namespace LightApi.EFCore.Repository
         {
             return DbContext.Database.GetDbConnection().QuerySingleAsync<T>(sql, parameters, DbContext.Database.CurrentTransaction?.GetDbTransaction(), timeout);
         }
-
-
       
     }
 }
