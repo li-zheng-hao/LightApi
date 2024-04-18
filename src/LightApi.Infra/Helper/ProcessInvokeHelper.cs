@@ -29,22 +29,20 @@ public static class ProcessInvokeHelper
     {
         if (data == null) return default;
 
-        var fileName = $"{Guid.NewGuid().ToString()}.json";
-
-        var filePath = Path.Combine(BasePath, fileName);
-
-        if (!string.IsNullOrWhiteSpace(path))
+        if (string.IsNullOrWhiteSpace(path))
         {
-            filePath = Path.Combine(BasePath, path);
+            var fileName = $"{Guid.NewGuid().ToString()}.json";
+
+            path = Path.Combine(BasePath, fileName);
         }
 
-        Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
 
         var dataStr = JsonConvert.SerializeObject(data);
 
-        File.WriteAllText(filePath, dataStr);
+        File.WriteAllText(path, dataStr);
 
-        return filePath;
+        return path;
     }
 
     /// <summary>
@@ -90,21 +88,28 @@ public static class ProcessInvokeHelper
 
         param.LogError ??= Log.Error;
 
-        param.CancellationToken ??= new CancellationTokenSource(TimeSpan.FromSeconds(param.Timeout??60)).Token;
+        param.CancellationToken ??= new CancellationTokenSource(TimeSpan.FromSeconds(param.Timeout ?? 60)).Token;
 
-        var paramPath = Write(param.JsonParam);
+        var paramPath = param.JsonParamFileDir.IsNotNullOrWhiteSpace()
+            ? Write(param.JsonParam, $"{Path.Combine(param.JsonParamFileDir!, $"{Guid.NewGuid()}.json")}")
+            : Write(param.JsonParam);
 
         var args = param.Args.ToList();
 
         if (paramPath != null)
-            args.Insert(0, paramPath);
+        {
+            if (param.JsonParamAppendEnd ?? false)
+                args.Add(paramPath);
+            else
+                args.Insert(0, paramPath);
+        }
 
         var result = await Cli.Wrap(param.ExecutePath)
             .WithArguments(args)
             .WithWorkingDirectory(param.WorkingDir!)
             .WithStandardOutputPipe(PipeTarget.ToDelegate(param.LogOutput))
             .WithStandardErrorPipe(PipeTarget.ToDelegate(param.LogError))
-            .WithValidation(param.IgnoreError?CommandResultValidation.None:CommandResultValidation.ZeroExitCode)
+            .WithValidation(param.IgnoreError ? CommandResultValidation.None : CommandResultValidation.ZeroExitCode)
             .ExecuteAsync(param.CancellationToken.Value);
 
         return (Read<TResult>(paramPath), result);
@@ -145,7 +150,7 @@ public class InvokeOptions<T>
     public Action<string>? LogError { get; set; }
 
     /// <summary>
-    /// 工作目录 为空时会自动计算 
+    /// 工作目录 为空时会自动从<see cref="ExecutePath"/>计算 
     /// </summary>
     public string? WorkingDir { get; set; }
 
@@ -153,9 +158,19 @@ public class InvokeOptions<T>
     /// 当进程返回非0代码时是否忽略错误 默认true
     /// </summary>
     public bool IgnoreError { get; set; } = true;
-    
+
     /// <summary>
     /// 超时时间 默认60秒 
     /// </summary>
     public uint? Timeout { get; set; }
+
+    /// <summary>
+    /// Json参数文件是否放在结尾
+    /// </summary>
+    public bool? JsonParamAppendEnd { get; set; } = false;
+
+    /// <summary>
+    /// json参数文件所在目录，为空的话使用BasePath
+    /// </summary>
+    public string? JsonParamFileDir { get; set; }
 }
