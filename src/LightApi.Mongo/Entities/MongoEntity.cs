@@ -21,7 +21,6 @@ namespace LightApi.Mongo.Entities
         {
             return ObjectId.GenerateNewId().ToString();
         }
-
         [JsonProperty("Id")]
         [BsonId, ObjectId]
         public string ID { get; set; }
