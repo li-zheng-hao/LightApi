@@ -1,7 +1,5 @@
-﻿using LightApi.Infra.DependencyInjections.Core;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace LightApi.Infra.DependencyInjections;
 
@@ -16,15 +14,8 @@ public static class MiddlewareExtensions
     {
         App.Init(app);
         
-        var setupOption = App.GetRequiredService<InfrastructureSetupOption>();
-
         app.UseResponseBodyReadMiddleware();
         
-        foreach (var middlewareExtension in setupOption.MiddlewaresExtensions)
-        {
-            middlewareExtension.AddMiddleware(app);
-        }
-
         return app;
     }
     /// <summary>

@@ -1,5 +1,16 @@
 # Infra框架发布记录
 
+## 2024年4月18日 3.0.0
+
+中断修改：
+
+1. 服务注册方式调整，统一使用IServiceCollection扩展方法，而不是全都在AddInfrastructure
+2. IUser的Id调整为string类型
+
+新增功能：
+
+1. 新增Swagger文件上传过滤器、过期接口过滤器、枚举类型注释生成过滤器
+
 ## 2024年4月18日 2.0.4
 
 1. 修复ProcessInvokeHelper类Bug,新增调用参数

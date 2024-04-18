@@ -1,25 +1,24 @@
-﻿using LightApi.Infra.DependencyInjections.Core;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace LightApi.Infra.RabbitMQ;
 
-public class RabbitMqManagerExtension:IInfrastructureOptionsExtension
+public static class ServiceCollectionExtension
 {
-    private readonly IConfiguration _configuration;
-
-    public RabbitMqManagerExtension(IConfiguration configuration)
+    /// <summary>
+    /// 注册RabbitMq相关服务
+    /// </summary>
+    /// <param name="serviceCollection"></param>
+    /// <param name="configuration"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddRabbitMqSetup(this IServiceCollection serviceCollection,IConfiguration configuration)
     {
-        _configuration = configuration;
-    }
-    public void AddServices(IServiceCollection services)
-    {
-        services.Configure<RabbitMqOptions>(_configuration.GetSection(RabbitMqOptions.Section));
+        serviceCollection.Configure<RabbitMqOptions>(configuration.GetSection(RabbitMqOptions.Section));
 
-        services.AddTransient<IRabbitMqPublisher, RabbitMqPublisher>();
+        serviceCollection.AddTransient<IRabbitMqPublisher, RabbitMqPublisher>();
         
-        services.AddSingleton<RabbitMqManager>(sp =>
+        serviceCollection.AddSingleton<RabbitMqManager>(sp =>
         {
             var rabbitMqManager = new RabbitMqManager();
                
@@ -38,6 +37,6 @@ public class RabbitMqManagerExtension:IInfrastructureOptionsExtension
             }
             return rabbitMqManager;
         });
-        
+        return serviceCollection;
     }
 }
