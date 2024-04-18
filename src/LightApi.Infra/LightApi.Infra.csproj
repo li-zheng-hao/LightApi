@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
         <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -7,14 +6,13 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeSymbols>true</IncludeSymbols>
-        <Version>2.1.0-preview</Version>
+        <Version>3.0.0-preview</Version>
         <Title>LightApi.Infra</Title>
         <Authors>lizhenghao</Authors>
         <Description>ASP.NET Core快速开发框架</Description>
         <Copyright>lizhenghao</Copyright>
         <PackageProjectUrl>https://github.com/li-zheng-hao/LightApi</PackageProjectUrl>
         <RepositoryUrl>https://github.com/li-zheng-hao/LightApi</RepositoryUrl>
-
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Autofac" Version="7.0.1"/>
