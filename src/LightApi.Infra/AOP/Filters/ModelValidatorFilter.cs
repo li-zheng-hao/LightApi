@@ -31,7 +31,7 @@ public class ModelValidatorFilter : IResultFilter
                 var errorMessage = state.Errors?.FirstOrDefault()?.ErrorMessage;
                 
                 if (errorMessage != null)
-                    errors.Add(errorMessage);
+                    errors.Add(GenerateFriendlyMessage(errorMessage));
             }
 
             string? errorMsg =  errors.FirstOrDefault(it => it.HasChineseChar());
@@ -53,4 +53,34 @@ public class ModelValidatorFilter : IResultFilter
     public void OnResultExecuted(ResultExecutedContext context)
     {
     }
+    
+    /// <summary>
+    /// 硬编码处理NewtonsoftJson序列化错误信息，如果序列化框架有修改，需要调整（待优化）
+    /// </summary>
+    /// <param name="error"></param>
+    /// <returns></returns>
+    private string GenerateFriendlyMessage(string error)
+    {
+        try
+        {
+            if(error.StartsWith("Could not convert string to integer"))
+            {
+                var inputValue =error.Substring("Could not convert string to integer ".Length).Split('.').First();
+                return $"输入值{inputValue}无效，请输入有效范围内的整数";
+            }
+            
+            if(error.Contains("is too large or small"))
+            {
+                var inputValue =error.Substring("JSON integer ".Length).Split(' ').First();
+                return $"输入值{inputValue}无效，请输入有效范围内的整数";
+            }
+        }
+        catch (Exception e)
+        {
+            // ignore
+            return error;
+        }
+      
+        return error;
+    } 
 }

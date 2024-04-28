@@ -1,7 +1,9 @@
+using System.ComponentModel.DataAnnotations;
 using Asp.Versioning;
 using LightApi.Infra.Extension;
 using LightApi.Infra.Helper;
 using LightApi.Infra.InfraException;
+using LightApi.Infra.ModelValidator;
 using LightApi.Infra.RabbitMQ;
 using Microsoft.AspNetCore.Mvc;
 using MiniExcelLibs;
@@ -16,6 +18,21 @@ namespace LightApi.Api.Controllers;
 [Route("api/[controller]")]
 public class FeatureSampleController : ControllerBase
 {
+    
+    [HttpPost("test-json")]
+    public IActionResult TestJson([FromBody] TestJsonRequest request)
+    {
+        return Ok(request);
+    }
+
+    public class TestJsonRequest
+    {
+        [MinLength(1000)]
+        [RequiredEx]
+        public string Name { get; set; }
+        public int Age { get; set; }
+    }
+
     /// <summary>
     /// 下载excel
     /// </summary>
