@@ -1,14 +1,13 @@
-// index.ts
+// @ts-nocheck
 import axios from 'axios'
 import type { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { handleHttpError } from './httpErrorHandler'
-import { deepMerge } from '@/utils'
+import { deepClone, deepMerge } from '@/utils'
 import { handleBusinessError } from '@/api/client/businessErrorHandler'
 import { useJwt } from './jwtAuth'
 import { generateRequestKey } from './helper'
 import idmp, { type IdmpOptions } from 'idmp'
-import { error } from 'console'
-
+import Qs from 'qs';
 export type ApiResult<T> = {
   code: number
   msg: string
@@ -61,7 +60,7 @@ export class ApiClient {
   /**
    * 默认请求配置
    */
-  defaultRequestConfig: RequestConfig = {}
+  defaultRequestConfig: RequestConfig = { }
 
   constructor(config: AxiosRequestConfig, requestConfig?: RequestConfig) {
     this.defaultRequestConfig = Object.assign(this.defaultRequestConfig, requestConfig ?? {})
@@ -99,9 +98,8 @@ export class ApiClient {
    * @param config axios配置
    * @param requestConfig 自定义请求配置
    */
-  public request<T>(config: AxiosRequestConfig, requestConfig?: RequestConfig): Promise<T> {
-    const targetConfig = deepMerge<RequestConfig>(this.defaultRequestConfig, requestConfig)
-
+  public async request<T>(config: AxiosRequestConfig, requestConfig?: RequestConfig): Promise<T> {
+    const targetConfig=deepMerge(this.defaultRequestConfig, requestConfig)
     let requestKey = null
     // 如果需要刷新idmp请求key
     if (targetConfig.refreshIdmpRequestKey) {
@@ -111,11 +109,12 @@ export class ApiClient {
     // 使用idmp请求
     if (targetConfig.useIdmp) {
       requestKey ??= generateRequestKey(config)
-      return idmp(
+      const cacheData=await  idmp(
         requestKey,
         () => this.internalRequest<T>(config, targetConfig),
         targetConfig.idmpOptions ?? undefined
       )
+      return JSON.parse(JSON.stringify(cacheData));
     }
     // 直接使用axios请求
     return this.internalRequest<T>(config, targetConfig)
@@ -147,13 +146,18 @@ export class ApiClient {
 
 // 如果有需要可以配置多个
 const apiClient = new ApiClient(
-  {},
+  {
+    paramsSerializer: (params) => {
+      // 数组格式化 不然.net后端接收不到
+      return Qs.stringify(params, {arrayFormat: 'indices',encode:false})
+    },
+  },
   {
     showError: true,
     unwrapResult: true,
     returnRawAxiosResponse: false,
     throwBusinessError: true,
-    useIdmp: true,
+    useIdmp: false,
     idmpOptions: {
       maxRetry: 0,
       maxAge: 500
