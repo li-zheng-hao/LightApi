@@ -9,7 +9,7 @@ const loadedKey=[]
  */
 export function load(url,key) {
     if (loadedKey.includes(key)) {
-        return;
+        return Promise.resolve();
     }
     loadedKey.push(key);
     const script = document.createElement('script');
