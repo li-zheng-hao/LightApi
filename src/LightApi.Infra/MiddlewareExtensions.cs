@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
-namespace LightApi.Infra.DependencyInjections;
+namespace LightApi.Infra;
 
 public static class MiddlewareExtensions
 {
@@ -18,6 +18,7 @@ public static class MiddlewareExtensions
         
         return app;
     }
+    
     /// <summary>
     /// 请求体可以多次读取
     /// </summary>

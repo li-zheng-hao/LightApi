@@ -5,13 +5,13 @@ using System.Xml.XPath;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace LightApi.Infra.Swagger
+namespace OOS.Core.Swagger
 {
     /// <summary>
     /// Swagger schema filter to modify description of enum types so they
     /// show the XML docs attached to each member of the enum.
     /// </summary>
-    public class SwaggerEnumFilter : ISchemaFilter
+    public class DescribeEnumMembers : ISchemaFilter
     {
         private readonly XDocument xmlComments;
         private readonly string assemblyName;
@@ -20,7 +20,7 @@ namespace LightApi.Infra.Swagger
         /// Initialize schema filter.
         /// </summary>
         /// <param name="xmlComments">Document containing XML docs for enum members.</param>
-        public SwaggerEnumFilter(XDocument xmlComments)
+        public DescribeEnumMembers(XDocument xmlComments)
         {
             this.xmlComments = xmlComments;
             this.assemblyName = DetermineAssembly(xmlComments);
@@ -65,6 +65,7 @@ namespace LightApi.Infra.Swagger
 
             sb.AppendLine("<ul>");
 
+            // TODO: Handle flags better e.g. Hex formatting
             foreach (var name in Enum.GetValues(type))
             {
                 // Allows for large enums

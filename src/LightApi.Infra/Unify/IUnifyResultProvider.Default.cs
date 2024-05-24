@@ -6,7 +6,7 @@ namespace LightApi.Infra.Unify;
 /// <summary>
 /// 
 /// </summary>
-public class DefaultUnifyResultProvider : IUnifyResultProvider
+public class UnifyResultProvider : IUnifyResultProvider
 {
     /// <summary>
     /// 
