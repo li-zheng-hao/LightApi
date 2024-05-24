@@ -12,7 +12,6 @@ using Mapster;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -21,7 +20,7 @@ using Serilog;
 using Serilog.Events;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace LightApi.Infra;
+namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceCollectionExtenions
 {
@@ -39,7 +38,7 @@ public static class ServiceCollectionExtenions
 
         serviceCollection.AddSingleton<IConfigureOptions<MvcOptions>, ConfigureInfrastructureOption>();
         
-        serviceCollection.AddUnifyResultProviderSetup(typeof(Unify.UnifyResult), typeof(UnifyResultProvider));
+        serviceCollection.AddUnifyResultProviderSetup(typeof(UnifyResult), typeof(UnifyResultProvider));
 
         return serviceCollection;
     }
@@ -70,7 +69,7 @@ public static class ServiceCollectionExtenions
         Type? unifyResultType = null, Type? unifyResultProviderType = null)
     {
         if (unifyResultType is null)
-            unifyResultType = typeof(Unify.UnifyResult);
+            unifyResultType = typeof(UnifyResult);
         else
         {
             if (!unifyResultType.IsAssignableTo(typeof(IUnifyResult)))
