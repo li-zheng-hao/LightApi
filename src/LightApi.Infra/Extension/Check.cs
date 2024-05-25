@@ -74,12 +74,7 @@ public static class Check
     /// <returns></returns>
     public static bool CheckIf(bool expression, string errMessage)
     {
-        if (expression)
-        {
-            return false;
-        }
-        else
-            return true;
+        return !expression;
     }
 
     /// <summary>
@@ -100,8 +95,7 @@ public static class Check
     /// 检查表达式是否为真,真的话记录错误消息并抛出异常
     /// </summary>
     /// <param name="expression"></param>
-    /// <param name="errMessage"></param>
-    /// <exception cref="Exception"></exception>
+    /// <param name="ex"></param>
     public static void ThrowIf(bool expression, Exception ex)
     {
         if (expression)
@@ -119,4 +113,15 @@ public static class Check
         NotNullOrEmpty(source,errorMessage);
     }
 
+    /// <summary>
+    /// 条件为真时抛出业务异常
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="errMessage"></param>
+    /// <exception cref="BusinessException"></exception>
+    public static void ThrowIfEx(this bool source, string errMessage)
+    {
+        if (source)
+            throw new BusinessException(errMessage);
+    }
 }
