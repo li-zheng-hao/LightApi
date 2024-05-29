@@ -8,11 +8,13 @@
         <IncludeSymbols>true</IncludeSymbols>
         <Version>3.0.0-preview</Version>
         <Title>LightApi.Infra</Title>
-        <Authors>lizhenghao</Authors>
+        <Authors>李正浩</Authors>
         <Description>ASP.NET Core快速开发框架</Description>
-        <Copyright>lizhenghao</Copyright>
+        <Copyright>李正浩</Copyright>
         <PackageProjectUrl>https://github.com/li-zheng-hao/LightApi</PackageProjectUrl>
         <RepositoryUrl>https://github.com/li-zheng-hao/LightApi</RepositoryUrl>
+        <PackageIcon>icon.png</PackageIcon>
+        <PackageLicenseUrl>https://raw.githubusercontent.com/li-zheng-hao/LightApi/main/LICENSE</PackageLicenseUrl>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Autofac" Version="7.0.1"/>
@@ -48,5 +50,12 @@
     </ItemGroup>
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+    </ItemGroup>
+    <ItemGroup>
+      <None Include="..\..\icon.png">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+        <Link>icon.png</Link>
+      </None>
     </ItemGroup>
 </Project>

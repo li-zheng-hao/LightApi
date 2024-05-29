@@ -4,6 +4,7 @@ using System.Xml.XPath;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using LightApi.Infra.Autofac;
+using LightApi.Infra.Http;
 using LightApi.Infra.Options;
 using LightApi.Infra.RabbitMQ;
 using LightApi.Infra.Swagger;
@@ -24,7 +25,19 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceCollectionExtenions
 {
-    
+    /// <summary>
+    /// 配置登录用户上下文
+    /// </summary>
+    /// <param name="serviceCollection"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static IServiceCollection AddUserContextSetup<T>(this IServiceCollection serviceCollection)
+        where T : class, IUser
+    {
+        serviceCollection.AddScoped<IUser, T>();
+        serviceCollection.AddScoped<T>();
+        return serviceCollection;
+    }
     /// <summary>
     /// LightApi框架基本配置
     /// </summary>
