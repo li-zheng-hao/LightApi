@@ -4,6 +4,7 @@ using System.Xml.XPath;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using LightApi.Infra.Autofac;
+using LightApi.Infra.DistributeLock;
 using LightApi.Infra.Http;
 using LightApi.Infra.Options;
 using LightApi.Infra.RabbitMQ;
@@ -19,12 +20,31 @@ using Microsoft.Extensions.Options;
 using OOS.Core.Swagger;
 using Serilog;
 using Serilog.Events;
+using StackExchange.Redis;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceCollectionExtenions
 {
+
+    /// <summary>
+    /// 配置redis分布式锁
+    /// </summary>
+    /// <param name="serviceCollection"></param>
+    /// <param name="configure"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddRedisDistributeLockSetup(this IServiceCollection serviceCollection,Action<RedisLockProvider>? configure=null)
+    {
+        serviceCollection.AddSingleton(sp =>
+        {
+            var connectionMultiplexer = sp.GetRequiredService<ConnectionMultiplexer>();
+            var lockerProvider=new RedisLockProvider(connectionMultiplexer);
+            configure?.Invoke(lockerProvider);
+            return lockerProvider;
+        });
+        return serviceCollection;
+    }
     /// <summary>
     /// 配置登录用户上下文
     /// </summary>
