@@ -1,0 +1,3 @@
+﻿namespace LightApi.Infra.Authorize;
+
+

@@ -98,5 +98,10 @@ public class InfrastructureOptions
     /// 系统中各种日志的最大长度，超过长度后会自动截取 默认8000
     /// </summary>
     public uint MaxLogLength { get; set; } = 8000;
+    
+    /// <summary>
+    /// 对称加密秘钥
+    /// </summary>
+    public string? EncryptionKey { get; set; }
 
 }

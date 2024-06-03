@@ -3,6 +3,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using LightApi.Infra.Authorize;
 using LightApi.Infra.Autofac;
 using LightApi.Infra.DistributeLock;
 using LightApi.Infra.Http;
@@ -11,7 +12,9 @@ using LightApi.Infra.RabbitMQ;
 using LightApi.Infra.Swagger;
 using LightApi.Infra.Unify;
 using Mapster;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -27,7 +30,44 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceCollectionExtenions
 {
-
+    /// <summary>
+    /// 配置Cookie认证
+    /// </summary>
+    /// <param name="serviceCollection"></param>
+    /// <param name="configure"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddCookieAuthSetup(this IServiceCollection serviceCollection,Action<CookieAuthenticationOptions>? configure=null)
+    {
+        serviceCollection.AddSingleton<CookieDataProtector>();
+        
+        serviceCollection.AddSingleton<ITicketStore, CookieAuthMinimalStore>();
+        serviceCollection.AddOptions<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme)
+            .Configure<ITicketStore>((options, store) => {
+                options.SessionStore = store;
+                options.Cookie.Name = "auth";
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+                options.ExpireTimeSpan = TimeSpan.FromDays(1);
+                options.SlidingExpiration = true;
+                // options.DataProtectionProvider = protector;
+                options.Events.OnRedirectToLogin = context =>
+                {
+                    context.Response.StatusCode = 401;
+                    return Task.CompletedTask;
+                };
+                options.Events.OnRedirectToAccessDenied = context =>
+                {
+                    context.Response.StatusCode = 401;
+                    return Task.CompletedTask;
+                };
+                
+                configure?.Invoke(options);
+            });
+        serviceCollection.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
+        return serviceCollection;
+    }
     /// <summary>
     /// 配置redis分布式锁
     /// </summary>
