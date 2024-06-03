@@ -14,8 +14,11 @@ using LightApi.Infra.Unify;
 using Mapster;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Session;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
@@ -34,23 +37,20 @@ public static class ServiceCollectionExtenions
     /// 配置Cookie认证
     /// </summary>
     /// <param name="serviceCollection"></param>
+    /// <param name="encryptKey">对称加密秘钥</param>
     /// <param name="configure"></param>
     /// <returns></returns>
-    public static IServiceCollection AddCookieAuthSetup(this IServiceCollection serviceCollection,Action<CookieAuthenticationOptions>? configure=null)
+    public static IServiceCollection AddCookieAuthSetup(this IServiceCollection serviceCollection,string encryptKey,Action<CookieAuthenticationOptions>? configure=null)
     {
-        serviceCollection.AddSingleton<CookieDataProtector>();
-        
-        serviceCollection.AddSingleton<ITicketStore, CookieAuthMinimalStore>();
         serviceCollection.AddOptions<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme)
-            .Configure<ITicketStore>((options, store) => {
-                options.SessionStore = store;
-                options.Cookie.Name = "auth";
+            .Configure((options) => {
+                options.Cookie.Name = "sys.auth";
                 options.Cookie.HttpOnly = true;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.Cookie.SameSite = SameSiteMode.Lax;
                 options.ExpireTimeSpan = TimeSpan.FromDays(1);
                 options.SlidingExpiration = true;
-                // options.DataProtectionProvider = protector;
+                options.DataProtectionProvider = new CookieDataProtector(encryptKey);
                 options.Events.OnRedirectToLogin = context =>
                 {
                     context.Response.StatusCode = 401;
@@ -61,11 +61,12 @@ public static class ServiceCollectionExtenions
                     context.Response.StatusCode = 401;
                     return Task.CompletedTask;
                 };
-                
                 configure?.Invoke(options);
             });
+        
         serviceCollection.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
+        
         return serviceCollection;
     }
     /// <summary>

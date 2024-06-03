@@ -12,29 +12,30 @@ namespace LightApi.Infra.Authorize;
 /// </summary>
 public class CookieDataProtector : IDataProtector
 {
-    private readonly IOptions<InfrastructureOptions> _options;
+    private readonly string _encryptKey;
 
-    public CookieDataProtector(IOptions<InfrastructureOptions> options)
+    public CookieDataProtector(string encryptKey)
     {
-        _options = options;
-        if(_options.Value.EncryptionKey.IsNullOrWhiteSpace()) throw new Exception("加密秘钥不能为空");
+        _encryptKey = encryptKey;
     }
     public IDataProtector CreateProtector(string purpose)
     {
-        return new CookieDataProtector(_options);
+        return new CookieDataProtector(_encryptKey);
     }
 
     public byte[] Protect(byte[] plaintext)
     {
-        var data=Base64UrlTextEncoder.Encode(plaintext);
-        var encryptBase64Str = data.AESEncrypt(_options.Value.EncryptionKey);
-        return Base64UrlTextEncoder.Decode(encryptBase64Str);
+        var data=Convert.ToBase64String(plaintext);
+        var encryptBase64Str = data.AESEncrypt(_encryptKey);
+        var res= Convert.FromBase64String(encryptBase64Str);
+        return res;
     }
 
     public byte[] Unprotect(byte[] protectedData)
     {
-        var data=Base64UrlTextEncoder.Encode(protectedData);
-        var encryptBase64Str = data.AESDecrypt(_options.Value.EncryptionKey);
-        return Base64UrlTextEncoder.Decode(encryptBase64Str);
+        var data = Convert.ToBase64String(protectedData);
+        var decryptBase64Str = data.AESDecrypt(_encryptKey);
+        var res = Convert.FromBase64String(decryptBase64Str);
+        return res;
     }
 }

@@ -1,4 +1,5 @@
-﻿using LightApi.Infra.Http;
+﻿using LightApi.Infra.Extension;
+using LightApi.Infra.Http;
 
 namespace LightApi.Core.Authorization;
 
@@ -7,7 +8,7 @@ namespace LightApi.Core.Authorization;
 /// </summary>
 public class UserContext:IUser
 {
-    public int Id { get; set; } = -1;
+    public string Id { get; set; } 
 
     /// <summary>
     /// 用户名
@@ -26,7 +27,8 @@ public class UserContext:IUser
 
     public bool IsAuthenticated()
     {
-        return Id != -1;
+        return Id.IsNullOrWhiteSpace();
     }
+    
     
 }

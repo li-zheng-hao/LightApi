@@ -3,9 +3,6 @@ using LightApi.Core;
 using LightApi.Core.Options;
 using LightApi.Domain;
 using LightApi.Infra;
-using LightApi.Infra.DependencyInjections;
-using LightApi.Infra.Helper;
-using Microsoft.AspNetCore.Authorization;
 using Prometheus;
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerUI;
@@ -60,7 +57,7 @@ try
     builder.Services.AddFileProviderSetup(); 
     
     // 权限认证
-    builder.Services.AddAuthorizeSetup(); 
+    builder.Services.AddCookieAuthSetup("123dccxc..@"); 
     
     // SqlSugar
     builder.Services.AddSqlSugarSetup(); 
@@ -141,7 +138,7 @@ try
 
     app.MapMetrics();
 
-    app.MapControllers();
+    app.MapControllers().RequireAuthorization();
 
     #endregion
 
