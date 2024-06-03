@@ -1,9 +1,5 @@
-﻿using LightApi.Infra.Extension;
-using LightApi.Infra.Options;
-using Masuit.Tools.Security;
-using Microsoft.AspNetCore.Authentication;
+﻿using Masuit.Tools.Security;
 using Microsoft.AspNetCore.DataProtection;
-using Microsoft.Extensions.Options;
 
 namespace LightApi.Infra.Authorize;
 
