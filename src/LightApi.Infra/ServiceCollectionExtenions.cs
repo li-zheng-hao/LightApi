@@ -45,9 +45,6 @@ public static class ServiceCollectionExtenions
         serviceCollection.AddOptions<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme)
             .Configure((options) => {
                 options.Cookie.Name = "sys.auth";
-                options.Cookie.HttpOnly = true;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                options.Cookie.SameSite = SameSiteMode.Lax;
                 options.ExpireTimeSpan = TimeSpan.FromDays(1);
                 options.SlidingExpiration = true;
                 options.DataProtectionProvider = new CookieDataProtector(encryptKey);
