@@ -76,7 +76,7 @@ public static class ExcelHelper
         {
             if (string.IsNullOrWhiteSpace(rows[i][columnIndex].ToString()))
             {
-                throw new BusinessException($"第{i+1}行{columnIndex+1}列数据不能为空");
+                throw new BusinessException($"第{i+2}行{columnIndex+1}列数据不能为空");
             }
         }
     }
