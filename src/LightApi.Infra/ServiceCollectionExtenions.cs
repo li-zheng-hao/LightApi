@@ -6,6 +6,7 @@ using Autofac.Extensions.DependencyInjection;
 using LightApi.Infra.Authorize;
 using LightApi.Infra.Autofac;
 using LightApi.Infra.DistributeLock;
+using LightApi.Infra.FileStorage;
 using LightApi.Infra.Http;
 using LightApi.Infra.Options;
 using LightApi.Infra.RabbitMQ;
@@ -23,6 +24,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Minio;
 using OOS.Core.Swagger;
 using Serilog;
 using Serilog.Events;
@@ -33,6 +35,35 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceCollectionExtenions
 {
+
+    /// <summary>
+    /// 注册文件存储服务
+    /// </summary>
+    /// <param name="serviceCollection"></param>
+    /// <param name="configuration"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddStorageServiceSetup(this IServiceCollection serviceCollection,
+        IConfiguration configuration)
+    {
+        var storageOptions= configuration.GetSection(nameof(StorageOptions))
+            .Get<StorageOptions>();
+
+        if (storageOptions == null) throw new ArgumentException("未配置StorageOptions，无法注册文件服务");
+        
+        if (storageOptions.MinioStorageOptions != null)
+        {
+            serviceCollection.AddSingleton<IMinioClient>(it => new MinioClient()
+                .WithEndpoint(storageOptions.MinioStorageOptions.EndPoint)
+                .WithCredentials(storageOptions.MinioStorageOptions.AccessKey, storageOptions.MinioStorageOptions.SecretKey)
+                .WithSSL(storageOptions.MinioStorageOptions.EnableSSL)
+                .Build());
+        }
+        serviceCollection.Configure<StorageOptions>(it =>
+        {
+            storageOptions.Adapt(it);
+        });
+        return serviceCollection;
+    }
     /// <summary>
     /// 配置Cookie认证
     /// </summary>
