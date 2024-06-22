@@ -6,7 +6,7 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeSymbols>true</IncludeSymbols>
-        <Version>3.3.0</Version>
+        <Version>3.4.0</Version>
         <Title>LightApi.Infra</Title>
         <Authors>李正浩</Authors>
         <Description>ASP.NET Core快速开发框架</Description>
@@ -33,6 +33,7 @@
         <PackageReference Include="MiniExcel" Version="1.31.3" />
         <PackageReference Include="Minio" Version="6.0.2" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+        <PackageReference Include="NPOI" Version="2.7.0" />
         <PackageReference Include="Polly" Version="8.3.1" />
         <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
         <PackageReference Include="Rougamo.Fody" Version="2.0.0"/>

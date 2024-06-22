@@ -124,4 +124,26 @@ public static class Check
         if (source)
             throw new BusinessException(errMessage);
     }
+    /// <summary>
+    /// 条件为真时抛出业务异常
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="errMessage"></param>
+    /// <exception cref="BusinessException"></exception>
+    public static void ThrowIfTrueEx(this bool? source, string errMessage)
+    {
+        if (source==true)
+            throw new BusinessException(errMessage);
+    }
+    /// <summary>
+    /// 条件不为真时抛出业务异常
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="errMessage"></param>
+    /// <exception cref="BusinessException"></exception>
+    public static void ThrowIfNotTrueEx(this bool? source, string errMessage)
+    {
+        if (source!=true)
+            throw new BusinessException(errMessage);
+    }
 }

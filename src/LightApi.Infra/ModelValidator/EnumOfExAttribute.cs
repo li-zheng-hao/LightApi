@@ -24,7 +24,7 @@ public class EnumOfExAttribute : ValidationAttribute
 
         if (value is null)
         {
-            return new ValidationResult(ErrorMessage);
+            return ValidationResult.Success;
         }
 
         if (!Enum.IsDefined(Type, value))
