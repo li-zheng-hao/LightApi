@@ -1,5 +1,7 @@
 using LightApi.Infra.Helper;
+using LightApi.Infra.Http;
 using LightApi.Infra.InfraException;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LightApi.UnitTest;
 
@@ -19,5 +21,26 @@ public class UnitTest1
         Assert.Throws<BusinessException>(() => ExcelHelper.ThrowIfNotInRange(data, 3,"num2"));
         ExcelHelper.ThrowIfNotInRange(data, 3, "num");
         ExcelHelper.ThrowIfNotDouble(data, 4);
+    }
+
+    [Fact]
+    public void UserContextTest()
+    {
+        IServiceCollection serviceCollection = new ServiceCollection();
+        serviceCollection.AddUserContextSetup<TestUserContext>();
+        
+        var serviceProvider = serviceCollection.BuildServiceProvider();
+
+        var testUserContext = serviceProvider.GetService<TestUserContext>();
+        testUserContext!.UserName = "testname";
+        var iuser= serviceProvider.GetService<IUser>();
+        Assert.Equal("testname", iuser!.UserName);
+        
+    }
+
+    class TestUserContext:IUser
+    {
+        public string Id { get; set; }
+        public string UserName { get; set; }
     }
 }

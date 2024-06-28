@@ -123,7 +123,10 @@ public static class ServiceCollectionExtenions
     public static IServiceCollection AddUserContextSetup<T>(this IServiceCollection serviceCollection)
         where T : class, IUser
     {
-        serviceCollection.AddScoped<IUser, T>();
+        serviceCollection.AddScoped<IUser, T>(sp =>
+        {
+            return (sp.GetRequiredService(typeof(T)) as T)!;
+        });
         serviceCollection.AddScoped<T>();
         return serviceCollection;
     }
