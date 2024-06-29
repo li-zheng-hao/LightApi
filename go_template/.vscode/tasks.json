@@ -1,0 +1,10 @@
+{
+    "tasks":[
+        {
+            "problemMatcher": [],
+            "label": "generate docs",
+            "type": "shell",
+            "command": "swag init"
+        }
+    ]
+}
