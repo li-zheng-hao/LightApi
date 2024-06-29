@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
         <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -7,14 +6,15 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeSymbols>true</IncludeSymbols>
-        <Version>2.0.5</Version>
+        <Version>3.4.1</Version>
         <Title>LightApi.Infra</Title>
-        <Authors>lizhenghao</Authors>
+        <Authors>李正浩</Authors>
         <Description>ASP.NET Core快速开发框架</Description>
-        <Copyright>lizhenghao</Copyright>
+        <Copyright>李正浩</Copyright>
         <PackageProjectUrl>https://github.com/li-zheng-hao/LightApi</PackageProjectUrl>
         <RepositoryUrl>https://github.com/li-zheng-hao/LightApi</RepositoryUrl>
-
+        <PackageIcon>icon.png</PackageIcon>
+        <PackageLicenseUrl>https://raw.githubusercontent.com/li-zheng-hao/LightApi/main/LICENSE</PackageLicenseUrl>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Autofac" Version="7.0.1"/>
@@ -27,11 +27,13 @@
         <PackageReference Include="Masuit.Tools.AspNetCore" Version="1.2.7.4"/>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.16"/>
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
         <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0"/>
         <PackageReference Include="MiniExcel" Version="1.31.3" />
+        <PackageReference Include="Minio" Version="6.0.2" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+        <PackageReference Include="NPOI" Version="2.7.0" />
         <PackageReference Include="Polly" Version="8.3.1" />
         <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
         <PackageReference Include="Rougamo.Fody" Version="2.0.0"/>
@@ -41,6 +43,7 @@
         <PackageReference Include="Serilog.Exceptions" Version="8.4.0"/>
         <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0"/>
         <PackageReference Include="Serilog.Settings.Configuration" Version="3.4.0"/>
+        <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
         <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0"/>
         <PackageReference Include="Serilog.Sinks.File" Version="5.0.0"/>
         <PackageReference Include="StackExchange.Redis" Version="2.6.104"/>
@@ -51,6 +54,10 @@
         <FrameworkReference Include="Microsoft.AspNetCore.App"/>
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="DependencyInjections\Middleware\" />
+      <None Include="..\..\icon.png">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+        <Link>icon.png</Link>
+      </None>
     </ItemGroup>
 </Project>

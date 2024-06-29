@@ -7,18 +7,13 @@ using Autofac.Extensions.DependencyInjection;
 using Hangfire;
 using Hangfire.Dashboard.BasicAuthorization;
 using Hangfire.MemoryStorage;
-using Hangfire.SqlServer;
-using LightApi.Core.Aop;
 using LightApi.Core.Authorization;
 using LightApi.Core.Autofac;
 using LightApi.Core.Converter;
 using LightApi.Core.Job;
 using LightApi.Core.Swagger;
 using LightApi.Infra;
-using LightApi.Infra.DependencyInjections;
 using LightApi.SqlSugar;
-using Masuit.Tools;
-using Masuit.Tools.Systems;
 using Medallion.Threading;
 using Medallion.Threading.FileSystem;
 using Microsoft.AspNetCore.Builder;
@@ -67,21 +62,9 @@ public static class AppServiceCollectionExtension
     public static IServiceCollection AddInfraSetup(this IServiceCollection serviceCollection,
         WebApplicationBuilder builder)
     {
-        serviceCollection.AddInfrastructure(builder.Configuration, configure =>
+        serviceCollection.AddLightApiSetup( configure =>
         {
-            configure.ConfigInfrastructureOptions(it =>
-            {
-                it.EnableGlobalModelValidator = true;
-                it.EnableGlobalUnifyResult = true;
-                it.EnableGlobalExceptionFilter = true;
-                it.DefaultModelValidateErrorMessage = BusinessErrorCode.Code400.GetDescription();
-                it.DefaultModelValidateErrorBusinessCode = (int)BusinessErrorCode.Code400;
-                it.DefaultModelValidateErrorHttpStatusCode = HttpStatusCode.OK;
-                it.UseFirstModelValidateErrorMessage = true;
-            });
-            configure.UseUserContext<UserContext>();
-            configure.UseMapster(Assembly.Load("LightApi.Service"));
-            configure.UseRabbitMqManager();
+            
         });
 
         serviceCollection.AddScoped<UserContext>();

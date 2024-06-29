@@ -10,18 +10,24 @@ namespace LightApi.Infra.RabbitMQ
 {
     public abstract class BaseRabbitMqConsumer : IHostedService
     {
+        protected RabbitMqManager _rabbitMqManager;
         protected IConnection? _connection;
         protected IModel? _channel;
 
-        protected BaseRabbitMqConsumer()
+        protected BaseRabbitMqConsumer(RabbitMqManager rabbitMqManager)
         {
+            _rabbitMqManager = rabbitMqManager;
         }
 
         /// <summary>
         /// 通过RabbitMqManager初始化连接
         /// </summary>
         /// <returns></returns>
-        public abstract void InitChannel();
+        public virtual void InitChannel()
+        {
+            this._connection = _rabbitMqManager.GetConnection().Connection;
+            this._channel = _connection.CreateModel();
+        }
        
         public Task StartAsync(CancellationToken cancellationToken)
         {

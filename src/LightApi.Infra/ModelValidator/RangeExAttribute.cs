@@ -45,7 +45,7 @@ public class RangeExAttribute : RequiredAttribute
 
         if (value == null)
         {
-            return new ValidationResult(ErrorMessage);
+            return ValidationResult.Success;
         }
 
         if (OperandType == typeof(int))
