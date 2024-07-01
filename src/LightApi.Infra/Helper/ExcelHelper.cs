@@ -94,7 +94,7 @@ public static class ExcelHelper
         var dataTable = new DataTable();
         headers.ForEach(it => dataTable.Columns.Add(it));
 
-        for (int row = 1; row < sheet.LastRowNum; row++)
+        for (int row = 1; row <= sheet.LastRowNum; row++)
         {
             List<string> values = new(headers.Count);
             var rowData = sheet.GetRow(row);
