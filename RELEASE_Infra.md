@@ -1,5 +1,9 @@
 # Infra框架发布记录
 
+## 2024年7月1日 3.4.3
+
+1. 修复ExcelHelper.GetValuesByNpoi读取空单元格异常的问题
+
 ## 2024年7月1日 3.4.2
 
 1. 修复ExcelHelper.GetValuesByNpoi最后一行没有读取的问题

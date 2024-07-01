@@ -107,7 +107,12 @@ public static class ExcelHelper
                     if (col >= rowData.LastCellNum)
                         values.Add(string.Empty);
                     else
-                        values.Add(sheet.GetRow(row).GetCell(col).ToString() ?? string.Empty);
+                    {
+                        if (rowData.GetCell(col) == null)
+                            values.Add(string.Empty);
+                        else
+                            values.Add(rowData.GetCell(col).ToString() ?? string.Empty);
+                    }
                 }
             }
 
