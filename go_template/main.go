@@ -3,8 +3,11 @@ package main
 import (
 	"context"
 	"flag"
+	"github.com/labstack/gommon/log"
 	"go_template/infra/config"
+	"go_template/infra/internal_log"
 	"go_template/infra/route"
+	"io"
 	"net/http"
 	"os"
 	"os/signal"
@@ -14,8 +17,16 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/labstack/gommon/log"
 )
+
+var (
+	env string
+)
+
+func init() {
+	flag.StringVar(&env, "e", "Production", "系统环境")
+
+}
 
 // @title Swagger Example API
 // @version 1.0
@@ -34,20 +45,26 @@ import (
 func main() {
 	e := echo.New()
 
+	e.Logger = internal_log.SysLogger
+
+	flag.Parse()
+
+	e.Logger.Info("启动系统环境:", env)
+
 	e.Logger.SetLevel(log.DEBUG)
 
-	env := flag.String("env", "Production", "系统环境")
+	if env != "Development" {
+		// 不需要控制台
+		e.Logger.SetOutput(io.Discard)
+	}
 
-	e.Logger.Info("启动系统环境:", *env)
-
-	appConfig:=config.LoadConfig(*env)
+	appConfig := config.LoadConfig(env)
 
 	e.Logger.Info("服务启动:", appConfig.ServiceName)
 
 	e.Use(middleware.CORS())
 
 	route.RouteHandlers(e)
-
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
 	// Start server
@@ -55,6 +72,7 @@ func main() {
 		if err := e.Start(":8888"); err != nil && err != http.ErrServerClosed {
 			e.Logger.Error("启动服务失败:", err)
 			e.Logger.Fatal("停止服务")
+
 		}
 	}()
 
@@ -66,5 +84,6 @@ func main() {
 		e.Logger.Fatal(err)
 	}
 	e.Logger.Info("停止服务")
-	
+	internal_log.SysLogger.Flush()
+
 }
