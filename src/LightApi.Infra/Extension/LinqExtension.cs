@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
+using LightApi.Infra.InfraException;
 using LightApi.Infra.Internal;
 
 namespace LightApi.Infra.LinqExtension;
@@ -135,4 +136,5 @@ public static class LinqExtension
     }
 
     #endregion
+
 }

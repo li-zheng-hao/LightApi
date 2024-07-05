@@ -4,6 +4,7 @@ using LightApi.Core.Options;
 using Masuit.Tools;
 using Microsoft.AspNetCore.Http;
 using Minio;
+using Minio.DataModel.Args;
 using Serilog;
 
 namespace PDM.Core.FileProvider;
@@ -13,7 +14,7 @@ public class MinioFileProvider : IFileProvider
     private readonly string? _secretKey;
     private readonly string? _accessKey;
     private readonly string? _bucket;
-    private MinioClient? _minioClient;
+    private IMinioClient? _minioClient;
     private readonly string? _publicDomain;
     public string RootDir { get; set; }
     public FileNameGenerateStrategy FileNameGenerateStrategy { get; set; }

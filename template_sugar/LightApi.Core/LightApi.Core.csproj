@@ -26,7 +26,6 @@
         <PackageReference Include="Flurl.Http" Version="3.2.4"/>
         <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.1"/>
         <PackageReference Include="MiniExcel" Version="1.31.3" />
-        <PackageReference Include="Minio" Version="5.0.0"/>
         <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.3.8"/>
         <PackageReference Include="MiniProfiler.EntityFrameworkCore" Version="4.3.8"/>
         <PackageReference Include="Refit" Version="7.0.0"/>
@@ -38,5 +37,8 @@
     <ItemGroup>
         <ProjectReference Include="..\..\src\LightApi.Infra\LightApi.Infra.csproj"/>
         <ProjectReference Include="..\LightApi.Domain\LightApi.Domain.csproj"/>
+    </ItemGroup>
+    <ItemGroup>
+      <Compile Remove="Dto\DynamicQueryDto.cs" />
     </ItemGroup>
 </Project>
