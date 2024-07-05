@@ -3,6 +3,7 @@ using System;
 using LightApi.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LightApi.Api.Migrations
 {
     [DbContext(typeof(FbAppContext))]
-    partial class FbAppContextModelSnapshot : ModelSnapshot
+    [Migration("20240705032808_20240705112758")]
+    partial class _20240705112758
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.18");

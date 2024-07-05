@@ -16,6 +16,12 @@
         <PackageIcon>icon.png</PackageIcon>
         <PackageLicenseUrl>https://raw.githubusercontent.com/li-zheng-hao/LightApi/main/LICENSE</PackageLicenseUrl>
     </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <DocumentationFile>bin\Debug\LightApi.Infra.xml</DocumentationFile>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <DocumentationFile>bin\Release\LightApi.Infra.xml</DocumentationFile>
+    </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Autofac" Version="7.0.1"/>
         <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0"/>

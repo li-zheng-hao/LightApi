@@ -7,7 +7,7 @@ namespace LightApi.Core.Authorization;
 /// </summary>
 public class UserContext:IUser
 {
-    public int Id { get; set; } = -1;
+    public string Id { get; set; }
 
     /// <summary>
     /// 用户名
@@ -26,7 +26,7 @@ public class UserContext:IUser
 
     public bool IsAuthenticated()
     {
-        return Id != -1;
+        return !string.IsNullOrWhiteSpace(Id);
     }
     
 }

@@ -2,11 +2,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using LightApi.Core.Authorization;
 using LightApi.Core.Authorization.Hybrid;
+using LightApi.Core.Dto;
 using LightApi.Domain;
 using LightApi.Domain.Entities;
 using LightApi.EFCore.Repository;
 using LightApi.Infra.AOP.Attributes;
 using LightApi.Infra.Extension;
+using LightApi.Infra.Extension.DynamicQuery;
 using LightApi.Service;
 using Mapster;
 using Microsoft.AspNetCore.Authentication;
@@ -14,6 +16,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace LightApi.Api.Controllers;
 
@@ -40,20 +43,14 @@ public class TestController : ControllerBase
         _repository = repository;
     }
 
-    [HttpPost]
-    public async Task LoginCookie()
+    [HttpPost("dynamic-query-student"), AllowAnonymous]
+    public IActionResult DynamicQueryStudent([FromBody] List<DynamicQueryDto>? query)
     {
-        var claims = new[]
-        {
-            new Claim(ClaimTypes.Name, "demo"),
-            new Claim(ClaimTypes.Role, "admin,123"),
-        };
-            
-        var claimsIdentity = new ClaimsIdentity(claims,
-            CookieAuthenticationDefaults.AuthenticationScheme);
-
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-        
+        IQueryable<Student> queryable = _repository.AsQueryable<Student>()
+                .Include(it=>it.School)
+            ;
+        query?.ForEach(it => queryable = queryable.DynamicWhere(it.Property,it.Value,it.OpType));
+        return Ok(queryable.ToList());
     }
     /// <summary>
     /// 获取学校
