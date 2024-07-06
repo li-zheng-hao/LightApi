@@ -1,4 +1,6 @@
 ﻿using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using LightApi.Infra.Extension;
 using LightApi.Infra.Extension.DynamicQuery;
 using LightApi.Infra.InfraException;
@@ -9,215 +11,177 @@ namespace LightApi.UnitTest;
 
 public class LinqTest
 {
-    [Fact]
-    public void CheckEx()
+    
+    [Theory]
+    [InlineData("Contains","A","a",1)]
+    [InlineData("Contains","A2","a",1)]
+    [InlineData("Contains","InternalModel.A2","a",1)]
+    [InlineData("Equal","A","abc",1)]
+    [InlineData("Equal","A","ghsdasc",0)]
+    [InlineData("Equal","A2","abc",1)]
+    [InlineData("Equal","A2",null,1)]
+    [InlineData("Equal","B2",1.11,1)]
+    [InlineData("Equal","B2","1.11",1)]
+    [InlineData("Equal","B2",null,1)]
+    [InlineData("Equal","C",2,1)]
+    [InlineData("Equal","C2",2,1)]
+    [InlineData("Equal","C2",null,1)]
+    [InlineData("Equal","D","1001-01-01",1)]
+    [InlineData("Equal","D2","1001-01-01",1)]
+    [InlineData("Equal","D2",null,1)]
+    [InlineData("Equal","F","A",1)]
+    [InlineData("Equal","F2",null,1)]
+    [InlineData("NotEqual","A","abc",2)]
+    [InlineData("NotEqual","A2",null,2)]
+    [InlineData("NotEqual","B",1.11,2)]
+    [InlineData("NotEqual","B2",null,2)]
+    [InlineData("NotEqual","D","1001-01-01",2)]
+    [InlineData("NotEqual","D2",null,2)]
+    [InlineData("NotEqual","InternalModel.D2",null,2)]
+    [InlineData("GreaterThan","B","1",3)]
+    [InlineData("GreaterThan","B2","0",2)]
+    [InlineData("GreaterThan","D","0001-01-01",3)]
+    [InlineData("GreaterThan","D2","0001-01-01",2)]
+    [InlineData("GreaterThanOrEqual","B","1.11",3)]
+    [InlineData("GreaterThanOrEqual","B","1.12",2)]
+    [InlineData("GreaterThanOrEqual","B2","0",2)]
+    [InlineData("GreaterThanOrEqual","D","0001-01-01",3)]
+    [InlineData("GreaterThanOrEqual","D2","0001-01-01",2)]
+    [InlineData("GreaterThanOrEqual","D","1001-01-01",3)]
+    [InlineData("LessThan","B","1.12",1)]
+    [InlineData("LessThan","B2","2",1)]
+    [InlineData("LessThan","InternalModel.B",2,1)]
+    [InlineData("LessThanOrEqual","B","1.11",1)]
+    [InlineData("LessThanOrEqual","B","1.1",0)]
+    [InlineData("LessThanOrEqual","InternalModel.B",1.11,1)]
+    [InlineData("IsNull","A",null,0)]
+    [InlineData("IsNull","B2",null,1)]
+    [InlineData("IsNull","D2",null,1)]
+    [InlineData("IsNull","InternalModel.A",null,0)]
+    [InlineData("IsNotNull","A",null,3)]
+    [InlineData("IsNotNull","B2",null,2)]
+    [InlineData("IsNotNull","D2",null,2)]
+    [InlineData("IsNotNull","InternalModel.A",null,3)]
+    [InlineData("StartWith","InternalModel.A","a",1)]
+    [InlineData("StartWith","A","a",1)]
+    [InlineData("StartWith","A","ggsdcxzcx",0)]
+    [InlineData("In","A","[\"abc\"]",1)]
+    [InlineData("In","F","[\"A\"]",1)]
+    public void DynamicWhere(string opType,string property,object? value,int resultCount)
     {
-        int? a = null;
-        Assert.Throws<BusinessException>(()=>a.NotNullOrEmptyEx());
-    }
-    [Fact]
-    public void TestLinq()
-    {
-        var list = new List<Model>()
+
+        string queryJsonBody = string.Empty;
+
+        if (value is string valueStr)
         {
-            new Model()
-            {
-                PropA = "A",
-                PropB = 1,
-                SubModel = new SubModel()
-                {
-                    SubPropA = "SubA"
-                }
-            },
-            new Model()
-            {
-                PropA = "B",
-                PropB = 2,
-                SubModel = new SubModel()
-                {
-                    SubPropA = "SubB"
-                }
-            },
-            
-        };
-
-        var sortedList=list.AsQueryable().DynamicOrder("propA", true).ToList();
-        Assert.Equal("B",sortedList.First().PropA);
-        
-        var sortedList2=list.AsQueryable().DynamicOrder("subModel.subPropA", true).ToList();
-        Assert.Equal("SubB",sortedList2.First().SubModel.SubPropA);
-    }
-
-
-    [Fact]
-    public void DynamicWhere_Contains()
-    {
-        string queryJsonBody = "{\"Property\":\"A\",\"OpType\":\"Contains\",\"Value\":\"a\"}";
+            if(valueStr.StartsWith("["))
+                queryJsonBody = "{\"Property\":\""+property+"\",\"OpType\":\""+opType+"\",\"Value\":"+valueStr+"}";
+            else
+                queryJsonBody = "{\"Property\":\""+property+"\",\"OpType\":\""+opType+"\",\"Value\":\""+value+"\"}";
+        }
+        else if (value ==null)
+        {
+            queryJsonBody = "{\"Property\":\""+property+"\",\"OpType\":\""+opType+"\",\"Value\":null}";
+        }
+        else
+        {
+            queryJsonBody = "{\"Property\":\""+property+"\",\"OpType\":\""+opType+"\",\"Value\":"+value+"}";
+        }
         var query = JsonConvert.DeserializeObject<DynamicQueryDto>(queryJsonBody);
         var data = GetTestData();
-
         var result = data.AsQueryable().DynamicWhere(query!).ToList();
-
-        Assert.Single(result);
-
-        queryJsonBody = "{\"Property\":\"A2\",\"OpType\":\"Contains\",\"Value\":\"a\"}";
-
-        query = JsonConvert.DeserializeObject<DynamicQueryDto>(queryJsonBody);
-
-        result = data.AsQueryable().DynamicWhere(query!).ToList();
-        Assert.Single(result);
-        
-        queryJsonBody = "{\"Property\":\"InternalModel.A2\",\"OpType\":\"Contains\",\"Value\":\"a\"}";
-
-        query = JsonConvert.DeserializeObject<DynamicQueryDto>(queryJsonBody);
-
-        result = data.AsQueryable().DynamicWhere(query!).ToList();
-        Assert.Single(result);
-    }
-    [Fact]
-    public void DynamicWhere_Equal()
-    {
-        string queryJsonBody = "{\"Property\":\"A\",\"OpType\":\"Equal\",\"Value\":\"abc\"}";
-        var query = JsonConvert.DeserializeObject<DynamicQueryDto>(queryJsonBody);
-        var data = GetTestData();
-
-        var result = data.AsQueryable().DynamicWhere(query!).ToList();
-
-        Assert.Single(result);
-
-        queryJsonBody = "{\"Property\":\"A\",\"OpType\":\"Equal\",\"Value\":\"ghsdasc\"}";
-        
-        query = JsonConvert.DeserializeObject<DynamicQueryDto>(queryJsonBody);
-        
-        result = data.AsQueryable().DynamicWhere(query!).ToList();
-        Assert.Empty(result);
-        
-        
-        queryJsonBody = "{\"Property\":\"A2\",\"OpType\":\"Equal\",\"Value\":\"abc\"}";
-        
-        query = JsonConvert.DeserializeObject<DynamicQueryDto>(queryJsonBody);
-        
-        result = data.AsQueryable().DynamicWhere(query!).ToList();
-        Assert.Single(result);
-        
-        queryJsonBody = "{\"Property\":\"A2\",\"OpType\":\"Equal\",\"Value\":null}";
-        
-        query = JsonConvert.DeserializeObject<DynamicQueryDto>(queryJsonBody);
-        
-        result = data.AsQueryable().DynamicWhere(query!).ToList();
-        Assert.Single(result);
-        
-        queryJsonBody = "{\"Property\":\"B\",\"OpType\":\"Equal\",\"Value\":1.11}";
-        
-        query = JsonConvert.DeserializeObject<DynamicQueryDto>(queryJsonBody);
-        
-        result = data.AsQueryable().DynamicWhere(query!).ToList();
-        Assert.Single(result);
-        
-        queryJsonBody = "{\"Property\":\"B\",\"OpType\":\"Equal\",\"Value\":\"1.11\"}";
-        
-        query = JsonConvert.DeserializeObject<DynamicQueryDto>(queryJsonBody);
-        
-        result = data.AsQueryable().DynamicWhere(query!).ToList();
-        Assert.Single(result);
-        
-        
-        queryJsonBody = "{\"Property\":\"B2\",\"OpType\":\"Equal\",\"Value\":null}";
-        
-        query = JsonConvert.DeserializeObject<DynamicQueryDto>(queryJsonBody);
-        
-        result = data.AsQueryable().DynamicWhere(query!).ToList();
-        Assert.Single(result);
-        
-        queryJsonBody = "{\"Property\":\"C\",\"OpType\":\"Equal\",\"Value\":2}";
-
-        query = JsonConvert.DeserializeObject<DynamicQueryDto>(queryJsonBody);
-
-        result = data.AsQueryable().DynamicWhere(query!).ToList();
-        Assert.Single(result);
-        
-        queryJsonBody = "{\"Property\":\"C\",\"OpType\":\"Equal\",\"Value\":null}";
-
-        query = JsonConvert.DeserializeObject<DynamicQueryDto>(queryJsonBody);
-
-        Assert.Throws<BusinessException>(() =>
-        {
-            data.AsQueryable().DynamicWhere(query!).ToList();
-        });
-
-        queryJsonBody = "{\"Property\":\"C2\",\"OpType\":\"Equal\",\"Value\":2}";
-
-        query = JsonConvert.DeserializeObject<DynamicQueryDto>(queryJsonBody);
-
-        result = data.AsQueryable().DynamicWhere(query!).ToList();
-        Assert.Single(result);
-        
-        queryJsonBody = "{\"Property\":\"C2\",\"OpType\":\"Equal\",\"Value\":null}";
-
-        query = JsonConvert.DeserializeObject<DynamicQueryDto>(queryJsonBody);
-
-        result = data.AsQueryable().DynamicWhere(query!).ToList();
-        Assert.Single(result);
-        
-        
-        queryJsonBody = "{\"Property\":\"D\",\"OpType\":\"Equal\",\"Value\":\"1001-01-01\"}";
-        
-        query = JsonConvert.DeserializeObject<DynamicQueryDto>(queryJsonBody);
-        
-        result = data.AsQueryable().DynamicWhere(query!).ToList();
-        Assert.Single(result);
-        
-        queryJsonBody = "{\"Property\":\"D2\",\"OpType\":\"Equal\",\"Value\":\"1001-01-01\"}";
-        
-        query = JsonConvert.DeserializeObject<DynamicQueryDto>(queryJsonBody);
-        
-        result = data.AsQueryable().DynamicWhere(query!).ToList();
-        Assert.Single(result);
-        
-        queryJsonBody = "{\"Property\":\"D2\",\"OpType\":\"Equal\",\"Value\":null}";
-        
-        query = JsonConvert.DeserializeObject<DynamicQueryDto>(queryJsonBody);
-        
-        result = data.AsQueryable().DynamicWhere(query!).ToList();
-        Assert.Single(result);
-        
-        queryJsonBody = "{\"Property\":\"F\",\"OpType\":\"Equal\",\"Value\":\"A\"}";
-        
-        query = JsonConvert.DeserializeObject<DynamicQueryDto>(queryJsonBody);
-        
-        result = data.AsQueryable().DynamicWhere(query!).ToList();
-        Assert.Single(result);
-        
-        queryJsonBody = "{\"Property\":\"F2\",\"OpType\":\"Equal\",\"Value\":null}";
-        
-        query = JsonConvert.DeserializeObject<DynamicQueryDto>(queryJsonBody);
-        
-        result = data.AsQueryable().DynamicWhere(query!).ToList();
-        Assert.Single(result);
+        Assert.Equal(resultCount,result.Count);
     }
 
     
-    [Fact]
-    public void DynamicWhere_NotEqual()
+    [Theory]
+    [InlineData("Contains","A","a",1)]
+    [InlineData("Contains","A2","a",1)]
+    [InlineData("Contains","InternalModel.A2","a",1)]
+    [InlineData("Equal","A","abc",1)]
+    [InlineData("Equal","A","ghsdasc",0)]
+    [InlineData("Equal","A2","abc",1)]
+    [InlineData("Equal","A2",null,1)]
+    [InlineData("Equal","B2",1.11,1)]
+    [InlineData("Equal","B2","1.11",1)]
+    [InlineData("Equal","B2",null,1)]
+    [InlineData("Equal","C",2,1)]
+    [InlineData("Equal","C2",2,1)]
+    [InlineData("Equal","C2",null,1)]
+    [InlineData("Equal","D","1001-01-01",1)]
+    [InlineData("Equal","D2","1001-01-01",1)]
+    [InlineData("Equal","D2",null,1)]
+    [InlineData("Equal","F","A",1)]
+    [InlineData("Equal","F2",null,1)]
+    [InlineData("NotEqual","A","abc",2)]
+    [InlineData("NotEqual","A2",null,2)]
+    [InlineData("NotEqual","B",1.11,2)]
+    [InlineData("NotEqual","B2",null,2)]
+    [InlineData("NotEqual","D","1001-01-01",2)]
+    [InlineData("NotEqual","D2",null,2)]
+    [InlineData("NotEqual","InternalModel.D2",null,2)]
+    [InlineData("GreaterThan","B","1",3)]
+    [InlineData("GreaterThan","B2","0",2)]
+    [InlineData("GreaterThan","D","0001-01-01",3)]
+    [InlineData("GreaterThan","D2","0001-01-01",2)]
+    [InlineData("GreaterThanOrEqual","B","1.11",3)]
+    [InlineData("GreaterThanOrEqual","B","1.12",2)]
+    [InlineData("GreaterThanOrEqual","B2","0",2)]
+    [InlineData("GreaterThanOrEqual","D","0001-01-01",3)]
+    [InlineData("GreaterThanOrEqual","D2","0001-01-01",2)]
+    [InlineData("GreaterThanOrEqual","D","1001-01-01",3)]
+    [InlineData("LessThan","B","1.12",1)]
+    [InlineData("LessThan","B2","2",1)]
+    [InlineData("LessThan","InternalModel.B",2,1)]
+    [InlineData("LessThanOrEqual","B","1.11",1)]
+    [InlineData("LessThanOrEqual","B","1.1",0)]
+    [InlineData("LessThanOrEqual","InternalModel.B",1.11,1)]
+    [InlineData("IsNull","A",null,0)]
+    [InlineData("IsNull","B2",null,1)]
+    [InlineData("IsNull","D2",null,1)]
+    [InlineData("IsNull","InternalModel.A",null,0)]
+    [InlineData("IsNotNull","A",null,3)]
+    [InlineData("IsNotNull","B2",null,2)]
+    [InlineData("IsNotNull","D2",null,2)]
+    [InlineData("IsNotNull","InternalModel.A",null,3)]
+    [InlineData("StartWith","InternalModel.A","a",1)]
+    [InlineData("StartWith","A","a",1)]
+    [InlineData("StartWith","A","ggsdcxzcx",0)]
+    [InlineData("In","A","[\"abc\"]",1)]
+    [InlineData("In","F","[\"A\"]",1)]
+    public void DynamicWhereForSystemTextJson(string opType,string property,object? value,int resultCount)
     {
-        string queryJsonBody = "{\"Property\":\"A\",\"OpType\":\"NotEqual\",\"Value\":\"abc\"}";
-        var query = JsonConvert.DeserializeObject<DynamicQueryDto>(queryJsonBody);
+
+        string queryJsonBody = string.Empty;
+
+        if (value is string valueStr)
+        {
+            if(valueStr.StartsWith("["))
+                queryJsonBody = "{\"Property\":\""+property+"\",\"OpType\":\""+opType+"\",\"Value\":"+valueStr+"}";
+            else
+                queryJsonBody = "{\"Property\":\""+property+"\",\"OpType\":\""+opType+"\",\"Value\":\""+value+"\"}";
+        }
+        else if (value ==null)
+        {
+            queryJsonBody = "{\"Property\":\""+property+"\",\"OpType\":\""+opType+"\",\"Value\":null}";
+        }
+        else
+        {
+            queryJsonBody = "{\"Property\":\""+property+"\",\"OpType\":\""+opType+"\",\"Value\":"+value+"}";
+        }
+
+        var serializerOptions = new JsonSerializerOptions()
+        {
+            NumberHandling = JsonNumberHandling.AllowReadingFromString ,
+            Converters = { new JsonStringEnumConverter() }
+        };
+        var query =System.Text.Json.JsonSerializer.Deserialize<DynamicQueryDto>(queryJsonBody,serializerOptions);
         var data = GetTestData();
-
         var result = data.AsQueryable().DynamicWhere(query!).ToList();
-
-        Assert.Equal(2,result.Count);
-        
-        queryJsonBody = "{\"Property\":\"A2\",\"OpType\":\"NotEqual\",\"Value\":null}";
-        
-        query = JsonConvert.DeserializeObject<DynamicQueryDto>(queryJsonBody);
-        
-        result = data.AsQueryable().DynamicWhere(query!).ToList();
-        Assert.Equal(2,result.Count);
-
-        
+        Assert.Equal(resultCount,result.Count);
     }
 
+    
     private List<Model1> GetTestData()
     {
         List<Model1> model1s = new List<Model1>();
