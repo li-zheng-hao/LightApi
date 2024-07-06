@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using LightApi.Infra.InfraException;
 using Newtonsoft.Json.Linq;
 
@@ -119,9 +121,11 @@ public static class DyanmicQueryExtension
             case DynamicOpType.In:
                 var genericListType = typeof(List<>).MakeGenericType(propertyInfo!.PropertyType);
                 var genericList = Activator.CreateInstance(genericListType);
-                // 把value转换为List<>类型
-                var list = value as IEnumerable;
-
+                IEnumerable? list ;
+                if (value is JsonElement jsonElement)
+                    list = jsonElement.Deserialize<IEnumerable>();
+                else 
+                    list =  value as IEnumerable;
                 if (list == null) throw new BusinessException("value类型错误");
 
                 foreach (var item in list)
@@ -160,6 +164,17 @@ public static class DyanmicQueryExtension
             if (value is JValue jValue)
             {
                 var res=jValue.ToObject(type);
+                return res;
+            }else if (value is System.Text.Json.JsonElement jsonElement)
+            {
+                var targetType = Nullable.GetUnderlyingType(type) ?? type; // avoid type becoming null
+
+                var serializerOptions = new JsonSerializerOptions()
+                {
+                    NumberHandling = JsonNumberHandling.AllowReadingFromString ,
+                    Converters = { new JsonStringEnumConverter() }
+                };
+                var res = jsonElement.Deserialize(targetType,serializerOptions);
                 return res;
             }
             else
