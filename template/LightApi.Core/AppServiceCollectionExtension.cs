@@ -1,9 +1,10 @@
 ﻿using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Xml.Linq;
+using System.Xml.XPath;
 using Asp.Versioning;
 using Autofac;
-using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
 using LightApi.Core.Aop;
 using LightApi.Core.Authorization;
@@ -12,25 +13,13 @@ using LightApi.Core.Authorization.Hybrid;
 using LightApi.Core.Authorization.Jwt;
 using LightApi.Core.Autofac;
 using LightApi.Core.Converter;
-using LightApi.Core.FileProvider;
-using LightApi.Core.Options;
 using LightApi.Core.Swagger;
 using LightApi.Domain;
-using LightApi.EFCore;
-using LightApi.EFCore.Config;
-using LightApi.EFCore.EFCore.DbContext;
-using LightApi.EFCore.Entities;
-using LightApi.EFCore.Interceptors;
-using LightApi.EFCore.Repository;
-using LightApi.Infra;
-using LightApi.Infra.DependencyInjections;
 using LightApi.Infra.Extension;
 using Masuit.Tools.Systems;
 using Medallion.Threading;
 using Medallion.Threading.FileSystem;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
@@ -41,7 +30,9 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Nacos.AspNetCore.V2;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using OOS.Core.Swagger;
 using Prometheus.SystemMetrics;
 using Prometheus.SystemMetrics.Collectors;
 using Serilog;
@@ -73,26 +64,22 @@ public static class AppServiceCollectionExtension
         return serviceCollection;
     }
 
-    public static IServiceCollection AddInfraSetup(this IServiceCollection serviceCollection, WebApplicationBuilder builder)
+    public static IServiceCollection AddInfraSetup(this IServiceCollection serviceCollection,
+        WebApplicationBuilder builder)
     {
-        serviceCollection.AddInfrastructure(builder.Configuration, configure =>
+        serviceCollection.AddLightApiSetup(it =>
         {
-            configure.ConfigInfrastructureOptions(it =>
-            {
-                it.EnableGlobalModelValidator = true;
-                it.EnableGlobalUnifyResult = true;
-                it.EnableGlobalExceptionFilter = true;
-                it.DefaultModelValidateErrorMessage = BusinessErrorCode.Code400.GetDescription();
-                it.DefaultModelValidateErrorBusinessCode = (int)BusinessErrorCode.Code400;
-                it.DefaultModelValidateErrorHttpStatusCode = HttpStatusCode.OK;
-                it.UseFirstModelValidateErrorMessage = true;
-            });
-            configure.UseUserContext<UserContext>();
-            configure.UseMapster(Assembly.Load("LightApi.Service"));
-            configure.UseRabbitMqManager();
+            it.EnableGlobalModelValidator = true;
+            it.EnableGlobalUnifyResult = true;
+            it.EnableGlobalExceptionFilter = true;
+            it.DefaultModelValidateErrorMessage = BusinessErrorCode.Code400.GetDescription();
+            it.DefaultModelValidateErrorBusinessCode = (int)BusinessErrorCode.Code400;
+            it.DefaultModelValidateErrorHttpStatusCode = HttpStatusCode.OK;
+            it.UseFirstModelValidateErrorMessage = true;
         });
-
-        serviceCollection.AddScoped<UserContext>();
+        serviceCollection.AddUserContextSetup<UserContext>();
+        serviceCollection.AddMapsterSetup(Assembly.Load("LightApi.Service"));
+        // serviceCollection.AddRabbitMqSetup(builder.Configuration);
 
         return serviceCollection;
     }
@@ -326,25 +313,23 @@ public static class AppServiceCollectionExtension
                 }
             });
 
-            var _assemblies = new List<Assembly>()
+            var assemblies = new List<Assembly>()
             {
-                Assembly.Load("LightApi.Api"), Assembly.Load("LightApi.Service"), Assembly.Load("LightApi.Domain")
+                Assembly.Load("LightApi.Api"), Assembly.Load("LightApi.Service"), Assembly.Load("LightApi.Domain"),
+                Assembly.Load("LightApi.Infra")
             };
-            foreach (var xmlAssembly in _assemblies)
+            foreach (var xmlAssembly in assemblies)
             {
                 var path = xmlAssembly.Location.Replace(".dll", ".xml");
                 if (File.Exists(path))
                 {
-                    c.SchemaFilter<SwaggerEnumSchemaFilter>(path);
-                    c.IncludeXmlComments(path, true);
+                    var doc = XDocument.Load(path);
+                    c.IncludeXmlComments(() => new XPathDocument(doc.CreateReader()), true);
+                    c.SchemaFilter<DescribeEnumMembers>(doc);
                 }
             }
-            // Add a custom operation filter which sets default values
-            c.OperationFilter<SwaggerDefaultValues>();
             //允许上传文件
             c.OperationFilter<FileUploadFilter>();
-
-            c.DocumentFilter<SwaggerEnumTypesDocumentFilter>();
         });
 
         return serviceCollection;
@@ -390,7 +375,7 @@ public static class AppServiceCollectionExtension
 
             p.SerializerSettings.Converters = new List<JsonConverter>()
             {
-                new DoubleTwoDigitalConverter(), new DecimalTwoDigitalConverter()
+                new StringEnumConverter()
             };
         });
 
@@ -404,7 +389,7 @@ public static class AppServiceCollectionExtension
             Converters =
                 new List<JsonConverter>()
                 {
-                    new DoubleTwoDigitalConverter(), new DecimalTwoDigitalConverter()
+                    new StringEnumConverter()
                 }
         };
 

@@ -1,5 +1,4 @@
-﻿using Adnc.Infra.EventBus.RabbitMq;
-using LightApi.Infra;
+﻿using LightApi.Infra;
 using LightApi.Infra.RabbitMQ;
 using Serilog;
 
@@ -45,5 +44,9 @@ public class RabbitMqConsumerA:BaseRabbitMqConsumer
         Log.Information(message);
         await Task.Delay(1000);
         return true;
+    }
+
+    public RabbitMqConsumerA(RabbitMqManager rabbitMqManager) : base(rabbitMqManager)
+    {
     }
 }
