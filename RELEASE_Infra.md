@@ -1,5 +1,10 @@
 # Infra框架发布记录
 
+## 2024年7月6日 3.5.0
+
+1. 新增动态查询扩展 `DynamicWhere`
+2. 升级Serilog依赖版本
+
 ## 2024年7月1日 3.4.3
 
 1. 修复ExcelHelper.GetValuesByNpoi读取空单元格异常的问题
