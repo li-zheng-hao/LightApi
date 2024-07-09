@@ -1,5 +1,9 @@
 # Infra框架发布记录
 
+## 2024年7月9日 3.5.1
+
+1. LogAction支持Opentelemetry
+
 ## 2024年7月6日 3.5.0
 
 1. 新增动态查询扩展 `DynamicWhere`
