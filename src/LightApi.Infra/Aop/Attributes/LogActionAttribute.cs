@@ -1,7 +1,9 @@
-﻿using LightApi.Infra.Constant;
+﻿using System.Diagnostics;
+using LightApi.Infra.Constant;
 using LightApi.Infra.Extension;
 using LightApi.Infra.Http;
 using LightApi.Infra.Json;
+using LightApi.Infra.OpenTelemetry;
 using LightApi.Infra.Options;
 using LightApi.Infra.Unify;
 using Microsoft.AspNetCore.Mvc;
@@ -48,7 +50,13 @@ public class LogActionAttribute : ActionFilterAttribute
     {
         _svc = actionContext.HttpContext.RequestServices;
         _options = _svc.GetRequiredService<IOptions<InfrastructureOptions>>();
-        _logger = _svc.GetService<ILogger<LogActionAttribute>>();
+        _logger = _svc.GetRequiredService<ILogger<LogActionAttribute>>();
+        Activity.Current = null;
+        var activity=LightApiSource.Source.StartActivity(_description.IsNullOrWhiteSpace()?actionContext.HttpContext.Request.Path:_description, ActivityKind.Server);
+        if (activity != null)
+        {
+            Activity.Current = activity;
+        }
     }
 
     public override void OnActionExecuted(ActionExecutedContext actionExecutedContext)
@@ -81,6 +89,10 @@ public class LogActionAttribute : ActionFilterAttribute
                 LogSuccess(actionExecutedContext,paramStr,resultStr);
             }
         }
+        
+        Activity.Current?.Stop();
+        
+
     }
 
     private (string, string?) GetLogString(ActionExecutedContext actionExecutedContext,bool logResult=true)
