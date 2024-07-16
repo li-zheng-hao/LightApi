@@ -1,14 +1,15 @@
-import {ApiResult, RequestConfig} from "./apiClient.ts";
-import {message} from "@/utils/message.ts";
-
+import type {ApiResult, RequestConfig} from "@/api/client/apiClient";
+import { message } from 'antd';
 /**
  * 处理业务异常
  * @param apiResult
- * @param requestConfig
+ * @param reqeustConfig
  */
-export function handleBusinessError(apiResult: ApiResult<unknown> , requestConfig:RequestConfig) {
+export function handleBusinessError(apiResult: ApiResult<any> , requestConfig:RequestConfig) {
+
+
     if(apiResult?.msg.length>0&&requestConfig.showError) {
-        message.error(apiResult.msg, 6);
+        message.error( { duration: 6000, content:`${apiResult.msg}`})
     }
     if(requestConfig.throwBusinessError)
         throw new Error(apiResult?.msg??"操作失败")

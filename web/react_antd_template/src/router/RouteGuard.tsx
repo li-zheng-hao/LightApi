@@ -19,18 +19,15 @@ import {App} from "antd";
 export const RouteGuard = ({ children }: any) => {
   const {message} = App.useApp();
   const navigator = useNavigate();
+  const isLogin=localStorage.getItem("isLogin");
+
   useEffect(() => {
     if(!isLogin){
       message.info("请先登录");
       navigator('/login')
     }
+  },[isLogin, navigator, message]);
 
-  }, []);
-  useEffect(() => {
-    nprogress.start();
-    return () => nprogress.done();
-  },[]);
-  const isLogin=localStorage.getItem("isLogin");
   if(isLogin){
     return children;
   }else{
