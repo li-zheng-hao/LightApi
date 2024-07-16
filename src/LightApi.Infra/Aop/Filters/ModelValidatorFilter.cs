@@ -65,22 +65,30 @@ public class ModelValidatorFilter : IResultFilter
         {
             if(error.StartsWith("Could not convert string to integer"))
             {
-                var inputValue =error.Substring("Could not convert string to integer ".Length).Split('.').First();
-                return $"输入值{inputValue}无效，请输入有效范围内的整数";
+                var inputValue =error.Substring("Could not convert string to integer ".Length).Split('.').FirstOrDefault();
+                
+                if(inputValue!=null)
+                    return $"输入值{inputValue}无效，请输入有效范围内的整数";
             }
-            
-            if(error.Contains("is too large or small"))
+            else if(error.StartsWith("Could not convert string to decimal"))
             {
-                var inputValue =error.Substring("JSON integer ".Length).Split(' ').First();
-                return $"输入值{inputValue}无效，请输入有效范围内的整数";
+                var inputValue =error.Substring("Could not convert string to decimal: ".Length).Split('.').FirstOrDefault();
+                if(inputValue!=null)
+                    return $"输入值{inputValue}无效，请输入有效范围内的数字";
             }
+            else if(error.Contains("is too large or small"))
+            {
+                var inputValue =error.Substring("JSON integer ".Length).Split(' ').FirstOrDefault();
+                if(inputValue!=null)
+                    return $"输入值{inputValue}无效，请输入有效范围内的整数";
+            }
+
+            return error;
         }
         catch (Exception e)
         {
             // ignore
             return error;
         }
-      
-        return error;
     } 
 }
