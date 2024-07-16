@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import ReactDOM from "react-dom/client";
 import {App, ConfigProvider} from "antd";
 import {RouterProvider} from "react-router-dom";
@@ -11,7 +11,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <ConfigProvider theme={{cssVar: true}}>
           <App>
               <GlobalMessage/>
-              <RouterProvider router={router}></RouterProvider>
+              <Suspense>
+                <RouterProvider router={router}></RouterProvider>
+              </Suspense>
           </App>
       </ConfigProvider>
   </React.StrictMode>

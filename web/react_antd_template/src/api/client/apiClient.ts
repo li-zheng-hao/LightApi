@@ -1,12 +1,13 @@
-// index.ts
+// @ts-nocheck
 import axios from 'axios'
 import type { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { handleHttpError } from './httpErrorHandler'
+import { deepClone, deepMerge } from '@/utils'
+import { handleBusinessError } from '@/api/client/businessErrorHandler'
+import { useJwt } from './jwtAuth'
 import { generateRequestKey } from './helper'
 import idmp, { type IdmpOptions } from 'idmp'
-import {handleBusinessError} from "./businessErrorHandler.ts";
-import {deepMerge} from "../../utils";
-
+import Qs from 'qs';
 export type ApiResult<T> = {
   code: number
   msg: string
@@ -59,17 +60,32 @@ export class ApiClient {
   /**
    * 默认请求配置
    */
-  defaultRequestConfig: RequestConfig = {}
+  defaultRequestConfig: RequestConfig = { }
 
   constructor(config: AxiosRequestConfig, requestConfig?: RequestConfig) {
     this.defaultRequestConfig = Object.assign(this.defaultRequestConfig, requestConfig ?? {})
     // 使用axios.create创建axios实例
     this.axiosInstance = axios.create(Object.assign(this.baseConfig, config))
 
-    this.axiosInstance.interceptors.response.use(undefined, (err: AxiosError) => {
-      handleHttpError(err.response)
-      return Promise.reject(err)
-    })
+    // 改为使用axios-jwt库进行token的管理
+    // this.axiosInstance.interceptors.request.use(
+    //     (config: any) => {
+    //         // 一般会请求拦截里面加token，用于后端的验证
+    //         const token = localStorage.getItem("token") as string
+    //         if(token) {
+    //             config.headers!.Authorization = token;
+    //         }
+    //         return config;
+    //     },
+    //     (err: any) => {
+    //         // 请求错误，这里可以用全局提示框进行提示
+    //         return Promise.reject(err);
+    //     }
+    // );
+
+    // this.axiosInstance.interceptors.response.use(undefined, (err: AxiosError) => {
+    //   return Promise.reject(err)
+    // })
   }
 
   public getAxios(): AxiosInstance {
@@ -81,9 +97,8 @@ export class ApiClient {
    * @param config axios配置
    * @param requestConfig 自定义请求配置
    */
-  public request<T>(config: AxiosRequestConfig, requestConfig?: RequestConfig): Promise<T> {
-    const targetConfig = deepMerge<RequestConfig>(this.defaultRequestConfig, requestConfig)
-
+  public async request<T>(config: AxiosRequestConfig, requestConfig?: RequestConfig): Promise<T> {
+    const targetConfig=deepMerge(this.defaultRequestConfig, requestConfig)
     let requestKey = null
     // 如果需要刷新idmp请求key
     if (targetConfig.refreshIdmpRequestKey) {
@@ -93,11 +108,12 @@ export class ApiClient {
     // 使用idmp请求
     if (targetConfig.useIdmp) {
       requestKey ??= generateRequestKey(config)
-      return idmp(
+      const cacheData=await  idmp(
         requestKey,
         () => this.internalRequest<T>(config, targetConfig),
         targetConfig.idmpOptions ?? undefined
       )
+      return JSON.parse(JSON.stringify(cacheData));
     }
     // 直接使用axios请求
     return this.internalRequest<T>(config, targetConfig)
@@ -112,15 +128,18 @@ export class ApiClient {
   private internalRequest<T>(config: AxiosRequestConfig, requestConfig: RequestConfig): Promise<T> {
     return new Promise((resolve, reject) => {
       this.axiosInstance
-        .request<never, AxiosResponse<ApiResult<T>>>(config)
+        .request<any, AxiosResponse<ApiResult<T>>>(config)
         .then(
           (res: AxiosResponse<ApiResult<T>>) => {
             if (!res.data.success) handleBusinessError(res.data, requestConfig)
             if (res.data.success && requestConfig.unwrapResult) return resolve(res.data.data)
-            else if (requestConfig?.returnRawAxiosResponse) return resolve(res as never)
-            else return resolve(res.data as never)
+            else if (requestConfig?.returnRawAxiosResponse) return resolve(res as any)
+            else return resolve(res.data as any)
           },
-          (err) => reject(err)
+          (err) => {
+            if(requestConfig.showError) handleHttpError(err.response)
+            reject(err)
+          }
         )
         .catch((err) => reject(err))
     })
@@ -129,18 +148,25 @@ export class ApiClient {
 
 // 如果有需要可以配置多个
 const apiClient = new ApiClient(
-  {},
+  {
+    paramsSerializer: (params) => {
+      // 数组格式化 不然.net后端接收不到
+      return Qs.stringify(params, {arrayFormat: 'indices',encode:false})
+    },
+  },
   {
     showError: true,
     unwrapResult: true,
     returnRawAxiosResponse: false,
     throwBusinessError: true,
-    useIdmp: true,
+    useIdmp: false,
     idmpOptions: {
       maxRetry: 0,
-      maxAge: 1000
+      maxAge: 500
     }
   }
 )
+
+// useJwt(apiClient)
 
 export { apiClient }
