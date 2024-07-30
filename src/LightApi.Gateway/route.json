@@ -1,0 +1,56 @@
+{
+  "ReverseProxy":{
+    "Swagger": { 
+      "IsCommonDocument": false,
+      "CommonDocumentName": "YARP"
+    },
+    "Routes": {
+      "app1_route" : {
+        "ClusterId": "App1",
+        "Match": {
+          "Path": "api/app1/{**catch-all}"
+        }
+      },
+      "app2_route" : {
+        "AuthorizationPolicy":"auth",
+        "ClusterId": "App2",
+        "Match": {
+          "Path": "api/app2/{**catch-all}"
+        }
+      }
+      
+    },
+    "Clusters": {
+      "App2": {
+        "LoadBalancingPolicy":"Gray",
+        "Destinations": {
+          "App2": {
+            "Address": "http://App2",
+            "Swaggers": [ 
+              {
+                "Paths": [
+                  "/swagger/v1/swagger.json"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "App1": {
+        "LoadBalancingPolicy":"Gray",
+        "Destinations": {
+          "App1": {
+            "Address": "http://App1",
+            "Swaggers": [
+              {
+                "Paths": [
+                  "/swagger/v1/swagger.json"
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}
