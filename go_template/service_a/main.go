@@ -1,22 +1,19 @@
-package main
+package service_a
 
 import (
 	"context"
 	"flag"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
-	"go_template/infra/config"
-	"go_template/infra/internal_log"
-	"go_template/infra/route"
 	"io"
 	"net/http"
 	"os"
 	"os/signal"
+	"pkg/config"
+	"pkg/internal_log"
+	"pkg/route"
 	"time"
-
-	_ "go_template/docs"
-
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 )
 
 var (
