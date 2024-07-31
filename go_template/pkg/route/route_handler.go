@@ -1,10 +1,9 @@
 package route
 
 import (
-	"go_template/infra/service"
-
 	"github.com/labstack/echo/v4"
 	echoSwagger "github.com/swaggo/echo-swagger"
+	"pkg/service"
 )
 
 func RouteHandlers(e *echo.Echo) {

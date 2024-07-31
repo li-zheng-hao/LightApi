@@ -1,12 +1,12 @@
 package service
 
 import (
-	"go_template/infra/model"
-
+	"fmt"
 	"github.com/labstack/echo/v4"
+	"pkg/model"
 )
 
-// @Summary  获取用户
+// GetUser @Summary  获取用户
 // @Description  获取用户信息
 // @Tags  用户
 // @Accept  json
@@ -25,7 +25,7 @@ func GetUser(c echo.Context) error {
 	return c.JSON(200, user)
 }
 
-// @Summary  添加用户
+// AddUser @Summary  添加用户
 // @Description  添加用户信息
 // @Tags  用户
 // @Accept  json
@@ -36,7 +36,10 @@ func GetUser(c echo.Context) error {
 func AddUser(c echo.Context) error {
 	var user model.SysUser
 	// 调用数据库或其他数据源添加用户信息
-	c.Bind(&user)
+	err := c.Bind(&user)
+	if err != nil {
+		return fmt.Errorf("bind user failed: %w", err)
+	}
 	c.Logger().Info("AddUser", user)
 	// 返回成功信息
 	return c.JSON(200, user)

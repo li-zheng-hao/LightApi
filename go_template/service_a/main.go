@@ -11,7 +11,6 @@ import (
 	"os"
 	"os/signal"
 	"pkg/config"
-	"pkg/internal_log"
 	"pkg/route"
 	"time"
 )
@@ -41,8 +40,6 @@ func init() {
 // @BasePath
 func main() {
 	e := echo.New()
-
-	e.Logger = internal_log.SysLogger
 
 	flag.Parse()
 
@@ -81,6 +78,5 @@ func main() {
 		e.Logger.Fatal(err)
 	}
 	e.Logger.Info("停止服务")
-	internal_log.SysLogger.Flush()
 
 }
