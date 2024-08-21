@@ -6,8 +6,8 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// UserContextMiddleware 自定义用户信息初始化中间件
-func UserContextMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+// AuthMiddleware 自定义用户信息初始化中间件
+func AuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// 从Cookie读取 auth_token
 		authToken, err := c.Cookie("auth_token")

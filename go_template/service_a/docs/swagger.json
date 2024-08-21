@@ -21,40 +21,6 @@
     },
     "host": "localhost:8888",
     "paths": {
-        "/api/user/add": {
-            "post": {
-                "description": "添加用户信息",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "用户"
-                ],
-                "summary": "添加用户",
-                "parameters": [
-                    {
-                        "description": "用户信息",
-                        "name": "user",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.SysUser"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.SysUser"
-                        }
-                    }
-                }
-            }
-        },
         "/api/user/get": {
             "get": {
                 "description": "获取用户信息",

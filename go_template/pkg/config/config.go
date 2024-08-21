@@ -1,9 +1,10 @@
 package config
 
 type AppConfig struct {
-	Port               uint   // 端口
+	Port               int    // 端口
 	ServiceName        string // 服务名称
 	DbConnectionString string // 数据库连接字符串
+	EnvironmentName    string // 环境名称
 }
 
 const (
@@ -13,25 +14,29 @@ const (
 	Production  = "Production"
 )
 
-func LoadConfig(env string) *AppConfig {
-	switch env {
+func LoadConfig(environmentName string, serviceName string, port int) *AppConfig {
+	var appConfig = &AppConfig{}
+	switch environmentName {
 	case Development:
-		return loadDevelopmentConfig()
+		appConfig = loadDevelopmentConfig()
 	case Testing:
-		return loadTestingConfig()
+		appConfig = loadTestingConfig()
 	case Preview:
-		return loadPreviewConfig()
+		appConfig = loadPreviewConfig()
 	case Production:
-		return loadProductionConfig()
+		appConfig = loadProductionConfig()
 	default:
-		return loadProductionConfig()
+		appConfig = loadProductionConfig()
 	}
+	appConfig.EnvironmentName = environmentName
+	appConfig.ServiceName = serviceName
+	appConfig.Port = port
+	return appConfig
 }
 
 func loadProductionConfig() *AppConfig {
 	return &AppConfig{
 		Port:               8888,
-		ServiceName:        "go_template",
 		DbConnectionString: "postgres://username:password@localhost:5432/database_name",
 	}
 }
@@ -39,14 +44,12 @@ func loadProductionConfig() *AppConfig {
 func loadPreviewConfig() *AppConfig {
 	return &AppConfig{
 		Port:               8888,
-		ServiceName:        "go_template",
 		DbConnectionString: "postgres://username:password@localhost:5432/database_name",
 	}
 }
 
 func loadTestingConfig() *AppConfig {
 	return &AppConfig{
-		ServiceName:        "go_template",
 		Port:               8888,
 		DbConnectionString: "postgres://username:password@localhost:5432/database_name",
 	}
@@ -55,6 +58,6 @@ func loadTestingConfig() *AppConfig {
 func loadDevelopmentConfig() *AppConfig {
 	return &AppConfig{
 		Port:               8888,
-		DbConnectionString: "postgres://username:password@localhost:5432/database_name",
+		DbConnectionString: "sqlserver://sa:BJMY%21QAZ2wsx%23EDC@172.10.4.138?database=ent_dev&TrustServerCertificate=true",
 	}
 }

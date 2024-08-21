@@ -24,11 +24,9 @@ import (
 	"go.opentelemetry.io/otel/sdk/trace"
 )
 
-var GlobalLog *zap.Logger
-
 // SetupOTelSDK bootstraps the OpenTelemetry pipeline.
 // If it does not return an error, make sure to call shutdown for proper cleanup.
-func SetupOTelSDK(ctx context.Context) (shutdown func(context.Context) error, err error) {
+func SetupOTelSDK(ctx context.Context) (logger *zap.Logger, shutdown func(context.Context) error, err error) {
 	var shutdownFuncs []func(context.Context) error
 
 	// shutdown calls cleanup functions registered via shutdownFuncs.
@@ -81,11 +79,11 @@ func SetupOTelSDK(ctx context.Context) (shutdown func(context.Context) error, er
 	global.SetLoggerProvider(loggerProvider)
 
 	core := zapcore.NewTee(
-		zapcore.NewCore(zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig()), zapcore.AddSync(os.Stdout), zapcore.InfoLevel),
-		otelzap.NewCore("my/pkg/name", otelzap.WithLoggerProvider(loggerProvider)),
+		zapcore.NewCore(zapcore.NewJSONEncoder(zap.NewDevelopmentEncoderConfig()), zapcore.AddSync(os.Stdout), zapcore.InfoLevel),
+		otelzap.NewCore("servicename", otelzap.WithLoggerProvider(loggerProvider)),
 	)
 	//GlobalLog = otelzap.NewCore("my/pkg/name", otelzap.WithLoggerProvider(loggerProvider))
-	GlobalLog = zap.New(core)
+	logger = zap.New(core)
 	return
 }
 
@@ -143,7 +141,7 @@ func newLoggerProvider() (*log.LoggerProvider, error) {
 	if err != nil {
 		return nil, err
 	}
-	exporter, err := otlploghttp.New(context.Background(), otlploghttp.WithEndpointURL("/ingest/otlp/v1/logs"),
+	exporter, err := otlploghttp.New(context.Background(), otlploghttp.WithEndpointURL("http://172.10.2.200:53410/ingest/otlp/v1/logs"),
 		otlploghttp.WithInsecure())
 
 	if err != nil {
@@ -160,6 +158,6 @@ func newLoggerProvider() (*log.LoggerProvider, error) {
 }
 
 func newExporter(ctx context.Context) (trace.SpanExporter, error) {
-	return otlptracehttp.New(ctx, otlptracehttp.WithEndpointURL("/ingest/otlp/v1/traces"),
+	return otlptracehttp.New(ctx, otlptracehttp.WithEndpointURL("http://172.10.2.200:53410/ingest/otlp/v1/traces"),
 		otlptracehttp.WithInsecure())
 }

@@ -28,28 +28,6 @@ info:
   title: Swagger Example API
   version: "1.0"
 paths:
-  /api/user/add:
-    post:
-      consumes:
-      - application/json
-      description: 添加用户信息
-      parameters:
-      - description: 用户信息
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/model.SysUser'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.SysUser'
-      summary: 添加用户
-      tags:
-      - 用户
   /api/user/get:
     get:
       consumes:
