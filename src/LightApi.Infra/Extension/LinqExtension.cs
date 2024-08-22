@@ -54,6 +54,27 @@ public static class LinqExtension
             return isDescending == true ? source.OrderByDescending(fieldName) : source.OrderBy(fieldName);
         return source;
     }
+
+    /// <summary>
+    /// 根据字段名动态排序,如果条件不满足则按照默认的字段进行排序
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="condition">是否进行排序</param>
+    /// <param name="fieldName">字段名 支持多级 如Property1.SubProperty1</param>
+    /// <param name="isDescending">是否降序 不传默认false</param>
+    /// <param name="defaultProperty"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <exception cref="KeyNotFoundException">当属性不存在时会抛出此异常</exception>
+    /// <returns></returns>
+    public static IQueryable<T> DynamicOrderIfOrDefault<T>(this IQueryable<T> source,bool? condition, string fieldName, bool? isDescending,string defaultProperty="Id")
+    {
+        if(condition==true)
+            return isDescending == true ? source.OrderByDescending(fieldName) : source.OrderBy(fieldName);
+        else
+        {
+            return isDescending == true ? source.OrderByDescending(defaultProperty) : source.OrderBy(defaultProperty);
+        }
+    }
     #region 私有方法
 
     private static IOrderedQueryable<T> OrderBy<T>(
