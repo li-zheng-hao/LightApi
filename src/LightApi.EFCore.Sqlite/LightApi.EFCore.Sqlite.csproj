@@ -9,7 +9,7 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeSymbols>true</IncludeSymbols>
-        <Version>1.0.0</Version>
+        <Version>1.1.0-preview</Version>
         <Title>LightApi.EFCore.Sqlite</Title>
         <Authors>lizhenghao</Authors>
         <Description>AspNetCore项目开发库</Description>
