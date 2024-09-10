@@ -1,6 +1,6 @@
-﻿#if NET6_0_OR_GREATER
-using DotNetCore.CAP;
+﻿using DotNetCore.CAP;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver;
 using MongoDB.Entities;
 
 namespace LightApi.Mongo.UnitOfWork;
@@ -32,13 +32,13 @@ public class MongoUnitOfWork : IMongoUnitOfWork
         {
             var trans = DB.Transaction();
             var publisher = serviceProvider.GetRequiredService<ICapPublisher>();
-
-            publisher.Transaction.Value =
-                ActivatorUtilities.CreateInstance<MongoDBCapTransaction>(publisher.ServiceProvider);
-
-            var capTrans = publisher.Transaction.Value.Begin(trans.Session, false);
+            publisher.Transaction =
+            ActivatorUtilities.CreateInstance<MongoDBCapTransaction>(publisher.ServiceProvider);
+            // var capTrans = publisher.Transaction.Begin(trans.Session!, false);
+            publisher.Transaction.DbTransaction=  trans.Session;
+            publisher.Transaction.AutoCommit = false;
             MongoTransaction = trans;
-            CapTransaction = capTrans;
+            CapTransaction = publisher.Transaction;
         }
         else
         {
@@ -73,4 +73,3 @@ public class MongoUnitOfWork : IMongoUnitOfWork
         IsRollback = true;
     }
 }
-#endif

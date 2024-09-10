@@ -9,28 +9,15 @@
         <Title>LightApi.Mongo</Title>
         <Authors>lizhenghao</Authors>
         <Description>MongoDB扩展库</Description>
-        <Version>1.0.0</Version>
+        <Version>2.0.0</Version>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
-    <Choose>
-        <When Condition="'$(TargetFramework)'=='net6.0'">
-            <ItemGroup>
-                <PackageReference Include="DotNetCore.CAP.MongoDB" Version="7.2.0"/>
-                <PackageReference Include="MongoDB.Entities" Version="22.1.0"/>
-                <FrameworkReference Include="Microsoft.AspNetCore.App"/>
-            </ItemGroup>
-        </When>
-    </Choose>
-    <Choose>
-        <When Condition="'$(TargetFramework)'=='netstandard2.0'">
-            <ItemGroup>
-                <PackageReference Include="MongoDB.Entities" Version="21.0.1"/>
-            </ItemGroup>
-        </When>
-    </Choose>
     <ItemGroup>
-        <PackageReference Include="Mapster" Version="7.3.0"/>
+        <PackageReference Include="DotNetCore.CAP.MongoDB" Version="8.2.0" />
+        <PackageReference Include="MongoDB.Entities" Version="23.1.1" />
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+        <PackageReference Include="Yitter.IdGenerator" Version="1.0.14" />
     </ItemGroup>
 </Project>

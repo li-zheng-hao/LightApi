@@ -1,5 +1,4 @@
 ﻿#if NET6_0_OR_GREATER
-using LightApi.Mongo.Repository;
 using LightApi.Mongo.UnitOfWork;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
@@ -19,7 +18,6 @@ public static class ServiceCollectionExtension
     public static IServiceCollection AddMongoSetup(this IServiceCollection serviceCollection,string dbName,string connectionString)
     {
         DB.InitAsync(dbName, MongoClientSettings.FromConnectionString(connectionString)).Wait(5000);
-        serviceCollection.AddScoped(typeof(IMongoRepository<>), typeof(MongoRepository<>));
         serviceCollection.AddScoped<IMongoUnitOfWork, MongoUnitOfWork>();
         return serviceCollection;
     }

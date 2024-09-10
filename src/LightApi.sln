@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{F364DABB-647
 		..\RELEASE_EFCore.md = ..\RELEASE_EFCore.md
 		..\RELEASE_Infra.md = ..\RELEASE_Infra.md
 		..\RELEASE_SqlSugar.md = ..\RELEASE_SqlSugar.md
+		..\RELEASE_Mongo.md = ..\RELEASE_Mongo.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightApi.SqlSugar", "LightApi.SqlSugar\LightApi.SqlSugar.csproj", "{E728CFD3-02AA-4B32-8D01-2F00FCB11D33}"

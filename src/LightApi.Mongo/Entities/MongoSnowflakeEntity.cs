@@ -2,13 +2,14 @@
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Entities;
 using Newtonsoft.Json;
+using Yitter.IdGenerator;
 
 namespace LightApi.Mongo.Entities
 {
     /// <summary>
-    /// Mongo数据库集合基类
+    /// Mongo数据库集合基类 雪花Id作为主键
     /// </summary>
-    public class MongoEntity : IEntity
+    public class MongoSnowflakeEntity : IEntity
     {
         /// <summary>
         /// 未映射上的字段全都记录在此对象内
@@ -19,15 +20,15 @@ namespace LightApi.Mongo.Entities
 
         public bool HasDefaultID()
         {
-            return string.IsNullOrWhiteSpace(Id);
+            return Id==0;
         }
 
-        [BsonId, ObjectId]
-        public string Id { get; set; }
+        [BsonId]
+        public long Id { get; set; }
 
         object IEntity.GenerateNewID()
         {
-            return ObjectId.GenerateNewId().ToString();
+            return YitIdHelper.NextId();
         }
     }
 }

@@ -1,27 +1,40 @@
-﻿using LightApi.Mongo.Entities;
-using LightApi.Mongo.Repository;
-using LightApi.Mongo.UnitOfWork;
+﻿using LightApi.Mongo;
+using LightApi.Mongo.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Entities;
+using Yitter.IdGenerator;
 
 namespace LightApi.UnitTest;
 
 public class MongoTest
 {
     [Fact]
-    public async Task PageQuery()
+    public async Task SnowflakeModel()
     {
+        var options = new IdGeneratorOptions(1);
+// options.WorkerIdBitLength = 10; // 默认值6，限定 WorkerId 最大值为2^6-1，即默认最多支持64个节点。
+// options.SeqBitLength = 6; // 默认值6，限制每毫秒生成的ID个数。若生成速度超过5万个/秒，建议加大 SeqBitLength 到 10。
+// options.BaseTime = Your_Base_Time; // 如果要兼容老系统的雪花算法，此处应设置为老系统的BaseTime。
+// ...... 其它参数参考 IdGeneratorOptions 定义。
+        options.BaseTime = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Local);
+// 保存参数（务必调用，否则参数设置不生效）：
+        YitIdHelper.SetIdGenerator(options);
         IServiceCollection serviceCollection = new ServiceCollection();
-        serviceCollection.AddScoped(typeof(MongoRepository<>));
-        serviceCollection.AddScoped(typeof(IMongoUnitOfWork),typeof(MongoUnitOfWork));
-        DB.InitAsync("TestDb").Wait();
+        serviceCollection.AddMongoSetup("test", Environment.GetEnvironmentVariable("APP_MONGO_CONNECTIONSTRING"));
         var serviceProvider = serviceCollection.BuildServiceProvider();
-        var repository = serviceProvider.GetService<MongoRepository<ModelTest>>();
-        await repository!.InsertAsync(new ModelTest() { Name = "hello" });
-        var res=await repository.GetPaginatedAsync(it => true);
-        Assert.NotNull(res);
+        var model=new ModelSnowflakeTest()
+        {
+            Name = "test"
+        };
+        await model.SaveAsync();
+        var modelExist=DB.Queryable<ModelSnowflakeTest>().FirstOrDefault();
+        Assert.Equal(model.Id, modelExist!.Id);
     }
     internal class ModelTest:MongoEntity
+    {
+        public string Name { get; set; }
+    }
+    internal class ModelSnowflakeTest:MongoSnowflakeEntity
     {
         public string Name { get; set; }
     }

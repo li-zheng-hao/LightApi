@@ -1,6 +1,4 @@
-﻿#if NET6_0_OR_GREATER
-
-using DotNetCore.CAP;
+﻿using DotNetCore.CAP;
 using MongoDB.Entities;
 
 namespace LightApi.Mongo.UnitOfWork;
@@ -29,5 +27,3 @@ public interface IMongoUnitOfWork : IDisposable
     
 
 }
-
-#endif
