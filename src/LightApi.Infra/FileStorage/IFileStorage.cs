@@ -41,4 +41,20 @@ public interface IFileStorage
     /// <param name="fileName"></param>
     /// <returns>返回文件 http url</returns>
     Task<string?> UploadToMinioStorage(Stream stream,string fileName);
+
+    /// <summary>
+    /// 上传到MongoDB
+    /// </summary>
+    /// <param name="stream"></param>
+    /// <param name="fileName"></param>
+    /// <param name="isTempFile">是否为临时文件（用于定期删除）</param>
+    /// <returns>PublicDomain/文件id_文件名(带后缀)</returns>
+    Task<string?> UploadToMongoDBStorage(Stream stream, string fileName,bool isTempFile=false);
+
+    /// <summary>
+    /// 从mongodb下载文件
+    /// </summary>
+    /// <param name="key">UploadToMongoDB接口返回的字符串，或者直接使用文件id</param>
+    /// <returns></returns>
+    Task<Stream?> DownloadFromMongoDBStorage(string key);
 }

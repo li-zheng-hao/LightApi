@@ -1,5 +1,9 @@
 # Infra框架发布记录
 
+## 2024年9月12日 3.7.0
+
+1. 新增MongoDB存储
+
 ## 2024年8月22日 3.6.0
 
 1. 新增DynamicOrderIfOrDefault

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using Minio;
 using Minio.DataModel.Args;
+using MongoDB.Entities;
 
 namespace LightApi.Infra.FileStorage;
 
@@ -65,6 +66,43 @@ public class FileStorage:IFileStorage
         await _minioClient.PutObjectAsync(putObjectArgs);
         string prefix = _options.Value.MinioStorageOptions.EnableSSL ? "https" : "http";
         return $"{prefix}://{_options.Value.MinioStorageOptions.EndPoint}/{_options.Value.MinioStorageOptions.Bucket}/{objectKey}";
+    }
+
+    public async Task<string?> UploadToMongoDBStorage(Stream stream, string fileName, bool isTempFile = false)
+    {
+        var file = new MongoStorage()
+        {
+            FileName = fileName,
+            IsTempFile = isTempFile
+        };
+        await file.SaveAsync();
+        await file.Data.UploadAsync(stream);
+        return $"{_options.Value.MongoStorageOptions!.PublicDomain}/{file.ID}_{file.FileName}";
+    }
+
+    public async Task<Stream?> DownloadFromMongoDBStorage(string key)
+    {
+        try
+        {
+            if (key.Length > 24) key = key.Split("_")[0];
+            if (key.Length != 24)
+                return null;
+            var mongoFile = await DB.Find<MongoStorage>().Match(it => it.ID == key).ExecuteFirstAsync();
+
+            if (mongoFile != null)
+            {
+                var memoryStream = new MemoryStream();
+                await mongoFile.Data.DownloadAsync(memoryStream);
+                memoryStream.Seek(0, SeekOrigin.Begin);
+                return memoryStream;
+            }
+            return null;
+            
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     /// <summary>

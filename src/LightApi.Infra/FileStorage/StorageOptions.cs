@@ -10,8 +10,13 @@ public class StorageOptions
     public LocalStorageOptions? LocalStorageOptions { get; set; }
     
     /// <summary>
-    /// MinIO文件读取配置
+    /// MinIO文件存储配置
     /// </summary>
     public MinioStorageOptions? MinioStorageOptions { get; set; }
+    
+    /// <summary>
+    /// MongoDb文件存储配置
+    /// </summary>
+    public MongoStorageOptions? MongoStorageOptions { get; set; }
 }
 
