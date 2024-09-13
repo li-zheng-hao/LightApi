@@ -1,6 +1,8 @@
 ﻿using LightApi.Mongo;
 using LightApi.Mongo.Entities;
+using LightApi.Mongo.UnitOfWork;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver.Linq;
 using MongoDB.Entities;
 using Yitter.IdGenerator;
 
@@ -8,6 +10,21 @@ namespace LightApi.UnitTest;
 
 public class MongoTest
 {
+    [Fact]
+    public async Task TransactionRollbackTest()
+    {
+        IServiceCollection serviceCollection = new ServiceCollection();
+        serviceCollection.AddMongoSetup("test", Environment.GetEnvironmentVariable("APP_MONGO_CONNECTIONSTRING"));
+        var serviceProvider = serviceCollection.BuildServiceProvider();
+        var unitOfWork = serviceProvider.GetService<IMongoUnitOfWork>();
+        unitOfWork.StartTransaction(serviceProvider);
+        var dbContext = serviceProvider.GetService<DBContext>();
+        var model=new ModelTest() { Name = Guid.NewGuid().ToString() };
+        await dbContext.SaveAsync(model);
+        await unitOfWork.RollbackAsync();
+        var modelExist = await dbContext.Queryable<ModelTest>().FirstOrDefaultAsync(it=>it.Name==model.Name);
+        Assert.Null(modelExist);
+    }
     [Fact]
     public async Task SnowflakeModel()
     {

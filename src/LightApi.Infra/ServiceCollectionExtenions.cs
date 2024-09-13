@@ -62,6 +62,7 @@ public static class ServiceCollectionExtenions
         {
             storageOptions.Adapt(it);
         });
+        serviceCollection.AddSingleton<IFileStorage, FileStorage>();    
         return serviceCollection;
     }
     /// <summary>

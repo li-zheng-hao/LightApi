@@ -19,6 +19,7 @@ public static class ServiceCollectionExtension
     {
         DB.InitAsync(dbName, MongoClientSettings.FromConnectionString(connectionString)).Wait(5000);
         serviceCollection.AddScoped<IMongoUnitOfWork, MongoUnitOfWork>();
+        serviceCollection.AddScoped<DBContext>();
         return serviceCollection;
     }
 }

@@ -9,41 +9,44 @@ public class MongoUnitOfWork : IMongoUnitOfWork
 {
     public void Dispose()
     {
-        if (!IsCommited && !IsRollback&&MongoTransaction!=null)
+        if (!IsCommited && !IsRollback&&IClientSessionHandle!=null)
         {
             CommitAsync().GetAwaiter().GetResult();
         }
         CapTransaction?.Dispose();
-        MongoTransaction?.Dispose();
+        IClientSessionHandle?.Dispose();
     }
 
     public Guid ContextId { get; set; } = new Guid();
 
     public ICapTransaction? CapTransaction { get; set; }
 
-    public Transaction? MongoTransaction { get; set; }
+    public IClientSessionHandle? IClientSessionHandle { get; set; }
+    
+    public DBContext DbContext { get; set; }
 
 
     public void StartTransaction(IServiceProvider serviceProvider, bool useCapTransaction = false)
     {
-        if (MongoTransaction != null) return;
+        if (IClientSessionHandle != null) return;
 
+        DbContext=serviceProvider.GetRequiredService<DBContext>();
+        
         if (useCapTransaction)
         {
-            var trans = DB.Transaction();
+            var trans = DbContext.Transaction();
             var publisher = serviceProvider.GetRequiredService<ICapPublisher>();
             publisher.Transaction =
             ActivatorUtilities.CreateInstance<MongoDBCapTransaction>(publisher.ServiceProvider);
-            // var capTrans = publisher.Transaction.Begin(trans.Session!, false);
-            publisher.Transaction.DbTransaction=  trans.Session;
+            publisher.Transaction.DbTransaction=  trans;
             publisher.Transaction.AutoCommit = false;
-            MongoTransaction = trans;
+            IClientSessionHandle = trans;
             CapTransaction = publisher.Transaction;
         }
         else
         {
-            var trans = DB.Transaction();
-            MongoTransaction = trans;
+            var trans = DbContext.Transaction();
+            IClientSessionHandle = trans;
         }
     }
 
@@ -57,7 +60,7 @@ public class MongoUnitOfWork : IMongoUnitOfWork
         if (CapTransaction != null)
             return CapTransaction.CommitAsync();
         
-        return MongoTransaction?.CommitAsync();
+        return IClientSessionHandle!.CommitTransactionAsync();
     }
 
     public async Task RollbackAsync()
@@ -68,7 +71,7 @@ public class MongoUnitOfWork : IMongoUnitOfWork
         if (CapTransaction != null)
             await CapTransaction.RollbackAsync();
         else
-            await MongoTransaction!.AbortAsync();
+            await IClientSessionHandle!.AbortTransactionAsync();
 
         IsRollback = true;
     }

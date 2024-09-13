@@ -12,8 +12,8 @@ public interface IMongoUnitOfWork : IDisposable
     
     ICapTransaction CapTransaction { get; set; }
 
-    Transaction MongoTransaction { get; set; }
-
+    DBContext DbContext { get; set; }
+    
     /// <summary>
     /// 开启事务
     /// </summary>
