@@ -43,7 +43,7 @@ public static class DyanmicQueryExtension
         }
         else
         {
-            propertyInfo = typeof(T).GetProperty(property);
+            propertyInfo = typeof(T).GetProperty(property.ToFirstUpper());
             if (propertyInfo == null) throw new BusinessException("未找到属性" + property);
             propertyAccess = Expression.MakeMemberAccess(parameter, propertyInfo);
         }
