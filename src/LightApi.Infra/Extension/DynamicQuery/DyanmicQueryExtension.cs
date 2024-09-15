@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using LightApi.Infra.InfraException;
+using LightApi.Infra.Internal;
 using Newtonsoft.Json.Linq;
 
 namespace LightApi.Infra.Extension.DynamicQuery;
@@ -27,16 +28,16 @@ public static class DyanmicQueryExtension
         DynamicOpType opType)
     {
         PropertyInfo? propertyInfo = null;
-        MemberExpression? propertyAccess = null;
+        MemberExpression? propertyAccess;
         var parameter = Expression.Parameter(typeof(T), "x");
         if (property.Contains("."))
         {
             // 支持多级属性，如 "User.Name"
             var properties = property.Split('.');
-            propertyAccess = Expression.PropertyOrField(parameter, properties[0]);
+            propertyAccess = Expression.PropertyOrField(parameter, properties[0].ToFirstUpper());
             for (int i = 1; i < properties.Length; i++)
             {
-                propertyAccess = Expression.PropertyOrField(propertyAccess, properties[i]);
+                propertyAccess = Expression.PropertyOrField(propertyAccess, properties[i].ToFirstUpper());
                 propertyInfo = propertyAccess.Member as PropertyInfo;
             }
         }
@@ -47,7 +48,7 @@ public static class DyanmicQueryExtension
             propertyAccess = Expression.MakeMemberAccess(parameter, propertyInfo);
         }
 
-        Expression? comparison = null;
+        Expression? comparison;
         switch (opType)
         {
             case DynamicOpType.Contains:
