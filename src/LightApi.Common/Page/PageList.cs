@@ -1,6 +1,6 @@
 ﻿using Mapster;
 
-namespace LightApi.EFCore.Util;
+namespace LightApi.Common.Page;
 
 /// <summary>
 ///     分页组件实体类

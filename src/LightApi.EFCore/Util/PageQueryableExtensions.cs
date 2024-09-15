@@ -1,4 +1,7 @@
-using LightApi.EFCore.Util;
+using LightApi.Common;
+using LightApi.Common.Page;
+
+namespace LightApi.EFCore.Util;
 
 /// <summary>
 /// 分部拓展类

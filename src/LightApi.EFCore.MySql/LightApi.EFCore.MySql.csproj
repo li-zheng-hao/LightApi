@@ -3,13 +3,13 @@
     <PropertyGroup>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <TargetFrameworks>net7.0;net8.0</TargetFrameworks>
+        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeSymbols>true</IncludeSymbols>
-        <Version>1.1.0-preview</Version>
+        <Version>1.2.0</Version>
         <Title>LightApi.EFCore.MySql</Title>
         <Authors>lizhenghao</Authors>
         <Description>AspNetCore项目开发库</Description>

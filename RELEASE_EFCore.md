@@ -1,4 +1,8 @@
-# EFCore框架发布记录
+# EFCore模块更新日志
+
+## 2024年9月15日  1.2.0
+
+1. 拆分分页查询部分到LightApi.Common中（原本在EFCore模块中）
 
 ## 2024年4月16日 EFCore、MySql、SqlServer扩展 1.1.0-preview
 
