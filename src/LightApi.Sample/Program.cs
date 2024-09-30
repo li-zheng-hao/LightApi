@@ -1,5 +1,6 @@
 using LightApi.Infra;
 using LightApi.Infra.OpenTelemetry;
+using LightApi.Mongo;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -17,7 +18,7 @@ builder.Services.AddSwaggerGen();
 Log.Logger=new LoggerConfiguration()
     .Enrich.WithProperty("System","LightApiSample")
     .WriteTo.Console()
-    .WriteTo.Seq("")
+    // .WriteTo.Seq("")
     .CreateLogger();
 
 builder.Services.AddSerilog();
@@ -26,20 +27,21 @@ builder.Services.AddLightApiSetup(it =>
 {
     
 });
+builder.Services.AddMongoSetup("test", Environment.GetEnvironmentVariable("APP_MONGO_CONNECTIONSTRING"));
 builder.Host.AddAutofacSetup();
 
-builder.Services.AddOpenTelemetry()
-    .ConfigureResource(r => r.AddService(LightApiSource.SourceName))
-    .WithTracing(tracing =>
-    {
-        tracing.AddSource(LightApiSource.SourceName);
-        tracing.SetSampler(new AlwaysOnSampler());
-        tracing.AddOtlpExporter(opt =>
-        {
-            opt.Endpoint = new Uri("/ingest/otlp/v1/traces");
-            opt.Protocol = OtlpExportProtocol.HttpProtobuf;
-        });
-    });
+// builder.Services.AddOpenTelemetry()
+//     .ConfigureResource(r => r.AddService(LightApiSource.SourceName))
+//     .WithTracing(tracing =>
+//     {
+//         tracing.AddSource(LightApiSource.SourceName);
+//         tracing.SetSampler(new AlwaysOnSampler());
+//         tracing.AddOtlpExporter(opt =>
+//         {
+//             opt.Endpoint = new Uri("/ingest/otlp/v1/traces");
+//             opt.Protocol = OtlpExportProtocol.HttpProtobuf;
+//         });
+//     });
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

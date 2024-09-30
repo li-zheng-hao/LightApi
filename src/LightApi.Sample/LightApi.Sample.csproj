@@ -17,6 +17,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\LightApi.Infra\LightApi.Infra.csproj" />
+      <ProjectReference Include="..\LightApi.Mongo\LightApi.Mongo.csproj" />
     </ItemGroup>
 
 </Project>

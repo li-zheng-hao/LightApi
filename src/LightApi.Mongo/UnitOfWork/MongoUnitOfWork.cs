@@ -75,4 +75,6 @@ public class MongoUnitOfWork : IMongoUnitOfWork
 
         IsRollback = true;
     }
+
+    public bool UseOptimisticLocker { get; set; }
 }

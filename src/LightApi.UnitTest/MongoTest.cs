@@ -50,6 +50,8 @@ public class MongoTest
     internal class ModelTest:MongoEntity
     {
         public string Name { get; set; }
+        
+        public string Version { get; set; }
     }
     internal class ModelSnowflakeTest:MongoSnowflakeEntity
     {
