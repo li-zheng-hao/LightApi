@@ -23,9 +23,10 @@ public static class ProcessInvokeHelper
     /// </summary>
     /// <param name="data"></param>
     /// <param name="path">文件完整路径 不填写自动生成</param>
+    /// <param name="serializerSettings">Json序列化配置</param>
     /// <typeparam name="T"></typeparam>
     /// <returns>文件路径</returns>
-    public static string? Write<T>(T? data, string path = "")
+    public static string? Write<T>(T? data, string? path=null,JsonSerializerSettings? serializerSettings=null)
     {
         if (data == null) return default;
 
@@ -38,27 +39,37 @@ public static class ProcessInvokeHelper
 
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
 
-        var dataStr = JsonConvert.SerializeObject(data);
-
-        File.WriteAllText(path, dataStr);
+        if (data is string dataStr)
+        {            
+            File.WriteAllText(path, dataStr);
+        }
+        else
+        {
+            dataStr = JsonConvert.SerializeObject(data,serializerSettings);
+            File.WriteAllText(path, dataStr);
+        }
+        
+        
 
         return path;
     }
+
 
     /// <summary>
     /// 读取
     /// </summary>
     /// <param name="path">文件路径</param>
     /// <param name="deleteAfterRead">读取完成后自动删除</param>
+    /// <param name="serializerSettings">Json序列化配置</param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static T? Read<T>(string? path, bool deleteAfterRead = true)
+    public static T? Read<T>(string? path, bool deleteAfterRead = true,JsonSerializerSettings? serializerSettings=null)
     {
         try
         {
             if (path == null || !File.Exists(path)) return default;
             var dataStr = File.ReadAllText(path);
-            return JsonConvert.DeserializeObject<T>(dataStr);
+            return JsonConvert.DeserializeObject<T>(dataStr,serializerSettings);
         }
         finally
         {
@@ -91,8 +102,8 @@ public static class ProcessInvokeHelper
         param.CancellationToken ??= new CancellationTokenSource(TimeSpan.FromSeconds(param.Timeout ?? 60)).Token;
 
         var paramPath = param.JsonParamFileDir.IsNotNullOrWhiteSpace()
-            ? Write(param.JsonParam, $"{Path.Combine(param.JsonParamFileDir!, $"{Guid.NewGuid()}.json")}")
-            : Write(param.JsonParam);
+            ? Write(param.JsonParam, $"{Path.Combine(param.JsonParamFileDir!, $"{Guid.NewGuid()}.json")}",param.JsonSerializerSettings)
+            : Write(param.JsonParam,null,param.JsonSerializerSettings);
 
         var args = param.Args.ToList();
 
@@ -112,7 +123,7 @@ public static class ProcessInvokeHelper
             .WithValidation(param.IgnoreError ? CommandResultValidation.None : CommandResultValidation.ZeroExitCode)
             .ExecuteAsync(param.CancellationToken.Value);
 
-        return (Read<TResult>(paramPath), result);
+        return (Read<TResult>(paramPath,true,param.JsonSerializerSettings), result);
     }
 }
 
@@ -173,4 +184,9 @@ public class InvokeOptions<T>
     /// json参数文件所在目录，为空的话使用BasePath
     /// </summary>
     public string? JsonParamFileDir { get; set; }
+    
+    /// <summary>
+    /// Json序列化配置，null则使用默认配置
+    /// </summary>
+    public JsonSerializerSettings? JsonSerializerSettings { get; set; }
 }
