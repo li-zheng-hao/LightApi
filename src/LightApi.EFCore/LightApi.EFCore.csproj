@@ -8,7 +8,7 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeSymbols>true</IncludeSymbols>
-        <Version>1.2.0</Version>
+        <Version>1.2.1</Version>
         <Title>LightApi.EFCore</Title>
         <Authors>lizhenghao</Authors>
         <Description>AspNetCore项目开发库</Description>
