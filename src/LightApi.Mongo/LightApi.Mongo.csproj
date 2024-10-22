@@ -9,7 +9,7 @@
         <Title>LightApi.Mongo</Title>
         <Authors>lizhenghao</Authors>
         <Description>MongoDB扩展库</Description>
-        <Version>3.1.0</Version>
+        <Version>3.1.2</Version>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>

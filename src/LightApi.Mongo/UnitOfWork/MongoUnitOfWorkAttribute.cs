@@ -1,13 +1,11 @@
-﻿#if NET6_0_OR_GREATER
-
-using DotNetCore.CAP;
+﻿using DotNetCore.CAP;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace LightApi.Mongo.UnitOfWork;
 
-public class MongoUnitOfWorkAttribute : ResultFilterAttribute
+public class MongoUnitOfWorkAttribute : ActionFilterAttribute
 {
     private ILogger<MongoUnitOfWorkAttribute> _logger;
 
@@ -29,42 +27,24 @@ public class MongoUnitOfWorkAttribute : ResultFilterAttribute
     /// </summary>
     public bool UseCapPublisher { get; set; }
 
-    public override void OnResultExecuting(ResultExecutingContext context)
+    public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
         try
         {
             _logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<MongoUnitOfWorkAttribute>>();
             _uow=context.HttpContext.RequestServices.GetRequiredService<IMongoUnitOfWork>();
             _uow.StartTransaction(context.HttpContext.RequestServices,UseCapPublisher);
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e,$"工作单元异常 { e.Message}");
-            throw;
-        }
-    }
-
-    public override void OnResultExecuted(ResultExecutedContext context)
-    {
-        try
-        {
-            if (context.Exception is null)
-            {
-                _uow.CommitAsync().GetAwaiter().GetResult();
-            }
+            var executed=await next();
+            if (executed.Exception!=null)
+                await _uow.RollbackAsync();
             else
-            {
-                _logger.LogError(context.Exception, $"工作单元回滚,异常信息：{context.Exception.Message}");
-                _uow.RollbackAsync().GetAwaiter().GetResult();
-            }
+                await _uow.CommitAsync();
         }
-        catch (Exception e)
+        catch
         {
-            _logger.LogError(e,$"工作单元异常 { e.Message}");
-    
+            await _uow.RollbackAsync();
             throw;
         }
     }
    
 }
-#endif
