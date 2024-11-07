@@ -399,3 +399,4 @@ FodyWeavers.xsd
 *.sln.iml
 web/vue3naiveui_template/stats.html
 web/vue3naiveui_template/components.d.ts
+web/react_antd_template/stats.html
