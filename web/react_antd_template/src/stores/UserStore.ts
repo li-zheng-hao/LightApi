@@ -1,21 +1,19 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable } from 'mobx';
 
-class UserStore{
-    userid:number = -1
-    nickName:string = ''
-    constructor(){
-        makeAutoObservable(this);
-    }
+class UserStore {
+  userid: number = -1;
+  nickName: string = '';
+  constructor() {
+    makeAutoObservable(this);
+  }
 
-    setUserId(value:number){
-        this.userid = value;
-    }
+  setUserId(value: number) {
+    this.userid = value;
+  }
 
-    setNickName(value:string){
-        this.nickName = value;
-    }
-
-
+  setNickName(value: string) {
+    this.nickName = value;
+  }
 }
 
 export default new UserStore();

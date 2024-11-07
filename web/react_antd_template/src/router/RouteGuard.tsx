@@ -1,7 +1,7 @@
-import { useEffect } from "react";
-import {  useNavigate } from "react-router-dom";
-import nprogress from "../utils/nprogress";
-import {App} from "antd";
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import nprogress from '../utils/nprogress';
+import { App } from 'antd';
 
 // const getCurrentRouterMap = (routers: RouteInfo[], path: string): RouteInfo => {
 //   for (const router of routers) {
@@ -17,20 +17,20 @@ import {App} from "antd";
 // 路由守卫 在这里处理
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const RouteGuard = ({ children }: any) => {
-  const {message} = App.useApp();
+  const { message } = App.useApp();
   const navigator = useNavigate();
-  const isLogin=localStorage.getItem("isLogin");
+  const isLogin = localStorage.getItem('isLogin');
 
   useEffect(() => {
-    if(!isLogin){
-      message.info("请先登录");
-      navigator('/login')
+    if (!isLogin) {
+      message.info('请先登录');
+      navigator('/login');
     }
-  },[isLogin, navigator, message]);
+  }, [isLogin, navigator, message]);
 
-  if(isLogin){
+  if (isLogin) {
     return children;
-  }else{
-    return undefined
+  } else {
+    return undefined;
   }
 };

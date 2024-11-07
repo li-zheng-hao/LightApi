@@ -5,13 +5,13 @@
  */
 export function isEmpty(value: any) {
   if (value == null) {
-    return true
+    return true;
   }
   if (Array.isArray(value) || typeof value === 'string') {
-    return !value.length
+    return !value.length;
   }
   if (typeof value === 'object') {
-    return !Object.keys(value).length
+    return !Object.keys(value).length;
   }
-  return false
+  return false;
 }

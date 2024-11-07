@@ -81,7 +81,11 @@ export default class Storage {
    * 如果过期时间未设置，默认关闭浏览器自动删除
    * @example
    */
-  setCookie(name: string, value: any, expire: number | null = DEFAULT_CACHE_TIME) {
+  setCookie(
+    name: string,
+    value: any,
+    expire: number | null = DEFAULT_CACHE_TIME,
+  ) {
     document.cookie = `${this.getKey(name)}=${value}; Max-Age=${expire}`;
   }
 

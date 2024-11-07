@@ -7,11 +7,11 @@
  */
 export function findIndex<T>(
   array: T[],
-  predicate: (value: T, index: number, obj: T[]) => unknown
+  predicate: (value: T, index: number, obj: T[]) => unknown,
 ): number {
-  const length = array == null ? 0 : array.length
+  const length = array == null ? 0 : array.length;
   if (!length) {
-    return -1
+    return -1;
   }
-  return array.findIndex((item, i) => predicate(item, i, array))
+  return array.findIndex((item, i) => predicate(item, i, array));
 }

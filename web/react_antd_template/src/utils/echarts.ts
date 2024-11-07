@@ -1,8 +1,5 @@
-import * as echarts from 'echarts/core'
-import {
-  BarChart,
-  LineChart
-} from 'echarts/charts'
+import * as echarts from 'echarts/core';
+import { BarChart, LineChart } from 'echarts/charts';
 
 import {
   TitleComponent,
@@ -18,11 +15,11 @@ import {
   VisualMapComponent,
   TimelineComponent,
   CalendarComponent,
-  GraphicComponent
-} from 'echarts/components'
+  GraphicComponent,
+} from 'echarts/components';
 
-import { SVGRenderer } from 'echarts/renderers'
-import { shine } from '@/assets/shine'
+import { SVGRenderer } from 'echarts/renderers';
+import { shine } from '@/assets/shine';
 
 echarts.use([
   LegendComponent,
@@ -45,9 +42,9 @@ echarts.use([
   VisualMapComponent,
   TimelineComponent,
   CalendarComponent,
-  GraphicComponent
-])
+  GraphicComponent,
+]);
 
-echarts.registerTheme('shine', shine)
+echarts.registerTheme('shine', shine);
 
-export default echarts
+export default echarts;

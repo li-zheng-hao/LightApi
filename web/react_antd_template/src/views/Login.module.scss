@@ -1,7 +1,7 @@
 .login-box {
   width: 100vw;
   height: 100vh;
-  background: url("@/assets/images/login.svg") no-repeat center center;
+  background: url('@/assets/images/login.svg') no-repeat center center;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -62,10 +62,6 @@
         display: flex;
         gap: 20px;
       }
-
     }
-
-
   }
 }
-
