@@ -70,7 +70,7 @@ export class ApiClient {
   constructor(config: AxiosRequestConfig, requestConfig?: RequestConfig) {
     this.defaultRequestConfig = Object.assign(
       this.defaultRequestConfig,
-      requestConfig ?? {},
+      requestConfig ?? {}
     );
     // 使用axios.create创建axios实例
     this.axiosInstance = axios.create(Object.assign(this.baseConfig, config));
@@ -96,7 +96,7 @@ export class ApiClient {
       (err: AxiosError) => {
         handleHttpError(err.response);
         return Promise.reject(err);
-      },
+      }
     );
   }
 
@@ -111,7 +111,7 @@ export class ApiClient {
    */
   public async request<T>(
     config: AxiosRequestConfig,
-    requestConfig?: RequestConfig,
+    requestConfig?: RequestConfig
   ): Promise<T> {
     const targetConfig = deepMerge(this.defaultRequestConfig, requestConfig);
     let requestKey = null;
@@ -126,7 +126,7 @@ export class ApiClient {
       const cacheData = await idmp(
         requestKey,
         () => this.internalRequest<T>(config, targetConfig),
-        targetConfig.idmpOptions ?? undefined,
+        targetConfig.idmpOptions ?? undefined
       );
       return JSON.parse(JSON.stringify(cacheData));
     }
@@ -142,7 +142,7 @@ export class ApiClient {
    */
   private internalRequest<T>(
     config: AxiosRequestConfig,
-    requestConfig: RequestConfig,
+    requestConfig: RequestConfig
   ): Promise<T> {
     return new Promise((resolve, reject) => {
       this.axiosInstance
@@ -156,7 +156,7 @@ export class ApiClient {
               return resolve(res as any);
             else return resolve(res.data as any);
           },
-          (err) => reject(err),
+          (err) => reject(err)
         )
         .catch((err) => reject(err));
     });
@@ -181,7 +181,7 @@ const apiClient = new ApiClient(
       maxRetry: 0,
       maxAge: 500,
     },
-  },
+  }
 );
 
 // useJwt(apiClient)

@@ -84,7 +84,7 @@ export default class Storage {
   setCookie(
     name: string,
     value: any,
-    expire: number | null = DEFAULT_CACHE_TIME,
+    expire: number | null = DEFAULT_CACHE_TIME
   ) {
     document.cookie = `${this.getKey(name)}=${value}; Max-Age=${expire}`;
   }

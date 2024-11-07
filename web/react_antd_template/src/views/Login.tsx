@@ -23,7 +23,7 @@ const LoginPage = () => {
         },
         {
           showError: false,
-        },
+        }
       )
       .catch((res) => {
         console.log(res);
@@ -61,19 +61,22 @@ const LoginPage = () => {
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
-          size={'large'}>
+          size={'large'}
+        >
           <Form.Item<LoginType>
             name="username"
             rules={[
               { required: true, message: '请输入用户名!' },
               { min: 4, message: '用户名最少4位!' },
-            ]}>
+            ]}
+          >
             <Input prefix={<UserOutlined />} />
           </Form.Item>
 
           <Form.Item<LoginType>
             name="password"
-            rules={[{ required: true, message: '请输入密码!' }]}>
+            rules={[{ required: true, message: '请输入密码!' }]}
+          >
             <Input.Password prefix={<LockOutlined />} autoComplete={'off'} />
           </Form.Item>
 

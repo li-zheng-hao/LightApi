@@ -8,7 +8,7 @@ import { message } from 'antd';
  */
 export function handleBusinessError(
   apiResult: ApiResult<any>,
-  requestConfig: RequestConfig,
+  requestConfig: RequestConfig
 ) {
   if (apiResult?.msg.length > 0 && requestConfig.showError) {
     message.error({ duration: 6000, content: `${apiResult.msg}` });

@@ -9,7 +9,7 @@ import { router } from '@/router';
 import axios from 'axios';
 
 const requestRefresh: TokenRefreshRequest = async (
-  refreshToken: string,
+  refreshToken: string
 ): Promise<IAuthTokens | string> => {
   // Important! Do NOT use the axios instance that you supplied to applyAuthTokenInterceptor (in our case 'axiosInstance')
   // because this will result in an infinite loop when trying to refresh the token.

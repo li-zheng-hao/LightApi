@@ -4,11 +4,7 @@ const Page1 = () => {
     <div>
       <h1 className={classes.custom}>Page1</h1>
       <h2>1</h2>
-
-   
-   
-            
-         </div>
-  ); 
+    </div>
+  );
 };
 export default Page1;
