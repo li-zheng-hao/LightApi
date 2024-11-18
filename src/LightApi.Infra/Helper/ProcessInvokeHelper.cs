@@ -40,7 +40,7 @@ public static class ProcessInvokeHelper
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
 
         if (data is string dataStr)
-        {            
+        {
             File.WriteAllText(path, dataStr);
         }
         else
@@ -48,8 +48,8 @@ public static class ProcessInvokeHelper
             dataStr = JsonConvert.SerializeObject(data,serializerSettings);
             File.WriteAllText(path, dataStr);
         }
-        
-        
+
+
 
         return path;
     }
@@ -69,7 +69,7 @@ public static class ProcessInvokeHelper
         {
             if (path == null || !File.Exists(path)) return default;
             var dataStr = File.ReadAllText(path);
-            return JsonConvert.DeserializeObject<T>(dataStr,serializerSettings);
+            return JsonConvert.DeserializeObject<T>(dataStr, serializerSettings);
         }
         finally
         {
@@ -125,6 +125,54 @@ public static class ProcessInvokeHelper
 
         return (Read<TResult>(paramPath,true,param.JsonSerializerSettings), result);
     }
+
+    /// <summary>
+    /// 进程调用
+    /// </summary>
+    /// <param name="configure"></param>
+    /// <typeparam name="TParam"></typeparam>
+    /// <returns></returns>
+    public static async Task<CommandResult> ExecuteAsync<TParam>(
+        Action<InvokeOptions<TParam>> configure)
+    {
+        var param = new InvokeOptions<TParam>();
+
+        configure(param);
+
+        if (param.WorkingDir.IsNullOrEmpty()) param.WorkingDir = Path.GetDirectoryName(param.ExecutePath);
+
+        param.LogOutput ??= Log.Debug;
+
+        param.LogError ??= Log.Error;
+
+        param.CancellationToken ??= new CancellationTokenSource(TimeSpan.FromSeconds(param.Timeout ?? 60)).Token;
+
+        var paramPath = param.JsonParamFileDir.IsNotNullOrWhiteSpace()
+            ? Write(param.JsonParam, $"{Path.Combine(param.JsonParamFileDir!, $"{Guid.NewGuid()}.json")}",param.JsonSerializerSettings)
+            : Write(param.JsonParam,null,param.JsonSerializerSettings);
+
+        var args = param.Args.ToList();
+
+        if (paramPath != null)
+        {
+            if (param.JsonParamAppendEnd ?? false)
+                args.Add(paramPath);
+            else
+                args.Insert(0, paramPath);
+        }
+
+        var result = await Cli.Wrap(param.ExecutePath)
+            .WithArguments(args)
+            .WithWorkingDirectory(param.WorkingDir!)
+            .WithStandardOutputPipe(PipeTarget.ToDelegate(param.LogOutput))
+            .WithStandardErrorPipe(PipeTarget.ToDelegate(param.LogError))
+            .WithValidation(param.IgnoreError ? CommandResultValidation.None : CommandResultValidation.ZeroExitCode)
+            .ExecuteAsync(param.CancellationToken.Value);
+
+        if(File.Exists(paramPath)) File.Delete(paramPath);
+
+        return (result);
+    }
 }
 
 public class InvokeOptions<T>
@@ -161,7 +209,7 @@ public class InvokeOptions<T>
     public Action<string>? LogError { get; set; }
 
     /// <summary>
-    /// 工作目录 为空时会自动从<see cref="ExecutePath"/>计算 
+    /// 工作目录 为空时会自动从<see cref="ExecutePath"/>计算
     /// </summary>
     public string? WorkingDir { get; set; }
 
@@ -171,7 +219,7 @@ public class InvokeOptions<T>
     public bool IgnoreError { get; set; } = true;
 
     /// <summary>
-    /// 超时时间 默认60秒 
+    /// 超时时间 默认60秒
     /// </summary>
     public uint? Timeout { get; set; }
 
@@ -184,7 +232,7 @@ public class InvokeOptions<T>
     /// json参数文件所在目录，为空的话使用BasePath
     /// </summary>
     public string? JsonParamFileDir { get; set; }
-    
+
     /// <summary>
     /// Json序列化配置，null则使用默认配置
     /// </summary>

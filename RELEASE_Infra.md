@@ -1,5 +1,9 @@
 # Infra模块更新日志
 
+## 2024年11月18日 3.9.0
+
+1. ProcessInvokeHelper新增无返回结果调用方式
+
 ## 2024年10月08日 3.8.3
 
 1. ProcessInvokeHelper序列化配置支持自定义
