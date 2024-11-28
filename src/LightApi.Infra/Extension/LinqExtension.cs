@@ -6,7 +6,7 @@ using LightApi.Infra.Internal;
 namespace LightApi.Infra.LinqExtension;
 
 /// <summary>
-/// 
+///
 /// </summary>
 public static class LinqExtension
 {
@@ -19,7 +19,8 @@ public static class LinqExtension
     public static IQueryable<T> WhereIf<T>(
         this IQueryable<T> source,
         bool? condition,
-        Expression<Func<T, bool>> where)
+        Expression<Func<T, bool>> where
+    )
     {
         return condition is null or false ? source : source.Where<T>(where);
     }
@@ -33,9 +34,15 @@ public static class LinqExtension
     /// <typeparam name="T"></typeparam>
     /// <exception cref="KeyNotFoundException">当属性不存在时会抛出此异常</exception>
     /// <returns></returns>
-    public static IQueryable<T> DynamicOrder<T>(this IQueryable<T> source, string fieldName, bool? isDescending)
+    public static IQueryable<T> DynamicOrder<T>(
+        this IQueryable<T> source,
+        string fieldName,
+        bool? isDescending
+    )
     {
-        return isDescending == true ? source.OrderByDescending(fieldName) : source.OrderBy(fieldName);
+        return isDescending == true
+            ? source.OrderByDescending(fieldName)
+            : source.OrderBy(fieldName);
     }
 
     /// <summary>
@@ -48,10 +55,17 @@ public static class LinqExtension
     /// <typeparam name="T"></typeparam>
     /// <exception cref="KeyNotFoundException">当属性不存在时会抛出此异常</exception>
     /// <returns></returns>
-    public static IQueryable<T> DynamicOrderIf<T>(this IQueryable<T> source,bool? condition, string fieldName, bool? isDescending)
+    public static IQueryable<T> DynamicOrderIf<T>(
+        this IQueryable<T> source,
+        bool? condition,
+        string fieldName,
+        bool? isDescending
+    )
     {
-        if(condition==true)
-            return isDescending == true ? source.OrderByDescending(fieldName) : source.OrderBy(fieldName);
+        if (condition == true)
+            return isDescending == true
+                ? source.OrderByDescending(fieldName)
+                : source.OrderBy(fieldName);
         return source;
     }
 
@@ -66,40 +80,48 @@ public static class LinqExtension
     /// <typeparam name="T"></typeparam>
     /// <exception cref="KeyNotFoundException">当属性不存在时会抛出此异常</exception>
     /// <returns></returns>
-    public static IQueryable<T> DynamicOrderIfOrDefault<T>(this IQueryable<T> source,bool? condition, string fieldName, bool? isDescending,string defaultProperty="Id")
+    public static IQueryable<T> DynamicOrderIfOrDefault<T>(
+        this IQueryable<T> source,
+        bool? condition,
+        string fieldName,
+        bool? isDescending,
+        string defaultProperty = "Id"
+    )
     {
-        if(condition==true)
-            return isDescending == true ? source.OrderByDescending(fieldName) : source.OrderBy(fieldName);
+        if (condition == true)
+            return isDescending == true
+                ? source.OrderByDescending(fieldName)
+                : source.OrderBy(fieldName);
         else
         {
-            return isDescending == true ? source.OrderByDescending(defaultProperty) : source.OrderBy(defaultProperty);
+            return isDescending == true
+                ? source.OrderByDescending(defaultProperty)
+                : source.OrderBy(defaultProperty);
         }
     }
+
     #region 私有方法
 
-    private static IOrderedQueryable<T> OrderBy<T>(
-        this IQueryable<T> source,
-        string property)
+    private static IOrderedQueryable<T> OrderBy<T>(this IQueryable<T> source, string property)
     {
         return ApplyOrder<T>(source, property, "OrderBy");
     }
 
     private static IOrderedQueryable<T> OrderByDescending<T>(
         this IQueryable<T> source,
-        string property)
+        string property
+    )
     {
         return ApplyOrder<T>(source, property, "OrderByDescending");
     }
 
-    private static IOrderedQueryable<T> ThenBy<T>(
-        this IOrderedQueryable<T> source,
-        string property)
+    private static IOrderedQueryable<T> ThenBy<T>(this IOrderedQueryable<T> source, string property)
     {
         return ApplyOrder<T>(source, property, "ThenBy");
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <param name="source"></param>
     /// <param name="property"></param>
@@ -107,13 +129,14 @@ public static class LinqExtension
     /// <returns></returns>
     private static IOrderedQueryable<T> ThenByDescending<T>(
         this IOrderedQueryable<T> source,
-        string property)
+        string property
+    )
     {
         return ApplyOrder<T>(source, property, "ThenByDescending");
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <param name="source"></param>
     /// <param name="property"></param>
@@ -124,7 +147,8 @@ public static class LinqExtension
     private static IOrderedQueryable<T> ApplyOrder<T>(
         IQueryable<T> source,
         string property,
-        string methodName)
+        string methodName
+    )
     {
         string[] props = property.Split('.');
         Type type = typeof(T);
@@ -132,11 +156,12 @@ public static class LinqExtension
         Expression expr = arg;
         foreach (string prop in props)
         {
-            var propUpper = prop.ToFirstUpper();
-            // use reflection (not ComponentModel) to mirror LINQ
-            PropertyInfo? pi = type.GetProperty(propUpper);
+            PropertyInfo? pi = type.GetProperty(
+                prop,
+                BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance
+            );
             if (pi == null)
-                throw new KeyNotFoundException($"未找到属性{propUpper}");
+                throw new KeyNotFoundException($"未找到属性{prop}");
             expr = Expression.Property(expr, pi);
             type = pi.PropertyType;
         }
@@ -145,11 +170,14 @@ public static class LinqExtension
         LambdaExpression lambda = Expression.Lambda(delegateType, expr, arg);
 
         // 必须有对应方法
-        object result = typeof(Queryable).GetMethods().Single(
-                method => method.Name == methodName
-                          && method.IsGenericMethodDefinition
-                          && method.GetGenericArguments().Length == 2
-                          && method.GetParameters().Length == 2)
+        object result = typeof(Queryable)
+            .GetMethods()
+            .Single(method =>
+                method.Name == methodName
+                && method.IsGenericMethodDefinition
+                && method.GetGenericArguments().Length == 2
+                && method.GetParameters().Length == 2
+            )
             .MakeGenericMethod(typeof(T), type)
             .Invoke(null, new object[] { source, lambda })!;
 
@@ -157,5 +185,4 @@ public static class LinqExtension
     }
 
     #endregion
-
 }
