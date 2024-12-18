@@ -16,13 +16,15 @@ public class BusinessException : Exception
     /// HTTP状态码 全局异常过滤器处理
     /// </summary>
     public HttpStatusCode? HttpStatusCode { get; set; }
+
     /// <summary>
     /// 业务错误  如果code为-1，则使用InfrastructureOptions.DefaultFailureBusinessException
     /// </summary>
     /// <see cref="InfrastructureOptions"/>
     /// <param name="msg"></param>
     /// <param name="code"></param>
-    public BusinessException(string msg, int code = -1) : base(msg)
+    public BusinessException(string msg, int code = -1)
+        : base(msg)
     {
         this.Code = code;
     }
@@ -34,7 +36,8 @@ public class BusinessException : Exception
     /// <param name="msg"></param>
     /// <param name="body"></param>
     /// <param name="code"></param>
-    public BusinessException(string msg, object body,int code = -1) : base(msg)
+    public BusinessException(string msg, object body, int code = -1)
+        : base(msg)
     {
         this.Code = code;
         this.Body = body;

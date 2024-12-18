@@ -5,8 +5,7 @@ namespace LightApi.SqlSugar;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddSugarRepository(
-        this IServiceCollection services)
+    public static IServiceCollection AddSugarRepository(this IServiceCollection services)
     {
         services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
         return services;

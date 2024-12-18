@@ -103,14 +103,15 @@ public static class Check
             ExceptionDispatchInfo.Capture(ex).Throw();
         }
     }
+
     /// <summary>
     /// 空的话抛出业务异常
     /// </summary>
     /// <param name="source"></param>
     /// <param name="errorMessage"></param>
-    public static void NotNullOrEmptyEx(this object? source,string errorMessage="数据不存在")
+    public static void NotNullOrEmptyEx(this object? source, string errorMessage = "数据不存在")
     {
-        NotNullOrEmpty(source,errorMessage);
+        NotNullOrEmpty(source, errorMessage);
     }
 
     /// <summary>
@@ -124,6 +125,7 @@ public static class Check
         if (source)
             throw new BusinessException(errMessage);
     }
+
     /// <summary>
     /// 条件为真时抛出业务异常
     /// </summary>
@@ -132,9 +134,10 @@ public static class Check
     /// <exception cref="BusinessException"></exception>
     public static void ThrowIfTrueEx(this bool? source, string errMessage)
     {
-        if (source==true)
+        if (source == true)
             throw new BusinessException(errMessage);
     }
+
     /// <summary>
     /// 条件不为真时抛出业务异常
     /// </summary>
@@ -143,7 +146,7 @@ public static class Check
     /// <exception cref="BusinessException"></exception>
     public static void ThrowIfNotTrueEx(this bool? source, string errMessage)
     {
-        if (source!=true)
+        if (source != true)
             throw new BusinessException(errMessage);
     }
 }

@@ -13,14 +13,19 @@ public abstract class UnitOfWork<TDbContext> : IUnitOfWork
     }
 
     protected abstract IDbContextTransaction GetDbContextTransaction(
-        IsolationLevel isolationLevel = IsolationLevel.ReadCommitted, bool distributed = false);
+        IsolationLevel isolationLevel = IsolationLevel.ReadCommitted,
+        bool distributed = false
+    );
 
-
-    public virtual void BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted,
-        bool distributed = false)
+    public virtual void BeginTransaction(
+        IsolationLevel isolationLevel = IsolationLevel.ReadCommitted,
+        bool distributed = false
+    )
     {
         if (AppDbContext.Database.CurrentTransaction is not null)
-            throw new ArgumentException($"工作单元已开启,事务ID：{AppDbContext.Database.CurrentTransaction.TransactionId}");
+            throw new ArgumentException(
+                $"工作单元已开启,事务ID：{AppDbContext.Database.CurrentTransaction.TransactionId}"
+            );
 
         DbTransaction = GetDbContextTransaction(isolationLevel, distributed);
 

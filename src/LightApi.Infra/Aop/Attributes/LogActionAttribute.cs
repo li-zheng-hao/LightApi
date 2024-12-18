@@ -29,12 +29,12 @@ public class LogActionAttribute : ActionFilterAttribute
     private readonly bool _logOnError;
 
     private IOptions<InfrastructureOptions> _options;
-    
+
     /// <summary>
     /// 最大日志长度 设置为0时则使用InfrastructureOptions中的值
     /// </summary>
     public uint MaxLogLength { get; set; } = 0;
-    
+
     /// <summary>
     /// 记录方法耗时
     /// </summary>
@@ -52,7 +52,12 @@ public class LogActionAttribute : ActionFilterAttribute
         _options = _svc.GetRequiredService<IOptions<InfrastructureOptions>>();
         _logger = _svc.GetRequiredService<ILogger<LogActionAttribute>>();
         Activity.Current = null;
-        var activity=LightApiSource.Source.StartActivity(_description.IsNullOrWhiteSpace()?actionContext.HttpContext.Request.Path:_description, ActivityKind.Server);
+        var activity = LightApiSource.Source.StartActivity(
+            _description.IsNullOrWhiteSpace()
+                ? actionContext.HttpContext.Request.Path
+                : _description,
+            ActivityKind.Server
+        );
         if (activity != null)
         {
             Activity.Current = activity;
@@ -61,13 +66,13 @@ public class LogActionAttribute : ActionFilterAttribute
 
     public override void OnActionExecuted(ActionExecutedContext actionExecutedContext)
     {
-        if(MaxLogLength==0) 
-            MaxLogLength=_options.Value.MaxLogLength;
+        if (MaxLogLength == 0)
+            MaxLogLength = _options.Value.MaxLogLength;
         if (actionExecutedContext.Exception != null)
         {
             var (paramStr, resultStr) = GetLogString(actionExecutedContext, false);
 
-            LogError(actionExecutedContext,paramStr);
+            LogError(actionExecutedContext, paramStr);
         }
         else
         {
@@ -79,56 +84,66 @@ public class LogActionAttribute : ActionFilterAttribute
                 if (resp?.success == false || actionExecutedContext.Exception != null)
                 {
                     var (paramStr, resultStr) = GetLogString(actionExecutedContext);
-                    LogSuccess(actionExecutedContext,paramStr,resultStr);
+                    LogSuccess(actionExecutedContext, paramStr, resultStr);
                 }
             }
             else if (_logOnError == false)
             {
-                
                 var (paramStr, resultStr) = GetLogString(actionExecutedContext);
-                LogSuccess(actionExecutedContext,paramStr,resultStr);
+                LogSuccess(actionExecutedContext, paramStr, resultStr);
             }
         }
-        
-        Activity.Current?.Stop();
-        
 
+        Activity.Current?.Stop();
     }
 
-    private (string, string?) GetLogString(ActionExecutedContext actionExecutedContext,bool logResult=true)
+    private (string, string?) GetLogString(
+        ActionExecutedContext actionExecutedContext,
+        bool logResult = true
+    )
     {
         string? resultStr = string.Empty;
-        
+
         if (logResult)
         {
             var objectResult = actionExecutedContext.Result as ObjectResult;
-            resultStr = JsonConvert.SerializeObject(objectResult==null?actionExecutedContext.Result:objectResult.Value,new JsonSerializerSettings(){ContractResolver =new DynamicContractResolver()});
-
+            resultStr = JsonConvert.SerializeObject(
+                objectResult == null ? actionExecutedContext.Result : objectResult.Value,
+                new JsonSerializerSettings() { ContractResolver = new DynamicContractResolver() }
+            );
         }
-        
-        var paramStr = JsonConvert.SerializeObject(actionExecutedContext.HttpContext.GetItem<object>(RequestContext.REQUEST_PARAMS),new JsonSerializerSettings(){ContractResolver =new DynamicContractResolver()});
+
+        var paramStr = JsonConvert.SerializeObject(
+            actionExecutedContext.HttpContext.GetItem<object>(RequestContext.REQUEST_PARAMS),
+            new JsonSerializerSettings() { ContractResolver = new DynamicContractResolver() }
+        );
 
         paramStr = paramStr.SafeSubString(MaxLogLength);
         resultStr = resultStr.SafeSubString(MaxLogLength);
 
         return (paramStr, resultStr);
     }
-    
-    private void LogError(ActionExecutedContext actionExecutedContext,string paramStr)
+
+    private void LogError(ActionExecutedContext actionExecutedContext, string paramStr)
     {
         var user = actionExecutedContext.HttpContext.RequestServices.GetService<IUser>();
 
-        _logger.LogError(actionExecutedContext.Exception,
-            $"\r\n------------------------------------\r\n请求记录 \r\n描述: {_description} \r\n用户：{user?.UserName??"未登录"} \r\n请求路由: {actionExecutedContext.HttpContext.Request.Path}  \r\n请求时间: {actionExecutedContext.HttpContext.GetItem<DateTime>(RequestContext.REQUEST_BEGIN_TIME)} \r\n结束时间: {DateTime.Now} \r\n请求参数: {paramStr} \r\n出现异常: {actionExecutedContext.Exception?.Message}\r\n------------------------------------");
-
+        _logger.LogError(
+            actionExecutedContext.Exception,
+            $"\r\n------------------------------------\r\n请求记录 \r\n描述: {_description} \r\n用户：{user?.UserName ?? "未登录"} \r\n请求路由: {actionExecutedContext.HttpContext.Request.Path}  \r\n请求时间: {actionExecutedContext.HttpContext.GetItem<DateTime>(RequestContext.REQUEST_BEGIN_TIME)} \r\n结束时间: {DateTime.Now} \r\n请求参数: {paramStr} \r\n出现异常: {actionExecutedContext.Exception?.Message}\r\n------------------------------------"
+        );
     }
 
-    private void LogSuccess(ActionExecutedContext actionExecutedContext,string paramStr, string? resultStr)
+    private void LogSuccess(
+        ActionExecutedContext actionExecutedContext,
+        string paramStr,
+        string? resultStr
+    )
     {
         var user = actionExecutedContext.HttpContext.RequestServices.GetService<IUser>();
 
         _logger.LogInformation(
-            $"\r\n------------------------------------\r\n请求记录 \r\n描述: {_description} \r\n用户：{user?.UserName??"未登录"} \r\n请求路由: {actionExecutedContext.HttpContext.Request.Path}  \r\n请求时间: {actionExecutedContext.HttpContext.GetItem<DateTime>(RequestContext.REQUEST_BEGIN_TIME)} \r\n结束时间: {DateTime.Now} \r\n请求参数: {paramStr} \r\n返回结果: {resultStr} \r\n------------------------------------");
-
+            $"\r\n------------------------------------\r\n请求记录 \r\n描述: {_description} \r\n用户：{user?.UserName ?? "未登录"} \r\n请求路由: {actionExecutedContext.HttpContext.Request.Path}  \r\n请求时间: {actionExecutedContext.HttpContext.GetItem<DateTime>(RequestContext.REQUEST_BEGIN_TIME)} \r\n结束时间: {DateTime.Now} \r\n请求参数: {paramStr} \r\n返回结果: {resultStr} \r\n------------------------------------"
+        );
     }
 }

@@ -8,9 +8,9 @@ namespace LightApi.EFCore.Entities;
 public interface ISoftDeleteV2
 {
     public bool? IsDeleted { get; set; }
-    
+
     public DateTime? DeletedAt { get; set; }
-    
+
     public void Undo()
     {
         IsDeleted = false;
@@ -20,7 +20,6 @@ public interface ISoftDeleteV2
     public void Delete()
     {
         IsDeleted = true;
-        DeletedAt=DateTime.Now;
+        DeletedAt = DateTime.Now;
     }
-  
 }

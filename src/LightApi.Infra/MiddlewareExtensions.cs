@@ -13,22 +13,24 @@ public static class MiddlewareExtensions
     public static WebApplication UseInfrastructure(this WebApplication app)
     {
         App.Init(app);
-        
+
         app.UseResponseBodyReadMiddleware();
-        
+
         return app;
     }
-    
+
     /// <summary>
     /// 请求体可以多次读取
     /// </summary>
     /// <param name="app"></param>
     public static void UseResponseBodyReadMiddleware(this IApplicationBuilder app)
     {
-        app.Use(async (httpContext, next) =>
-        {
-            httpContext.Request.EnableBuffering();
-            await next.Invoke();
-        });
+        app.Use(
+            async (httpContext, next) =>
+            {
+                httpContext.Request.EnableBuffering();
+                await next.Invoke();
+            }
+        );
     }
 }

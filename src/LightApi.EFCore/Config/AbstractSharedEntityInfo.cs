@@ -9,9 +9,7 @@ namespace LightApi.EFCore.Config;
 /// </summary>
 public abstract class AbstractSharedEntityInfo : IEntityInfo
 {
-    protected AbstractSharedEntityInfo()
-    {
-    }
+    protected AbstractSharedEntityInfo() { }
 
     protected abstract Assembly GetCurrentAssembly();
 
@@ -22,10 +20,11 @@ public abstract class AbstractSharedEntityInfo : IEntityInfo
     /// <returns></returns>
     protected virtual IEnumerable<Type> GetEntityTypes(Assembly assembly)
     {
-        var typeList = assembly.GetTypes().Where(m =>
-            m.FullName != null
-            && typeof(IEfEntity).IsAssignableFrom(m)
-            && !m.IsAbstract);
+        var typeList = assembly
+            .GetTypes()
+            .Where(m =>
+                m.FullName != null && typeof(IEfEntity).IsAssignableFrom(m) && !m.IsAbstract
+            );
         if (typeList is null)
             typeList = new List<Type>();
 
@@ -59,7 +58,7 @@ public abstract class AbstractSharedEntityInfo : IEntityInfo
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="entityType"></param>
-    protected virtual void ConfigureEntity(EntityTypeBuilder  builder,Type entityType)
+    protected virtual void ConfigureEntity(EntityTypeBuilder builder, Type entityType)
     {
         builder.HasKey("Id");
 
@@ -88,13 +87,16 @@ public abstract class AbstractSharedEntityInfo : IEntityInfo
             genericMethod.Invoke(null, new object[] { builder });
         }
     }
-    
-    public static void ConfigureSoftDelete<TEntity>(EntityTypeBuilder builder) where TEntity : class, ISoftDelete
+
+    public static void ConfigureSoftDelete<TEntity>(EntityTypeBuilder builder)
+        where TEntity : class, ISoftDelete
     {
-        builder.HasQueryFilter((TEntity d) => d.IsDeleted!=true);
+        builder.HasQueryFilter((TEntity d) => d.IsDeleted != true);
     }
-    public static void ConfigureSoftDeleteV2<TEntity>(EntityTypeBuilder builder) where TEntity : class, ISoftDeleteV2
+
+    public static void ConfigureSoftDeleteV2<TEntity>(EntityTypeBuilder builder)
+        where TEntity : class, ISoftDeleteV2
     {
-        builder.HasQueryFilter((TEntity d) => d.IsDeleted!=true);
+        builder.HasQueryFilter((TEntity d) => d.IsDeleted != true);
     }
 }

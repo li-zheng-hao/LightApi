@@ -28,36 +28,40 @@ public static class ServiceCollectionExtension
     /// <typeparam name="TAppContext">上下文类型</typeparam>
     /// <returns></returns>
     public static IServiceCollection AddInfrastructureEfCoreMysql<TAppContext>(
-        this IServiceCollection services
-        , Action<IServiceProvider,DbContextOptionsBuilder> optionsBuilder
-        ,Type entityInfoType,bool isMasterDbContext=true)
+        this IServiceCollection services,
+        Action<IServiceProvider, DbContextOptionsBuilder> optionsBuilder,
+        Type entityInfoType,
+        bool isMasterDbContext = true
+    )
         where TAppContext : AppDbContext
     {
         var serviceType = typeof(IEntityInfo);
-       
+
         services.AddSingleton(serviceType, entityInfoType);
-        
+
         services.AddSingleton(entityInfoType);
 
         if (isMasterDbContext)
         {
-            services.AddScoped<AppDbContext>(sp=>sp.GetRequiredService<TAppContext>());
-            
+            services.AddScoped<AppDbContext>(sp => sp.GetRequiredService<TAppContext>());
+
             services.TryAddScoped<IUnitOfWork, MySqlUnitOfWork<TAppContext>>();
         }
-        Db.AddDbContextModelMap(typeof(TAppContext),entityInfoType);
+        Db.AddDbContextModelMap(typeof(TAppContext), entityInfoType);
 
-        Db.AddDbContextUnitOfWorkMap(typeof(TAppContext),typeof(MySqlUnitOfWork<TAppContext>));
+        Db.AddDbContextUnitOfWorkMap(typeof(TAppContext), typeof(MySqlUnitOfWork<TAppContext>));
 
         services.TryAddScoped(typeof(IEfRepository<>), typeof(EfRepository<>));
 
         services.TryAddScoped(typeof(IEfRepository<,>), typeof(MultiContextEfRepository<,>));
-        
-        services.AddDbContext<TAppContext>((sp, op) =>
-        {
-            optionsBuilder(sp,op);
-            op.AddInterceptors(new SoftDeleteInterceptor());
-        });
+
+        services.AddDbContext<TAppContext>(
+            (sp, op) =>
+            {
+                optionsBuilder(sp, op);
+                op.AddInterceptors(new SoftDeleteInterceptor());
+            }
+        );
 
         return services;
     }

@@ -1,5 +1,4 @@
-﻿
-namespace LightApi.Infra.RabbitMQ
+﻿namespace LightApi.Infra.RabbitMQ
 {
     public class ExchageConfig
     {

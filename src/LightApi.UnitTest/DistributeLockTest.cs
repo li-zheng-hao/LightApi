@@ -8,8 +8,9 @@ public class DistributeLockTest
     [Fact]
     public async Task MultiLockTestAsync()
     {
-        ConnectionMultiplexer redis =
-            ConnectionMultiplexer.Connect("localhost:6379,password=chaojiyonghu");
+        ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(
+            "localhost:6379,password=chaojiyonghu"
+        );
 
         var redisLockProvider = new RedisLockProvider(redis);
         var lockKeys = new string[] { "key1", "key2" };
@@ -25,7 +26,6 @@ public class DistributeLockTest
 
         await locker.DisposeAsync();
 
-
         key1 = redis.GetDatabase().StringGet("key1");
         key2 = redis.GetDatabase().StringGet("key2");
         Assert.False(key1.HasValue);
@@ -35,8 +35,9 @@ public class DistributeLockTest
     [Fact]
     public async Task MultiLockTestWithRefreshAsync()
     {
-        ConnectionMultiplexer redis =
-            ConnectionMultiplexer.Connect("localhost:6379,password=chaojiyonghu");
+        ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(
+            "localhost:6379,password=chaojiyonghu"
+        );
 
         var redisLockProvider = new RedisLockProvider(redis);
         var lockKeys = new string[] { "key1", "key2" };
@@ -54,19 +55,18 @@ public class DistributeLockTest
 
         await locker.DisposeAsync();
 
-
         key1 = redis.GetDatabase().StringGet("key1");
         key2 = redis.GetDatabase().StringGet("key2");
         Assert.False(key1.HasValue);
         Assert.False(key2.HasValue);
     }
 
-
     [Fact]
     public void MultiLockTest()
     {
-        ConnectionMultiplexer redis =
-            ConnectionMultiplexer.Connect("localhost:6379,password=chaojiyonghu");
+        ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(
+            "localhost:6379,password=chaojiyonghu"
+        );
 
         var redisLockProvider = new RedisLockProvider(redis);
         var lockKeys = new string[] { "key1", "key2" };
@@ -91,8 +91,9 @@ public class DistributeLockTest
     [Fact]
     public void SingleLockTest()
     {
-        ConnectionMultiplexer redis =
-            ConnectionMultiplexer.Connect("localhost:6379,password=chaojiyonghu");
+        ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(
+            "localhost:6379,password=chaojiyonghu"
+        );
 
         var redisLockProvider = new RedisLockProvider(redis);
         var key = "key1";
@@ -112,8 +113,9 @@ public class DistributeLockTest
     [Fact]
     public async Task SingleLockTestAsync()
     {
-        ConnectionMultiplexer redis =
-            ConnectionMultiplexer.Connect("localhost:6379,password=chaojiyonghu");
+        ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(
+            "localhost:6379,password=chaojiyonghu"
+        );
 
         var redisLockProvider = new RedisLockProvider(redis);
         var key = "key1";
@@ -133,8 +135,9 @@ public class DistributeLockTest
     [Fact]
     public void ParallelLockTestAsync()
     {
-        ConnectionMultiplexer redis =
-            ConnectionMultiplexer.Connect("localhost:6379,password=chaojiyonghu");
+        ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(
+            "localhost:6379,password=chaojiyonghu"
+        );
 
         var redisLockProvider = new RedisLockProvider(redis);
 
@@ -144,12 +147,15 @@ public class DistributeLockTest
 
         var arr = Enumerable.Range(1, 5).ToList();
 
-        Parallel.ForEach(arr, it =>
-        {
-            var locker = redisLockProvider.TryLock(key, 2);
-            if (locker != null)
-                Interlocked.Increment(ref lockerCount);
-        });
+        Parallel.ForEach(
+            arr,
+            it =>
+            {
+                var locker = redisLockProvider.TryLock(key, 2);
+                if (locker != null)
+                    Interlocked.Increment(ref lockerCount);
+            }
+        );
         Assert.Equal(1, lockerCount);
     }
 }

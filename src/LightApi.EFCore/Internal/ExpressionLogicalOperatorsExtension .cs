@@ -13,7 +13,10 @@
         /// <param name="firstExpr">The first expression.</param>
         /// <param name="secondExpr">The second expression.</param>
         /// <returns>The combined expression.</returns>
-        public static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> firstExpr, Expression<Func<T, bool>> secondExpr)
+        public static Expression<Func<T, bool>> Or<T>(
+            this Expression<Func<T, bool>> firstExpr,
+            Expression<Func<T, bool>> secondExpr
+        )
             where T : class
         {
             var parameter = Expression.Parameter(typeof(T));
@@ -23,8 +26,7 @@
             var right = rightVisitor.Visit(secondExpr.Body);
             if (left is null || right is null)
                 return firstExpr;
-            return Expression.Lambda<Func<T, bool>>(
-                Expression.OrElse(left, right), parameter);
+            return Expression.Lambda<Func<T, bool>>(Expression.OrElse(left, right), parameter);
         }
 
         /// <summary>
@@ -34,7 +36,10 @@
         /// <param name="firstExpr">The first expression.</param>
         /// <param name="secondExpr">The second expression.</param>
         /// <returns>The combined expression.</returns>
-        public static Expression<Func<T1, T2, bool>> Or<T1, T2>(this Expression<Func<T1, T2, bool>> firstExpr, Expression<Func<T1, T2, bool>> secondExpr)
+        public static Expression<Func<T1, T2, bool>> Or<T1, T2>(
+            this Expression<Func<T1, T2, bool>> firstExpr,
+            Expression<Func<T1, T2, bool>> secondExpr
+        )
             where T1 : class
             where T2 : class
         {
@@ -47,7 +52,10 @@
             if (left is null || right is null)
                 return firstExpr;
             return Expression.Lambda<Func<T1, T2, bool>>(
-                Expression.OrElse(left, right), parameter, parameter2);
+                Expression.OrElse(left, right),
+                parameter,
+                parameter2
+            );
         }
 
         /// <summary>
@@ -57,7 +65,10 @@
         /// <param name="firstExpr">The first expression.</param>
         /// <param name="secondExpr">The second expression.</param>
         /// <returns>The combined expression.</returns>
-        public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> firstExpr, Expression<Func<T, bool>> secondExpr)
+        public static Expression<Func<T, bool>> And<T>(
+            this Expression<Func<T, bool>> firstExpr,
+            Expression<Func<T, bool>> secondExpr
+        )
             where T : class
         {
             var parameter = Expression.Parameter(typeof(T));
@@ -70,8 +81,7 @@
             if (left is null || right is null)
                 return firstExpr;
 
-            return Expression.Lambda<Func<T, bool>>(
-                Expression.AndAlso(left, right), parameter);
+            return Expression.Lambda<Func<T, bool>>(Expression.AndAlso(left, right), parameter);
         }
 
         /// <summary>
@@ -81,7 +91,10 @@
         /// <param name="firstExpr">The first expression.</param>
         /// <param name="secondExpr">The second expression.</param>
         /// <returns>The combined expression.</returns>
-        public static Expression<Func<T1, T2, bool>> And<T1, T2>(this Expression<Func<T1, T2, bool>> firstExpr, Expression<Func<T1, T2, bool>> secondExpr)
+        public static Expression<Func<T1, T2, bool>> And<T1, T2>(
+            this Expression<Func<T1, T2, bool>> firstExpr,
+            Expression<Func<T1, T2, bool>> secondExpr
+        )
             where T1 : class
             where T2 : class
         {
@@ -94,7 +107,10 @@
             if (left is null || right is null)
                 return firstExpr;
             return Expression.Lambda<Func<T1, T2, bool>>(
-                Expression.AndAlso(left, right), parameter, parameter2);
+                Expression.AndAlso(left, right),
+                parameter,
+                parameter2
+            );
         }
 
         /// <summary>
@@ -105,7 +121,11 @@
         /// <param name="condition">The condition.</param>
         /// <param name="secondExpr">The second expression.</param>
         /// <returns>The combined expression.</returns>
-        public static Expression<Func<T, bool>> OrIf<T>(this Expression<Func<T, bool>> firstExpr, bool condition, Expression<Func<T, bool>> secondExpr)
+        public static Expression<Func<T, bool>> OrIf<T>(
+            this Expression<Func<T, bool>> firstExpr,
+            bool condition,
+            Expression<Func<T, bool>> secondExpr
+        )
             where T : class
         {
             return condition ? Or(firstExpr, secondExpr) : firstExpr;
@@ -119,12 +139,17 @@
         /// <param name="condition">The condition.</param>
         /// <param name="secondExpr">The second expression.</param>
         /// <returns>The combined expression.</returns>
-        public static Expression<Func<T1, T2, bool>> OrIf<T1, T2>(this Expression<Func<T1, T2, bool>> firstExpr, bool condition, Expression<Func<T1, T2, bool>> secondExpr)
-        where T1 : class
-        where T2 : class
+        public static Expression<Func<T1, T2, bool>> OrIf<T1, T2>(
+            this Expression<Func<T1, T2, bool>> firstExpr,
+            bool condition,
+            Expression<Func<T1, T2, bool>> secondExpr
+        )
+            where T1 : class
+            where T2 : class
         {
             return condition ? Or(firstExpr, secondExpr) : firstExpr;
         }
+
         /// <summary>
         /// Combine two expressions using the logical AND operator.
         /// </summary>
@@ -133,7 +158,11 @@
         /// <param name="condition">The condition.</param>
         /// <param name="secondExpr">The second expression.</param>
         /// <returns>The combined expression.</returns>
-        public static Expression<Func<T, bool>> AndIf<T>(this Expression<Func<T, bool>> firstExpr, bool condition, Expression<Func<T, bool>> secondExpr)
+        public static Expression<Func<T, bool>> AndIf<T>(
+            this Expression<Func<T, bool>> firstExpr,
+            bool condition,
+            Expression<Func<T, bool>> secondExpr
+        )
             where T : class
         {
             return condition ? And(firstExpr, secondExpr) : firstExpr;
@@ -147,7 +176,11 @@
         /// <param name="condition">The condition.</param>
         /// <param name="secondExpr">The second expression.</param>
         /// <returns>The combined expression.</returns>
-        public static Expression<Func<T1, T2, bool>> AndIf<T1, T2>(this Expression<Func<T1, T2, bool>> firstExpr, bool condition, Expression<Func<T1, T2, bool>> secondExpr)
+        public static Expression<Func<T1, T2, bool>> AndIf<T1, T2>(
+            this Expression<Func<T1, T2, bool>> firstExpr,
+            bool condition,
+            Expression<Func<T1, T2, bool>> secondExpr
+        )
             where T1 : class
             where T2 : class
         {

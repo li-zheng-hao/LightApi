@@ -10,7 +10,16 @@ public class WeatherForecastController : ControllerBase
 {
     private static readonly string[] Summaries = new[]
     {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+        "Freezing",
+        "Bracing",
+        "Chilly",
+        "Cool",
+        "Mild",
+        "Warm",
+        "Balmy",
+        "Hot",
+        "Sweltering",
+        "Scorching"
     };
 
     private readonly ILogger<WeatherForecastController> _logger;
@@ -19,12 +28,15 @@ public class WeatherForecastController : ControllerBase
     {
         _logger = logger;
     }
+
     [LogAction("调用")]
     [HttpGet(Name = "GetWeatherForecast")]
     public IEnumerable<WeatherForecast> Get()
     {
         InternalCall();
-        return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+        return Enumerable
+            .Range(1, 5)
+            .Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
                 TemperatureC = Random.Shared.Next(-20, 55),
@@ -35,7 +47,10 @@ public class WeatherForecastController : ControllerBase
 
     private void InternalCall()
     {
-        var newActivity=Activity.Current?.Source.StartActivity("InternalCall", ActivityKind.Internal);
+        var newActivity = Activity.Current?.Source.StartActivity(
+            "InternalCall",
+            ActivityKind.Internal
+        );
         _logger.LogInformation("内部调用");
         newActivity?.Stop();
     }

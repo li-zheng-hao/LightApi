@@ -8,8 +8,9 @@ namespace LightApi.EFCore.Config;
 /// </summary>
 /// <typeparam name="TEntity"></typeparam>
 /// <typeparam name="TKey"></typeparam>
-public abstract class AbstractEntityTypeConfiguration<TEntity,TKey> : IEntityTypeConfiguration<TEntity>
-   where TEntity : class,IEfEntity<TKey> 
+public abstract class AbstractEntityTypeConfiguration<TEntity, TKey>
+    : IEntityTypeConfiguration<TEntity>
+    where TEntity : class, IEfEntity<TKey>
 {
     public virtual void Configure(EntityTypeBuilder<TEntity> builder)
     {

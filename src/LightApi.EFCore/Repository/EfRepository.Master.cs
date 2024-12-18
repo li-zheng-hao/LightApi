@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LightApi.EFCore.Repository;
 
 /// <summary>
-/// 
+///
 /// </summary>
 /// <typeparam name="TEntity"></typeparam>
 public partial class EfRepository<TEntity> : IEfRepository<TEntity>
@@ -27,11 +27,10 @@ public partial class EfRepository<TEntity> : IEfRepository<TEntity>
 
     public virtual DbConnection DbConnection { get; }
 
-
     public virtual IServiceProvider ServiceProvider { get; }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <param name="dbContext"></param>
     public EfRepository(AppDbContext dbContext, IServiceProvider serviceProvider)
@@ -44,20 +43,20 @@ public partial class EfRepository<TEntity> : IEfRepository<TEntity>
         DetachedEntities = Entities.AsNoTracking();
 
         // 只有关系型数据库才有连接信息
-        if (dbContext.Database.IsRelational()) DbConnection = dbContext.Database.GetDbConnection();
+        if (dbContext.Database.IsRelational())
+            DbConnection = dbContext.Database.GetDbConnection();
     }
 
-
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public IEfRepository<T> Change<T>() where T : class, IEfEntity
+    public IEfRepository<T> Change<T>()
+        where T : class, IEfEntity
     {
         return ServiceProvider.GetService<IEfRepository<T>>()!;
     }
-    
 
     public IQueryable<TEntity> AsQueryable(bool tracking = false)
     {
@@ -70,7 +69,8 @@ public partial class EfRepository<TEntity> : IEfRepository<TEntity>
         return DbContext.AsQueryable<OtherEntity>(tracking);
     }
 
-    public DbSet<T> GetDbSet<T>() where T : class, IEfEntity
+    public DbSet<T> GetDbSet<T>()
+        where T : class, IEfEntity
     {
         return DbContext.Set<T>();
     }

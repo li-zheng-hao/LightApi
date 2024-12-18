@@ -24,8 +24,12 @@ public static class DyanmicQueryExtension
     /// <returns></returns>
     /// <exception cref="BusinessException"></exception>
     /// <exception cref="Exception"></exception>
-    public static IQueryable<T> DynamicWhere<T>(this IQueryable<T> queryable, string property, object? value,
-        DynamicOpType opType)
+    public static IQueryable<T> DynamicWhere<T>(
+        this IQueryable<T> queryable,
+        string property,
+        object? value,
+        DynamicOpType opType
+    )
     {
         PropertyInfo? propertyInfo = null;
         MemberExpression? propertyAccess;
@@ -37,14 +41,18 @@ public static class DyanmicQueryExtension
             propertyAccess = Expression.PropertyOrField(parameter, properties[0].ToFirstUpper());
             for (int i = 1; i < properties.Length; i++)
             {
-                propertyAccess = Expression.PropertyOrField(propertyAccess, properties[i].ToFirstUpper());
+                propertyAccess = Expression.PropertyOrField(
+                    propertyAccess,
+                    properties[i].ToFirstUpper()
+                );
                 propertyInfo = propertyAccess.Member as PropertyInfo;
             }
         }
         else
         {
             propertyInfo = typeof(T).GetProperty(property.ToFirstUpper());
-            if (propertyInfo == null) throw new BusinessException("未找到属性" + property);
+            if (propertyInfo == null)
+                throw new BusinessException("未找到属性" + property);
             propertyAccess = Expression.MakeMemberAccess(parameter, propertyInfo);
         }
 
@@ -52,69 +60,88 @@ public static class DyanmicQueryExtension
         switch (opType)
         {
             case DynamicOpType.Contains:
-                Check.NotNullOrEmpty(value,"Contains操作符的值不能为空");
+                Check.NotNullOrEmpty(value, "Contains操作符的值不能为空");
                 var targetValue = ConvertType(value, propertyInfo!.PropertyType);
                 var constant = Expression.Constant(targetValue, propertyInfo.PropertyType);
                 var methodInfo = typeof(string).GetMethod("Contains", new[] { typeof(string) });
                 // 使用 Expression.Condition 创建条件表达式
                 comparison = Expression.Condition(
-                    Expression.NotEqual(propertyAccess, Expression.Constant(null, propertyInfo.PropertyType)), // 条件：propertyAccess 不等于 null
+                    Expression.NotEqual(
+                        propertyAccess,
+                        Expression.Constant(null, propertyInfo.PropertyType)
+                    ), // 条件：propertyAccess 不等于 null
                     Expression.Call(propertyAccess, methodInfo!, constant), // 如果条件成立，则调用 Contains 方法
                     Expression.Constant(false) // 如果条件不成立，则返回 false
                 );
                 break;
             case DynamicOpType.Equal:
-                Check.ThrowIf(value==null&&!IsNullableType(propertyInfo!.PropertyType)
-                    ,"目标类型不允许为null");
+                Check.ThrowIf(
+                    value == null && !IsNullableType(propertyInfo!.PropertyType),
+                    "目标类型不允许为null"
+                );
                 targetValue = ConvertType(value, propertyInfo!.PropertyType);
-                constant = Expression.Constant(targetValue,propertyInfo.PropertyType);
+                constant = Expression.Constant(targetValue, propertyInfo.PropertyType);
                 comparison = Expression.Equal(propertyAccess, constant);
                 break;
             case DynamicOpType.NotEqual:
-                Check.ThrowIf(value==null&&!IsNullableType(propertyInfo!.PropertyType)
-                    ,"目标类型不允许为null");
+                Check.ThrowIf(
+                    value == null && !IsNullableType(propertyInfo!.PropertyType),
+                    "目标类型不允许为null"
+                );
                 targetValue = ConvertType(value, propertyInfo!.PropertyType);
-                constant = Expression.Constant(targetValue,propertyInfo.PropertyType);
+                constant = Expression.Constant(targetValue, propertyInfo.PropertyType);
                 comparison = Expression.NotEqual(propertyAccess, constant);
                 break;
             case DynamicOpType.GreaterThan:
-                Check.NotNullOrEmpty(value,"GreaterThan操作符的值不能为空");
+                Check.NotNullOrEmpty(value, "GreaterThan操作符的值不能为空");
                 targetValue = ConvertType(value, propertyInfo!.PropertyType);
-                constant = Expression.Constant(targetValue,propertyInfo.PropertyType);
+                constant = Expression.Constant(targetValue, propertyInfo.PropertyType);
                 comparison = Expression.GreaterThan(propertyAccess, constant);
                 break;
             case DynamicOpType.GreaterThanOrEqual:
-                Check.NotNullOrEmpty(value,"GreaterThanOrEqual操作符的值不能为空");
+                Check.NotNullOrEmpty(value, "GreaterThanOrEqual操作符的值不能为空");
                 targetValue = ConvertType(value, propertyInfo!.PropertyType);
-                constant = Expression.Constant(targetValue,propertyInfo.PropertyType);
+                constant = Expression.Constant(targetValue, propertyInfo.PropertyType);
                 comparison = Expression.GreaterThanOrEqual(propertyAccess, constant);
                 break;
             case DynamicOpType.LessThan:
-                Check.NotNullOrEmpty(value,"LessThan操作符的值不能为空");
+                Check.NotNullOrEmpty(value, "LessThan操作符的值不能为空");
                 targetValue = ConvertType(value, propertyInfo!.PropertyType);
-                constant = Expression.Constant(targetValue,propertyInfo.PropertyType);
+                constant = Expression.Constant(targetValue, propertyInfo.PropertyType);
                 comparison = Expression.LessThan(propertyAccess, constant);
                 break;
             case DynamicOpType.LessThanOrEqual:
-                Check.NotNullOrEmpty(value,"LessThanOrEqual操作符的值不能为空");
+                Check.NotNullOrEmpty(value, "LessThanOrEqual操作符的值不能为空");
                 targetValue = ConvertType(value, propertyInfo!.PropertyType);
-                constant = Expression.Constant(targetValue,propertyInfo.PropertyType);
+                constant = Expression.Constant(targetValue, propertyInfo.PropertyType);
                 comparison = Expression.LessThanOrEqual(propertyAccess, constant);
                 break;
             case DynamicOpType.IsNull:
-                comparison = Expression.Equal(propertyAccess, Expression.Constant(null,propertyInfo!.PropertyType));
+                comparison = Expression.Equal(
+                    propertyAccess,
+                    Expression.Constant(null, propertyInfo!.PropertyType)
+                );
                 break;
             case DynamicOpType.IsNotNull:
-                comparison = Expression.NotEqual(propertyAccess, Expression.Constant(null,propertyInfo!.PropertyType));
+                comparison = Expression.NotEqual(
+                    propertyAccess,
+                    Expression.Constant(null, propertyInfo!.PropertyType)
+                );
                 break;
             case DynamicOpType.StartWith:
-                Check.NotNullOrEmpty(value,"StartWith操作符的值不能为空");
+                Check.NotNullOrEmpty(value, "StartWith操作符的值不能为空");
                 targetValue = ConvertType(value, propertyInfo!.PropertyType);
-                constant = Expression.Constant(targetValue,propertyInfo.PropertyType);
-                MethodInfo mi = typeof(string).GetMethod("StartsWith", new Type[] { typeof(string) })!;
+                constant = Expression.Constant(targetValue, propertyInfo.PropertyType);
+                MethodInfo mi = typeof(string).GetMethod(
+                    "StartsWith",
+                    new Type[] { typeof(string) }
+                )!;
                 // 使用 Expression.Condition 创建条件表达式
                 comparison = Expression.Condition(
-                    Expression.NotEqual(propertyAccess, Expression.Constant(null, propertyInfo.PropertyType)), // 条件：propertyAccess 不等于 null
+                    Expression.NotEqual(
+                        propertyAccess,
+                        Expression.Constant(null, propertyInfo.PropertyType)
+                    ), // 条件：propertyAccess 不等于 null
                     Expression.Call(propertyAccess, mi!, constant), // 如果条件成立，则调用 Contains 方法
                     Expression.Constant(false) // 如果条件不成立，则返回 false
                 );
@@ -122,25 +149,36 @@ public static class DyanmicQueryExtension
             case DynamicOpType.In:
                 var genericListType = typeof(List<>).MakeGenericType(propertyInfo!.PropertyType);
                 var genericList = Activator.CreateInstance(genericListType);
-                IEnumerable? list ;
+                IEnumerable? list;
                 if (value is JsonElement jsonElement)
                     list = jsonElement.Deserialize<IEnumerable>();
-                else 
-                    list =  value as IEnumerable;
-                if (list == null) throw new BusinessException("value类型错误");
+                else
+                    list = value as IEnumerable;
+                if (list == null)
+                    throw new BusinessException("value类型错误");
 
                 foreach (var item in list)
-                    genericListType.GetMethod("Add")!.Invoke(genericList,
-                        new[] { ConvertType(item, propertyInfo.PropertyType) });
+                    genericListType
+                        .GetMethod("Add")!
+                        .Invoke(
+                            genericList,
+                            new[] { ConvertType(item, propertyInfo.PropertyType) }
+                        );
 
-                MethodInfo containsMethod = typeof(Enumerable).GetMethods(BindingFlags.Public | BindingFlags.Static)
+                MethodInfo containsMethod = typeof(Enumerable)
+                    .GetMethods(BindingFlags.Public | BindingFlags.Static)
                     .Single(mi => mi.Name == "Contains" && mi.GetParameters().Length == 2)
                     .MakeGenericMethod(propertyInfo!.PropertyType);
 
-                // 如果value的类型与property的类型不同，则可能需要进行转换  
-                Expression convertedValue = Expression.Constant(genericList,
-                    typeof(IEnumerable<>).MakeGenericType(propertyInfo.PropertyType));
-                Expression propertyValue = Expression.Convert(propertyAccess, propertyInfo.PropertyType);
+                // 如果value的类型与property的类型不同，则可能需要进行转换
+                Expression convertedValue = Expression.Constant(
+                    genericList,
+                    typeof(IEnumerable<>).MakeGenericType(propertyInfo.PropertyType)
+                );
+                Expression propertyValue = Expression.Convert(
+                    propertyAccess,
+                    propertyInfo.PropertyType
+                );
 
                 comparison = Expression.Call(containsMethod, convertedValue, propertyValue);
                 break;
@@ -158,44 +196,48 @@ public static class DyanmicQueryExtension
     {
         try
         {
-            if (value == null) 
+            if (value == null)
                 return null;
             if (value.GetType() == type)
                 return value;
             if (value is JValue jValue)
             {
-                var res=jValue.ToObject(type);
+                var res = jValue.ToObject(type);
                 return res;
-            }else if (value is System.Text.Json.JsonElement jsonElement)
+            }
+            else if (value is System.Text.Json.JsonElement jsonElement)
             {
                 var targetType = Nullable.GetUnderlyingType(type) ?? type; // avoid type becoming null
 
                 var serializerOptions = new JsonSerializerOptions()
                 {
-                    NumberHandling = JsonNumberHandling.AllowReadingFromString ,
+                    NumberHandling = JsonNumberHandling.AllowReadingFromString,
                     Converters = { new JsonStringEnumConverter() }
                 };
-                var res = jsonElement.Deserialize(targetType,serializerOptions);
+                var res = jsonElement.Deserialize(targetType, serializerOptions);
                 return res;
             }
             else
             {
                 var targetType = Nullable.GetUnderlyingType(type) ?? type; // avoid type becoming null
                 var conv = TypeDescriptor.GetConverter(targetType);
-                
-                if(conv.CanConvertFrom(value.GetType()))
+
+                if (conv.CanConvertFrom(value.GetType()))
                 {
                     return conv.ConvertFrom(value);
                 }
-                return Convert.ChangeType(value,targetType);
+                return Convert.ChangeType(value, targetType);
             }
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             Debug.WriteLine($"类型转换错误:{e.Message}");
-            throw new BusinessException($"查询参数和类型不一致,目标类型{type.FullName},参数类型{value.GetType().FullName}");
+            throw new BusinessException(
+                $"查询参数和类型不一致,目标类型{type.FullName},参数类型{value.GetType().FullName}"
+            );
         }
     }
+
     /// <summary>
     /// 是否为nullable类型
     /// </summary>
@@ -204,7 +246,8 @@ public static class DyanmicQueryExtension
     private static bool IsNullableType(Type type)
     {
         // class类型为引用类型，永远都可以为null
-        if(type.IsValueType==false) return true;
+        if (type.IsValueType == false)
+            return true;
         return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
     }
 }

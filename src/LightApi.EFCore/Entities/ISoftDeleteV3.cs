@@ -5,7 +5,7 @@ namespace LightApi.EFCore.Entities;
 public interface ISoftDeleteV3
 {
     public DateTime? DeletedAt { get; set; }
-    
+
     public void Undo()
     {
         DeletedAt = null;
@@ -13,7 +13,6 @@ public interface ISoftDeleteV3
 
     public void Delete()
     {
-        DeletedAt=DateTime.Now;
+        DeletedAt = DateTime.Now;
     }
-  
 }

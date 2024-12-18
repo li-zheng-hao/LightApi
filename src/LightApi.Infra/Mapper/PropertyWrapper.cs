@@ -7,7 +7,7 @@
 public class PropertyWrapper<T>
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public T? Value { get; set; }
 }

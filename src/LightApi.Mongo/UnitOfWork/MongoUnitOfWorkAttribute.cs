@@ -10,7 +10,7 @@ public class MongoUnitOfWorkAttribute : ActionFilterAttribute
     private ILogger<MongoUnitOfWorkAttribute> _logger;
 
     private ICapPublisher? _publisher;
-    
+
     private IMongoUnitOfWork _uow;
 
     /// <summary>
@@ -27,15 +27,20 @@ public class MongoUnitOfWorkAttribute : ActionFilterAttribute
     /// </summary>
     public bool UseCapPublisher { get; set; }
 
-    public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+    public override async Task OnActionExecutionAsync(
+        ActionExecutingContext context,
+        ActionExecutionDelegate next
+    )
     {
         try
         {
-            _logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<MongoUnitOfWorkAttribute>>();
-            _uow=context.HttpContext.RequestServices.GetRequiredService<IMongoUnitOfWork>();
-            _uow.StartTransaction(context.HttpContext.RequestServices,UseCapPublisher);
-            var executed=await next();
-            if (executed.Exception!=null)
+            _logger = context.HttpContext.RequestServices.GetRequiredService<
+                ILogger<MongoUnitOfWorkAttribute>
+            >();
+            _uow = context.HttpContext.RequestServices.GetRequiredService<IMongoUnitOfWork>();
+            _uow.StartTransaction(context.HttpContext.RequestServices, UseCapPublisher);
+            var executed = await next();
+            if (executed.Exception != null)
                 await _uow.RollbackAsync();
             else
                 await _uow.CommitAsync();
@@ -46,5 +51,4 @@ public class MongoUnitOfWorkAttribute : ActionFilterAttribute
             throw;
         }
     }
-   
 }

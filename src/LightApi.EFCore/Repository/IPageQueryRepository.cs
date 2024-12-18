@@ -7,10 +7,11 @@ using LightApi.EFCore.Util;
 namespace LightApi.EFCore.Repository;
 
 /// <summary>
-/// 
+///
 /// </summary>
 /// <typeparam name="TEntity"></typeparam>
-public interface IPageQueryRepository<TEntity> where TEntity : class, IEfEntity
+public interface IPageQueryRepository<TEntity>
+    where TEntity : class, IEfEntity
 {
     /// <summary>
     /// 分页查询 带排序
@@ -22,9 +23,13 @@ public interface IPageQueryRepository<TEntity> where TEntity : class, IEfEntity
     /// <param name="isAsc"></param>
     /// <typeparam name="TKey"></typeparam>
     /// <returns></returns>
-    Task<PageList<TEntity>> PageQueryAsync<TKey>(Expression<Func<TEntity, bool>> condition, int pageIndex, int pageSize
-        , Expression<Func<TEntity, TKey>> orderExp=null,
-        bool isAsc = true);
+    Task<PageList<TEntity>> PageQueryAsync<TKey>(
+        Expression<Func<TEntity, bool>> condition,
+        int pageIndex,
+        int pageSize,
+        Expression<Func<TEntity, TKey>> orderExp = null,
+        bool isAsc = true
+    );
 
     /// <summary>
     /// 分页查询 带排序
@@ -37,10 +42,14 @@ public interface IPageQueryRepository<TEntity> where TEntity : class, IEfEntity
     /// <param name="isAsc"></param>
     /// <typeparam name="TKey"></typeparam>
     /// <returns></returns>
-    Task<PageList<TEntity>> PageQueryAsync<TKey>(bool useFilter, Expression<Func<TEntity, bool>> condition, int pageIndex, int pageSize,
+    Task<PageList<TEntity>> PageQueryAsync<TKey>(
+        bool useFilter,
+        Expression<Func<TEntity, bool>> condition,
+        int pageIndex,
+        int pageSize,
         Expression<Func<TEntity, TKey>> orderExp = null,
-        bool isAsc = true);
-
+        bool isAsc = true
+    );
 
     /// <summary>
     /// 分页查询
@@ -49,5 +58,9 @@ public interface IPageQueryRepository<TEntity> where TEntity : class, IEfEntity
     /// <param name="pageIndex"></param>
     /// <param name="pageSize"></param>
     /// <returns></returns>
-    Task<PageList<TEntity>> PageQueryAsync(Expression<Func<TEntity, bool>> condition, int pageIndex, int pageSize);
+    Task<PageList<TEntity>> PageQueryAsync(
+        Expression<Func<TEntity, bool>> condition,
+        int pageIndex,
+        int pageSize
+    );
 }

@@ -6,14 +6,14 @@ using MongoDB.Entities;
 
 namespace LightApi.Infra.FileStorage;
 
-public class FileStorage:IFileStorage
+public class FileStorage : IFileStorage
 {
     private readonly IOptions<StorageOptions> _options;
     private readonly IMinioClient? _minioClient;
 
-    public FileStorage(IOptions<StorageOptions> options,IMinioClient? minioClient=null)
+    public FileStorage(IOptions<StorageOptions> options, IMinioClient? minioClient = null)
     {
-        if (options.Value.MinioStorageOptions != null&& minioClient==null)
+        if (options.Value.MinioStorageOptions != null && minioClient == null)
         {
             throw new ArgumentNullException("当设置了MinioStorageOptions时，必须注册IMinioClient服务");
         }
@@ -21,7 +21,8 @@ public class FileStorage:IFileStorage
         _options = options;
         _minioClient = minioClient;
     }
-    public  Task<string> UploadToLocalStorage(IFormFile file)
+
+    public Task<string> UploadToLocalStorage(IFormFile file)
     {
         return UploadToLocalStorage(file.OpenReadStream(), file.FileName);
     }
@@ -29,10 +30,11 @@ public class FileStorage:IFileStorage
     public async Task<string> UploadToLocalStorage(Stream stream, string fileName)
     {
         string subDir = DateTime.Now.ToString("yyMMdd");
-        var rootDir=Path.Combine(GetAbsoluteDirectory(),subDir);
-        if (!Directory.Exists(rootDir)) Directory.CreateDirectory(rootDir);
+        var rootDir = Path.Combine(GetAbsoluteDirectory(), subDir);
+        if (!Directory.Exists(rootDir))
+            Directory.CreateDirectory(rootDir);
         fileName = $"{DateTime.Now:yyMMddhhmmssfff}_{fileName}";
-        string filePath = Path.Combine(rootDir,fileName );
+        string filePath = Path.Combine(rootDir, fileName);
         await using Stream fileStream = new FileStream(filePath, FileMode.Create);
         await stream.CopyToAsync(fileStream);
         return $"{_options.Value.LocalStorageOptions!.PublicDomain}/{subDir}/{fileName}";
@@ -40,8 +42,8 @@ public class FileStorage:IFileStorage
 
     public FileStream? DownloadFromLocalStorage(string subPath)
     {
-        var rootDir=GetAbsoluteDirectory();
-        var filePath = Path.Combine(rootDir,subPath);
+        var rootDir = GetAbsoluteDirectory();
+        var filePath = Path.Combine(rootDir, subPath);
         return File.Exists(filePath) == false ? null : File.OpenRead(filePath);
     }
 
@@ -52,29 +54,29 @@ public class FileStorage:IFileStorage
 
     public async Task<string?> UploadToMinioStorage(Stream stream, string fileName)
     {
-        if (_minioClient == null) return null;
+        if (_minioClient == null)
+            return null;
 
         string objectKey = $"{DateTime.Now:yyMMdd}/{DateTime.Now:yyMMddhhmmssfff}_{fileName}";
-      
+
         var putObjectArgs = new PutObjectArgs()
             .WithBucket(_options.Value.MinioStorageOptions!.Bucket)
             .WithObject(objectKey)
             .WithStreamData(stream)
-            .WithObjectSize(stream.Length)
-            ;
-        
+            .WithObjectSize(stream.Length);
+
         await _minioClient.PutObjectAsync(putObjectArgs);
         string prefix = _options.Value.MinioStorageOptions.EnableSSL ? "https" : "http";
         return $"{prefix}://{_options.Value.MinioStorageOptions.EndPoint}/{_options.Value.MinioStorageOptions.Bucket}/{objectKey}";
     }
 
-    public async Task<string?> UploadToMongoDBStorage(Stream stream, string fileName, bool isTempFile = false)
+    public async Task<string?> UploadToMongoDBStorage(
+        Stream stream,
+        string fileName,
+        bool isTempFile = false
+    )
     {
-        var file = new MongoStorage()
-        {
-            FileName = fileName,
-            IsTempFile = isTempFile
-        };
+        var file = new MongoStorage() { FileName = fileName, IsTempFile = isTempFile };
         await file.SaveAsync();
         await file.Data.UploadAsync(stream);
         return $"{_options.Value.MongoStorageOptions!.PublicDomain}/{file.ID}_{file.FileName}";
@@ -84,10 +86,13 @@ public class FileStorage:IFileStorage
     {
         try
         {
-            if (key.Length > 24) key = key.Split("_")[0];
+            if (key.Length > 24)
+                key = key.Split("_")[0];
             if (key.Length != 24)
                 return null;
-            var mongoFile = await DB.Find<MongoStorage>().Match(it => it.ID == key).ExecuteFirstAsync();
+            var mongoFile = await DB.Find<MongoStorage>()
+                .Match(it => it.ID == key)
+                .ExecuteFirstAsync();
 
             if (mongoFile != null)
             {
@@ -97,7 +102,6 @@ public class FileStorage:IFileStorage
                 return memoryStream;
             }
             return null;
-            
         }
         catch
         {
@@ -111,7 +115,11 @@ public class FileStorage:IFileStorage
     /// <returns></returns>
     private string GetAbsoluteDirectory()
     {
-        return Path.IsPathRooted(_options.Value.LocalStorageOptions!.Directory)==false ? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _options.Value.LocalStorageOptions.Directory) : _options.Value.LocalStorageOptions.Directory;
-        
+        return Path.IsPathRooted(_options.Value.LocalStorageOptions!.Directory) == false
+            ? Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory,
+                _options.Value.LocalStorageOptions.Directory
+            )
+            : _options.Value.LocalStorageOptions.Directory;
     }
 }

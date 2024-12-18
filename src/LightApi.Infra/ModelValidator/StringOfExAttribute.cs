@@ -8,7 +8,7 @@ namespace LightApi.Infra.ModelValidator;
 public class StringOfExAttribute : ValidationAttribute
 {
     public string[] AllowableValues { get; set; }
-    
+
     /// <summary>
     /// 是否允许null或空白字符串
     /// </summary>
@@ -21,20 +21,19 @@ public class StringOfExAttribute : ValidationAttribute
 
     protected override ValidationResult? IsValid(object value, ValidationContext validationContext)
     {
-        var msg = $"请输入允许的值: {string.Join(", ", (AllowableValues ?? new string[] { "没有发现允许的值" }))}.";
+        var msg =
+            $"请输入允许的值: {string.Join(", ", (AllowableValues ?? new string[] { "没有发现允许的值" }))}.";
 
-        if(string.IsNullOrWhiteSpace(value.ToString()))
+        if (string.IsNullOrWhiteSpace(value.ToString()))
         {
             return AllowNullOrWhiteSpace ? ValidationResult.Success : new ValidationResult(msg);
         }
-       
+
         if (AllowableValues?.Contains(value?.ToString()) == true)
         {
             return ValidationResult.Success;
         }
 
-
         return new ValidationResult(msg);
     }
-    
 }

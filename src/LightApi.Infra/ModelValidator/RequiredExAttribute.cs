@@ -13,7 +13,6 @@ public class RequiredExAttribute : ValidationAttribute
     {
         bool passed = true;
 
-
         if (value is string stringValue)
         {
             passed = !stringValue.IsNullOrWhiteSpace();

@@ -38,7 +38,10 @@ internal static class IEnumerableExtensions
     /// <param name="source"></param>
     /// <param name="keySelector"></param>
     /// <returns></returns>
-    public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+    public static IEnumerable<TSource> DistinctBy<TSource, TKey>(
+        this IEnumerable<TSource> source,
+        Func<TSource, TKey> keySelector
+    )
     {
         var hash = new HashSet<TKey>();
         return source.Where(p => hash.Add(keySelector(p)));
@@ -53,7 +56,11 @@ internal static class IEnumerableExtensions
     /// <param name="value">The value to insert.</param>
     public static void InsertAfter<T>(this IList<T> list, Func<T, bool> condition, T value)
     {
-        foreach (var item in list.Select((item, index) => new { item, index }).Where(p => condition(p.item)).OrderByDescending(p => p.index))
+        foreach (
+            var item in list.Select((item, index) => new { item, index })
+                .Where(p => condition(p.item))
+                .OrderByDescending(p => p.index)
+        )
         {
             if (item.index + 1 == list.Count)
             {
@@ -75,7 +82,12 @@ internal static class IEnumerableExtensions
     /// <param name="value">The value to insert.</param>
     public static void InsertAfter<T>(this IList<T> source, int index, T value)
     {
-        foreach (var item in source.Select((v, i) => new { Value = v, Index = i }).Where(p => p.Index == index).OrderByDescending(p => p.Index))
+        foreach (
+            var item in source
+                .Select((v, i) => new { Value = v, Index = i })
+                .Where(p => p.Index == index)
+                .OrderByDescending(p => p.Index)
+        )
         {
             if (item.Index + 1 == source.Count)
                 source.Add(value);
@@ -92,7 +104,10 @@ internal static class IEnumerableExtensions
     /// <param name="source"></param>
     /// <param name="selector"></param>
     /// <returns></returns>
-    public static HashSet<TResult> ToHashSet<T, TResult>(this IEnumerable<T> source, Func<T, TResult> selector)
+    public static HashSet<TResult> ToHashSet<T, TResult>(
+        this IEnumerable<T> source,
+        Func<T, TResult> selector
+    )
     {
         var set = new HashSet<TResult>();
         set.UnionWith(source.Select(selector));
@@ -117,7 +132,8 @@ internal static class IEnumerableExtensions
     /// <returns>
     /// true if source is null or empty; otherwise, false.
     /// </returns>
-    public static bool IsNullOrEmpty<T>(this IEnumerable<T> source) => source == null || !source.Any();
+    public static bool IsNullOrEmpty<T>(this IEnumerable<T> source) =>
+        source == null || !source.Any();
 
     /// <summary>
     /// Checks whether an IEnumerable&lt;T&gt; object is not null and not empty, where T is the type parameter.
@@ -126,5 +142,6 @@ internal static class IEnumerableExtensions
     /// <returns>
     /// true if source is not null and has at least one element; otherwise, false.
     /// </returns>
-    public static bool IsNotNullOrEmpty<T>(this IEnumerable<T> source) => source != null && source.Any();
+    public static bool IsNotNullOrEmpty<T>(this IEnumerable<T> source) =>
+        source != null && source.Any();
 }

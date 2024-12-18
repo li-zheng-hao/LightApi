@@ -1,5 +1,3 @@
 ﻿namespace LightApi.Infra.Unify;
 
-public interface IUnifyResult
-{
-}
+public interface IUnifyResult { }

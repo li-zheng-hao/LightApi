@@ -44,7 +44,7 @@ namespace LightApi.Infra.RabbitMQ
                     //当mandatory标志位设置为true时，如果exchange根据自身类型和消息routingKey无法找到一个合适的queue存储消息
                     //那么broker会调用basic.return方法将消息返还给生产者;
                     //当mandatory设置为false时，出现上述情况broker会直接将消息丢弃
-                    if(properties==null)
+                    if (properties == null)
                         await _channel!
                             .BasicPublishAsync(exchange, routingKey, mandatory, body)
                             .ConfigureAwait(false);

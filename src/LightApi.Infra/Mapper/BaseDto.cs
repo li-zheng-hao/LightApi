@@ -11,7 +11,6 @@ public abstract class BaseDto<TDto, TEntity> : IRegister
     where TDto : class, new()
     where TEntity : class, new()
 {
-
     public TEntity ToEntity()
     {
         return this.Adapt<TEntity>();
@@ -27,7 +26,6 @@ public abstract class BaseDto<TDto, TEntity> : IRegister
         return entity.Adapt<TDto>();
     }
 
-
     private TypeAdapterConfig Config { get; set; }
 
     public virtual void AddCustomMappings() { }
@@ -36,32 +34,28 @@ public abstract class BaseDto<TDto, TEntity> : IRegister
     /// DTO到Entity的映射
     /// </summary>
     /// <returns></returns>
-    protected TypeAdapterSetter<TDto, TEntity> SetCustomMappings()
-        => Config.ForType<TDto, TEntity>();
-    
-    
+    protected TypeAdapterSetter<TDto, TEntity> SetCustomMappings() =>
+        Config.ForType<TDto, TEntity>();
+
     /// <summary>
     /// T1到T2的映射
     /// </summary>
     /// <returns></returns>
-    protected TypeAdapterSetter<T1, T2> SetCustomMappings<T1,T2>()
-        => Config.ForType<T1, T2>();
-    
-    
+    protected TypeAdapterSetter<T1, T2> SetCustomMappings<T1, T2>() => Config.ForType<T1, T2>();
+
     /// <summary>
     /// T2到T1的映射
     /// </summary>
     /// <returns></returns>
-    protected TypeAdapterSetter<T2, T1> SetCustomMappingsReverse<T1,T2>()
-        => Config.ForType<T2, T1>();
-    
-    
+    protected TypeAdapterSetter<T2, T1> SetCustomMappingsReverse<T1, T2>() =>
+        Config.ForType<T2, T1>();
+
     /// <summary>
     /// Entity到Dto的映射
     /// </summary>
     /// <returns></returns>
-    protected TypeAdapterSetter<TEntity, TDto> SetCustomMappingsInverse()
-        => Config.ForType<TEntity, TDto>();
+    protected TypeAdapterSetter<TEntity, TDto> SetCustomMappingsInverse() =>
+        Config.ForType<TEntity, TDto>();
 
     public void Register(TypeAdapterConfig config)
     {

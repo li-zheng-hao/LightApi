@@ -12,16 +12,21 @@ public static class SqlBuilderExtension
     /// <param name="sql"></param>
     /// <param name="parameters"></param>
     /// <returns></returns>
-    public static SqlBuilder WhereIf(this SqlBuilder sqlBuilder, bool? condition, string sql,
-        dynamic? parameters = null)
+    public static SqlBuilder WhereIf(
+        this SqlBuilder sqlBuilder,
+        bool? condition,
+        string sql,
+        dynamic? parameters = null
+    )
     {
-        if (condition==true)
+        if (condition == true)
         {
             return sqlBuilder.Where(sql, parameters);
         }
 
         return sqlBuilder;
     }
+
     /// <summary>
     /// 条件拼接
     /// </summary>
@@ -30,10 +35,14 @@ public static class SqlBuilderExtension
     /// <param name="sql"></param>
     /// <param name="parameters"></param>
     /// <returns></returns>
-    public static SqlBuilder OrderByIf(this SqlBuilder sqlBuilder, bool? condition, string sql,
-        dynamic? parameters = null)
+    public static SqlBuilder OrderByIf(
+        this SqlBuilder sqlBuilder,
+        bool? condition,
+        string sql,
+        dynamic? parameters = null
+    )
     {
-        if (condition==true)
+        if (condition == true)
         {
             return sqlBuilder.OrderBy(sql, parameters);
         }

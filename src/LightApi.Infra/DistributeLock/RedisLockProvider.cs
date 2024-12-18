@@ -10,25 +10,26 @@ namespace LightApi.Infra.DistributeLock;
 public class RedisLockProvider
 {
     private readonly ConnectionMultiplexer _redisClient;
+
     /// <summary>
     /// 未获取到锁时的刷新间隔最小值
     /// </summary>
     public int MinIntervalMilliSeconds => 10;
+
     /// <summary>
     /// 未获取到锁时的刷新间隔最大值
     /// </summary>
     public int MaxIntervalMilliSeconds => 500;
-    
+
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <param name="redisClient"></param>
     public RedisLockProvider(ConnectionMultiplexer redisClient)
     {
         _redisClient = redisClient;
     }
-    
-    
+
     /// <summary>
     /// 尝试获取锁
     /// </summary>
@@ -36,7 +37,7 @@ public class RedisLockProvider
     /// <param name="timeoutSeconds"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    public RedisLock? TryLock(string lockKey, uint timeoutSeconds=10)
+    public RedisLock? TryLock(string lockKey, uint timeoutSeconds = 10)
     {
         if (timeoutSeconds < 2)
             throw new ArgumentException($"{nameof(timeoutSeconds)}不能小于2秒");
@@ -48,23 +49,25 @@ public class RedisLockProvider
 
         Stopwatch stopwatch = new();
         stopwatch.Start();
-        
-        var keys=new []{lockKey}.Select(it => new RedisKey(it)).ToArray();
-        
+
+        var keys = new[] { lockKey }.Select(it => new RedisKey(it)).ToArray();
+
         while (true)
         {
             if (stopwatch.ElapsedMilliseconds > timeoutSeconds * 1000)
                 return null;
-            
+
             // 执行Lua脚本
             var result = db.ScriptEvaluate(lockStript, keys, parameters);
 
             if ((int)result == 1)
             {
-                return new RedisLock(new []{lockKey}, lockValue, timeoutSeconds, _redisClient);
+                return new RedisLock(new[] { lockKey }, lockValue, timeoutSeconds, _redisClient);
             }
 
-            Task.Delay(Random.Shared.Next(MinIntervalMilliSeconds,MaxIntervalMilliSeconds)).GetAwaiter().GetResult();
+            Task.Delay(Random.Shared.Next(MinIntervalMilliSeconds, MaxIntervalMilliSeconds))
+                .GetAwaiter()
+                .GetResult();
         }
     }
 
@@ -75,7 +78,7 @@ public class RedisLockProvider
     /// <param name="timeoutSeconds"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    public async Task<RedisLock?> TryLockAsync(string lockKey, uint timeoutSeconds=10)
+    public async Task<RedisLock?> TryLockAsync(string lockKey, uint timeoutSeconds = 10)
     {
         if (timeoutSeconds < 2)
             throw new ArgumentException($"{nameof(timeoutSeconds)}不能小于2秒");
@@ -87,23 +90,23 @@ public class RedisLockProvider
 
         Stopwatch stopwatch = new();
         stopwatch.Start();
-        
-        var keys=new []{lockKey}.Select(it => new RedisKey(it)).ToArray();
-        
+
+        var keys = new[] { lockKey }.Select(it => new RedisKey(it)).ToArray();
+
         while (true)
         {
             if (stopwatch.ElapsedMilliseconds > timeoutSeconds * 1000)
                 return null;
-            
+
             // 执行Lua脚本
             var result = await db.ScriptEvaluateAsync(lockStript, keys, parameters);
 
             if ((int)result == 1)
             {
-                return new RedisLock(new []{lockKey}, lockValue, timeoutSeconds, _redisClient);
+                return new RedisLock(new[] { lockKey }, lockValue, timeoutSeconds, _redisClient);
             }
 
-            await Task.Delay(Random.Shared.Next(MinIntervalMilliSeconds,MaxIntervalMilliSeconds));
+            await Task.Delay(Random.Shared.Next(MinIntervalMilliSeconds, MaxIntervalMilliSeconds));
         }
     }
 
@@ -114,7 +117,7 @@ public class RedisLockProvider
     /// <param name="timeoutSeconds"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    public async Task<RedisLock?> TryLockAsync(string[] lockKeys, uint timeoutSeconds=10)
+    public async Task<RedisLock?> TryLockAsync(string[] lockKeys, uint timeoutSeconds = 10)
     {
         if (timeoutSeconds < 2)
             throw new ArgumentException($"{nameof(timeoutSeconds)}不能小于2秒");
@@ -126,14 +129,14 @@ public class RedisLockProvider
 
         Stopwatch stopwatch = new();
         stopwatch.Start();
-        
-        var keys=lockKeys.Select(it => new RedisKey(it)).ToArray();
-        
+
+        var keys = lockKeys.Select(it => new RedisKey(it)).ToArray();
+
         while (true)
         {
             if (stopwatch.ElapsedMilliseconds > timeoutSeconds * 1000)
                 return null;
-            
+
             // 执行Lua脚本
             var result = await db.ScriptEvaluateAsync(lockStript, keys, parameters);
 
@@ -142,11 +145,10 @@ public class RedisLockProvider
                 return new RedisLock(lockKeys, lockValue, timeoutSeconds, _redisClient);
             }
 
-            await Task.Delay(Random.Shared.Next(MinIntervalMilliSeconds,MaxIntervalMilliSeconds));
+            await Task.Delay(Random.Shared.Next(MinIntervalMilliSeconds, MaxIntervalMilliSeconds));
         }
     }
-    
-    
+
     /// <summary>
     /// 尝试获取锁
     /// </summary>
@@ -154,7 +156,7 @@ public class RedisLockProvider
     /// <param name="timeoutSeconds"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    public RedisLock? TryLock(string[] lockKeys, uint timeoutSeconds=10)
+    public RedisLock? TryLock(string[] lockKeys, uint timeoutSeconds = 10)
     {
         if (timeoutSeconds < 2)
             throw new ArgumentException($"{nameof(timeoutSeconds)}不能小于2秒");
@@ -166,14 +168,14 @@ public class RedisLockProvider
 
         Stopwatch stopwatch = new();
         stopwatch.Start();
-        
-        var keys=lockKeys.Select(it => new RedisKey(it)).ToArray();
-        
+
+        var keys = lockKeys.Select(it => new RedisKey(it)).ToArray();
+
         while (true)
         {
             if (stopwatch.ElapsedMilliseconds > timeoutSeconds * 1000)
                 return null;
-            
+
             // 执行Lua脚本
             var result = db.ScriptEvaluate(lockStript, keys, parameters);
 
@@ -182,14 +184,17 @@ public class RedisLockProvider
                 return new RedisLock(lockKeys, lockValue, timeoutSeconds, _redisClient);
             }
 
-            Task.Delay(Random.Shared.Next(MinIntervalMilliSeconds,MaxIntervalMilliSeconds)).GetAwaiter().GetResult();
+            Task.Delay(Random.Shared.Next(MinIntervalMilliSeconds, MaxIntervalMilliSeconds))
+                .GetAwaiter()
+                .GetResult();
         }
     }
 
     /// <summary>
     /// 加锁lua脚本
     /// </summary>
-    private const string lockStript = @"
+    private const string lockStript =
+        @"
         local keys = KEYS
         local expire_time = ARGV[1]
         local lock_value = ARGV[2]
@@ -208,5 +213,4 @@ public class RedisLockProvider
 
         return 1
     ";
- 
 }

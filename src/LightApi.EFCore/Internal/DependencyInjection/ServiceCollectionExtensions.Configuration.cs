@@ -6,7 +6,10 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     internal static partial class ServiceCollectionExtensions
     {
-        public static IServiceCollection ReplaceConfiguration(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ReplaceConfiguration(
+            this IServiceCollection services,
+            IConfiguration configuration
+        )
         {
             return services.Replace(ServiceDescriptor.Singleton(configuration));
         }

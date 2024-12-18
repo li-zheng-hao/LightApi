@@ -16,24 +16,25 @@ public static class ReflectionHelper
 
     public static MethodInfo[] GetMethodsByAttribute(this Type type, Type attributeType)
     {
-        return type.GetMethods().Where(m => m.HasAttribute( attributeType)).ToArray();
+        return type.GetMethods().Where(m => m.HasAttribute(attributeType)).ToArray();
     }
 
     public static bool HasAttribute(this Type type, Type attributeType)
     {
-        return type.GetMethods().Any(m => m.HasAttribute( attributeType));
+        return type.GetMethods().Any(m => m.HasAttribute(attributeType));
     }
-    
+
     /// <summary>
     /// 创建类实例
     /// </summary>
     /// <param name="type"></param>
     /// <param name="args"></param>
     /// <returns></returns>
-    public static object CreateInstance(Type type,params object[] args)
+    public static object CreateInstance(Type type, params object[] args)
     {
-        return Activator.CreateInstance(type,args)!;
+        return Activator.CreateInstance(type, args)!;
     }
+
     /// <summary>
     /// Call Function
     /// </summary>
@@ -41,12 +42,16 @@ public static class ReflectionHelper
     /// <param name="functionName"></param>
     /// <param name="args"></param>
     /// <returns></returns>
-    public static object? CallFunction(this object target, string functionName, params object[] args)
+    public static object? CallFunction(
+        this object target,
+        string functionName,
+        params object[] args
+    )
     {
         var method = target.GetType().GetMethod(functionName);
         return method?.Invoke(target, args);
     }
-    
+
     /// <summary>
     /// Get Property Value
     /// </summary>
@@ -58,5 +63,4 @@ public static class ReflectionHelper
         var property = target.GetType().GetProperty(propertyName);
         return property?.GetValue(target);
     }
-    
 }

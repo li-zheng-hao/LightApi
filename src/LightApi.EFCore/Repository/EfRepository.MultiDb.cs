@@ -11,24 +11,24 @@ namespace LightApi.EFCore.Repository
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
     /// <typeparam name="TDbContext"></typeparam>
-    public class MultiContextEfRepository<TEntity, TDbContext> : EfRepository<TEntity>,
-        IEfRepository<TEntity,TDbContext> where TEntity : class, IEfEntity, new() where TDbContext : AppDbContext
+    public class MultiContextEfRepository<TEntity, TDbContext>
+        : EfRepository<TEntity>,
+            IEfRepository<TEntity, TDbContext>
+        where TEntity : class, IEfEntity, new()
+        where TDbContext : AppDbContext
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="dbContext"></param>
         /// <param name="serviceProvider"></param>
-        public MultiContextEfRepository(TDbContext dbContext, IServiceProvider serviceProvider) : base(dbContext, serviceProvider)
-        {
-        }
+        public MultiContextEfRepository(TDbContext dbContext, IServiceProvider serviceProvider)
+            : base(dbContext, serviceProvider) { }
 
         public IEfRepository<T, TDbContext> Change<T>()
             where T : class, IEfEntity
         {
             return ServiceProvider.GetService<IEfRepository<T, TDbContext>>()!;
         }
-
-      
     }
 }

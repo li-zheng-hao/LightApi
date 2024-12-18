@@ -54,14 +54,14 @@ public class RangeExAttribute : RequiredAttribute
         if (OperandType == typeof(double))
             return ValidateDouble(value);
 
-        var converted=double.TryParse(value.ToString(), out var result);
-        
+        var converted = double.TryParse(value.ToString(), out var result);
+
         if (converted)
         {
             if (result >= (double)Minimum && result <= (double)Maximum)
                 return ValidationResult.Success;
         }
-        
+
         return ValidationResult.Success;
     }
 
@@ -88,10 +88,8 @@ public class RangeExAttribute : RequiredAttribute
             }
         }
 
-
         return passed ? ValidationResult.Success : new ValidationResult(ErrorMessage);
     }
-
 
     private ValidationResult ValidateDouble(object value)
     {
@@ -115,7 +113,6 @@ public class RangeExAttribute : RequiredAttribute
                 passed = false;
             }
         }
-
 
         return passed ? ValidationResult.Success : new ValidationResult(ErrorMessage);
     }

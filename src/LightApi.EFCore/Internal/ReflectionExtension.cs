@@ -23,9 +23,12 @@ public static class ReflectionExtension
         return false;
     }
 
-    public static bool HasAttribute(this Type type, Type attributeType) => type.IsDefined(attributeType, inherit: true);
+    public static bool HasAttribute(this Type type, Type attributeType) =>
+        type.IsDefined(attributeType, inherit: true);
 
-    public static bool HasAttribute<T>(this Type type) where T : Attribute => type.HasAttribute(typeof(T));
+    public static bool HasAttribute<T>(this Type type)
+        where T : Attribute => type.HasAttribute(typeof(T));
 
-    public static bool HasAttribute<T>(this Type type, Func<T, bool> predicate) where T : Attribute => type.GetCustomAttributes<T>(inherit: true).Any(predicate);
+    public static bool HasAttribute<T>(this Type type, Func<T, bool> predicate)
+        where T : Attribute => type.GetCustomAttributes<T>(inherit: true).Any(predicate);
 }

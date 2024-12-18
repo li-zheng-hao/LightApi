@@ -9,7 +9,7 @@ public interface IUser
     /// ID
     /// </summary>
     string Id { get; set; }
-    
+
     /// <summary>
     /// 用户名
     /// </summary>

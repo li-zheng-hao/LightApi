@@ -5,20 +5,25 @@ using SqlSugar;
 
 namespace LightApi.SqlSugar;
 
-public class SugarUnitOfWorkAttribute:ActionFilterAttribute
+public class SugarUnitOfWorkAttribute : ActionFilterAttribute
 {
     private ISqlSugarClient _client;
     private ILogger<SugarUnitOfWorkAttribute> _logger;
 
-    public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+    public override async Task OnActionExecutionAsync(
+        ActionExecutingContext context,
+        ActionExecutionDelegate next
+    )
     {
-        _client=context.HttpContext.RequestServices.GetRequiredService<ISqlSugarClient>();
-        _logger=context.HttpContext.RequestServices.GetRequiredService<ILogger<SugarUnitOfWorkAttribute>>();
-        
+        _client = context.HttpContext.RequestServices.GetRequiredService<ISqlSugarClient>();
+        _logger = context.HttpContext.RequestServices.GetRequiredService<
+            ILogger<SugarUnitOfWorkAttribute>
+        >();
+
         await _client!.Ado.BeginTranAsync();
-        
-        var result=await next();
-        
+
+        var result = await next();
+
         if (result.Exception == null)
         {
             await _client!.Ado.CommitTranAsync();
@@ -29,6 +34,4 @@ public class SugarUnitOfWorkAttribute:ActionFilterAttribute
             await _client!.Ado.RollbackTranAsync();
         }
     }
-
-   
 }

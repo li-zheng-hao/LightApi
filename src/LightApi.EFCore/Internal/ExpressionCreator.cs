@@ -12,8 +12,7 @@
         /// <param name="expr">The expression.</param>
         /// <returns>The combined expression.</returns>
         public static Expression<Func<T, bool>> New<T>(Expression<Func<T, bool>>? expr = null)
-            where T : class
-            => expr ?? (x => true);
+            where T : class => expr ?? (x => true);
 
         /// <summary>
         /// Generate a new expression
@@ -22,9 +21,10 @@
         /// <typeparam name="T2">The type of the second object being tested.</typeparam>
         /// <param name="expr">The expression.</param>
         /// <returns>The combined expression.</returns>
-        public static Expression<Func<T1, T2, bool>> New<T1, T2>(Expression<Func<T1, T2, bool>>? expr = null)
+        public static Expression<Func<T1, T2, bool>> New<T1, T2>(
+            Expression<Func<T1, T2, bool>>? expr = null
+        )
             where T1 : class
-            where T2 : class
-            => expr ?? ((x, y) => true);
+            where T2 : class => expr ?? ((x, y) => true);
     }
 }

@@ -31,8 +31,11 @@ public class GlobalExceptionsFilter : IExceptionFilter, IActionFilter
 
     private readonly IUnifyResultProvider _unifyResultProvider;
 
-    public GlobalExceptionsFilter(ILogger<GlobalExceptionsFilter> logger, IOptions<InfrastructureOptions> options,
-        IUnifyResultProvider unifyResultProvider)
+    public GlobalExceptionsFilter(
+        ILogger<GlobalExceptionsFilter> logger,
+        IOptions<InfrastructureOptions> options,
+        IUnifyResultProvider unifyResultProvider
+    )
     {
         _logger = logger;
         _options = options;
@@ -43,10 +46,14 @@ public class GlobalExceptionsFilter : IExceptionFilter, IActionFilter
     {
         if (context.Exception is BusinessException customException)
         {
-            if (customException.Code == -1) customException.Code = _options.Value.DefaultFailureBusinessExceptionCode;
+            if (customException.Code == -1)
+                customException.Code = _options.Value.DefaultFailureBusinessExceptionCode;
 
-            var jm = _unifyResultProvider.Failure(customException.Body, customException.Code,
-                customException.Message);
+            var jm = _unifyResultProvider.Failure(
+                customException.Body,
+                customException.Code,
+                customException.Message
+            );
 
             if (customException.HttpStatusCode.HasValue)
                 context.HttpContext.Response.StatusCode = (int)customException.HttpStatusCode.Value;
@@ -66,29 +73,40 @@ public class GlobalExceptionsFilter : IExceptionFilter, IActionFilter
             if (_options.Value.IncludeUnCatchExceptionTraceInfo)
             {
                 context.HttpContext.Items.TryGetValue(RequestContext.REQUEST_ID, out var requestId);
-                ExceptionExtensions.ExceptionTracker tracker = new ExceptionExtensions.ExceptionTracker()
-                {
-                    RequestId = requestId?.ToString()??string.Empty,
-                    ExceptionInfo = new ExceptionExtensions.ExceptionInfo(context.Exception, true,
-                        _options.Value.IncludeExceptionStack)
-                };
-                result=_unifyResultProvider.Failure(null, _options.Value.UnCatchExceptionBusinessCode,
-                    _options.Value.DefaultErrorMessage,tracker);
+                ExceptionExtensions.ExceptionTracker tracker =
+                    new ExceptionExtensions.ExceptionTracker()
+                    {
+                        RequestId = requestId?.ToString() ?? string.Empty,
+                        ExceptionInfo = new ExceptionExtensions.ExceptionInfo(
+                            context.Exception,
+                            true,
+                            _options.Value.IncludeExceptionStack
+                        )
+                    };
+                result = _unifyResultProvider.Failure(
+                    null,
+                    _options.Value.UnCatchExceptionBusinessCode,
+                    _options.Value.DefaultErrorMessage,
+                    tracker
+                );
             }
             else
             {
-                result = _unifyResultProvider.Failure(null, _options.Value.UnCatchExceptionBusinessCode,
-                    _options.Value.DefaultErrorMessage);
+                result = _unifyResultProvider.Failure(
+                    null,
+                    _options.Value.UnCatchExceptionBusinessCode,
+                    _options.Value.DefaultErrorMessage
+                );
             }
 
-            context.HttpContext.Response.StatusCode = (int)_options.Value.DefaultUnCatchErrorHttpStatusCode;
+            context.HttpContext.Response.StatusCode = (int)
+                _options.Value.DefaultUnCatchErrorHttpStatusCode;
 
             context.ExceptionHandled = true;
 
             context.Result = new JsonResult(result);
         }
     }
-
 
     private string GetLogString(HttpContext context)
     {
@@ -97,8 +115,10 @@ public class GlobalExceptionsFilter : IExceptionFilter, IActionFilter
         if (requestParams == null)
             return string.Empty;
 
-        var paramStr = JsonConvert.SerializeObject(requestParams,
-            new JsonSerializerSettings() { ContractResolver = new DynamicContractResolver() });
+        var paramStr = JsonConvert.SerializeObject(
+            requestParams,
+            new JsonSerializerSettings() { ContractResolver = new DynamicContractResolver() }
+        );
 
         paramStr = paramStr.SafeSubString(_options.Value.MaxLogLength);
 
@@ -109,10 +129,11 @@ public class GlobalExceptionsFilter : IExceptionFilter, IActionFilter
     {
         var user = context.HttpContext.RequestServices.GetService<IUser>();
 
-        _logger.LogError(context.Exception,
-            $"\r\n------------------------------------\r\n未捕获异常  \r\n用户：{user?.UserName ?? "未登录"} \r\n请求路由: {context.HttpContext.Request.Path} \r\n请求时间: {context.HttpContext.GetItem<DateTime>(RequestContext.REQUEST_BEGIN_TIME)} \r\n请求参数: {requestBody} \r\n出现异常: {context.Exception?.Message}\r\n------------------------------------");
+        _logger.LogError(
+            context.Exception,
+            $"\r\n------------------------------------\r\n未捕获异常  \r\n用户：{user?.UserName ?? "未登录"} \r\n请求路由: {context.HttpContext.Request.Path} \r\n请求时间: {context.HttpContext.GetItem<DateTime>(RequestContext.REQUEST_BEGIN_TIME)} \r\n请求参数: {requestBody} \r\n出现异常: {context.Exception?.Message}\r\n------------------------------------"
+        );
     }
-
 
     public void OnActionExecuting(ActionExecutingContext context)
     {
@@ -122,7 +143,5 @@ public class GlobalExceptionsFilter : IExceptionFilter, IActionFilter
         context.HttpContext.Items.TryAdd(RequestContext.REQUEST_ID, Guid.NewGuid().ToString());
     }
 
-    public void OnActionExecuted(ActionExecutedContext context)
-    {
-    }
+    public void OnActionExecuted(ActionExecutedContext context) { }
 }

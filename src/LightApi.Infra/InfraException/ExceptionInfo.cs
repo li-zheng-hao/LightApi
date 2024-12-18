@@ -14,17 +14,22 @@ public static class ExceptionExtensions
         /// 请求Id
         /// </summary>
         public string RequestId { get; set; }
-        
+
         /// <summary>
         /// 错误堆栈
         /// </summary>
         public ExceptionInfo? ExceptionInfo { get; set; }
     }
+
     public class ExceptionInfo
     {
         public ExceptionInfo() { }
 
-        internal ExceptionInfo(Exception exception, bool includeInnerException = true, bool includeStackTrace = false)
+        internal ExceptionInfo(
+            Exception exception,
+            bool includeInnerException = true,
+            bool includeStackTrace = false
+        )
         {
             if (exception is null)
             {
@@ -37,7 +42,11 @@ public static class ExceptionExtensions
             StackTrace = includeStackTrace ? exception.StackTrace : null;
             if (includeInnerException && exception.InnerException is not null)
             {
-                InnerException = new ExceptionInfo(exception.InnerException, includeInnerException, includeStackTrace);
+                InnerException = new ExceptionInfo(
+                    exception.InnerException,
+                    includeInnerException,
+                    includeStackTrace
+                );
             }
         }
 
@@ -51,11 +60,12 @@ public static class ExceptionExtensions
     /// <summary>
     /// 异常序列化方式
     /// </summary>
-    public static JsonSerializerOptions DefaultJsonSerializerOptions = new()
-    {
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        WriteIndented = true,
-    };
+    public static JsonSerializerOptions DefaultJsonSerializerOptions =
+        new()
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            WriteIndented = true,
+        };
 
     /// <summary>
     /// Serialize the <see cref="Exception"/> to a JSON string.
@@ -69,11 +79,12 @@ public static class ExceptionExtensions
         this Exception ex,
         bool includeInnerException = true,
         bool includeStackTrace = false,
-        JsonSerializerOptions options = null)
+        JsonSerializerOptions options = null
+    )
     {
         ArgumentNullException.ThrowIfNull(ex);
         var info = new ExceptionInfo(ex, includeInnerException, includeStackTrace);
-        
+
         return JsonSerializer.Serialize(info, options ?? DefaultJsonSerializerOptions);
     }
 }

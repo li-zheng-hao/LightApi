@@ -9,11 +9,12 @@ namespace LightApi.EFCore.Repository
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
     /// <typeparam name="TDbContext"></typeparam>
-    public  partial class EfRepository<TEntity> where TEntity : class, IEfEntity, new() 
+    public partial class EfRepository<TEntity>
+        where TEntity : class, IEfEntity, new()
     {
-      private static readonly MethodInfo ContainsMethod = typeof(Enumerable).GetMethods()
-            .FirstOrDefault(m => m.Name == "Contains"
-                                 && m.GetParameters().Length == 2)
+        private static readonly MethodInfo ContainsMethod = typeof(Enumerable)
+            .GetMethods()
+            .FirstOrDefault(m => m.Name == "Contains" && m.GetParameters().Length == 2)
             .MakeGenericMethod(typeof(object));
 
         public IQueryable<TEntity> GetById(object id, bool useTracking = false)
@@ -47,14 +48,17 @@ namespace LightApi.EFCore.Repository
             var pkMemberInfo = typeof(TEntity).GetProperty(pkProperty.Name);
 
             if (pkMemberInfo == null)
-                throw new ArgumentException("Type does not contain the primary key as an accessible property");
+                throw new ArgumentException(
+                    "Type does not contain the primary key as an accessible property"
+                );
 
             // build lambda expression
             var parameter = Expression.Parameter(typeof(TEntity), "e");
 
             var body = Expression.Equal(
                 Expression.MakeMemberAccess(parameter, pkMemberInfo),
-                Expression.Constant(id));
+                Expression.Constant(id)
+            );
 
             var predicateExpression = Expression.Lambda<Func<TEntity, bool>>(body, parameter);
 
@@ -95,14 +99,22 @@ namespace LightApi.EFCore.Repository
             var pkMemberInfo = typeof(TEntity).GetProperty(pkProperty.Name);
 
             if (pkMemberInfo == null)
-                throw new ArgumentException("Type does not contain the primary key as an accessible property");
+                throw new ArgumentException(
+                    "Type does not contain the primary key as an accessible property"
+                );
 
             // build lambda expression
             var parameter = Expression.Parameter(typeof(TEntity), "e");
 
-            var body = Expression.Call(null, ContainsMethod,
+            var body = Expression.Call(
+                null,
+                ContainsMethod,
                 Expression.Constant(ids),
-                Expression.Convert(Expression.MakeMemberAccess(parameter, pkMemberInfo), typeof(object)));
+                Expression.Convert(
+                    Expression.MakeMemberAccess(parameter, pkMemberInfo),
+                    typeof(object)
+                )
+            );
 
             var predicateExpression = Expression.Lambda<Func<TEntity, bool>>(body, parameter);
 
@@ -112,12 +124,14 @@ namespace LightApi.EFCore.Repository
         public IQueryable<TEntity> GetById(List<int> ids, bool useTracking = false)
         {
             List<object> internalIds = new List<object> { ids };
-            return GetById(internalIds,useTracking);
+            return GetById(internalIds, useTracking);
         }
 
-        public Task<TEntity> FirstOrDefaultAsync(bool useFilter,
+        public Task<TEntity> FirstOrDefaultAsync(
+            bool useFilter,
             Expression<Func<TEntity, bool>> condition,
-            bool useTracking = false)
+            bool useTracking = false
+        )
         {
             if (useFilter)
                 return FirstOrDefaultAsync(condition, useTracking);
@@ -127,7 +141,10 @@ namespace LightApi.EFCore.Repository
             return queryable.FirstOrDefaultAsync(condition);
         }
 
-        public Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> condition, bool useTracking = false)
+        public Task<TEntity> FirstOrDefaultAsync(
+            Expression<Func<TEntity, bool>> condition,
+            bool useTracking = false
+        )
         {
             return DbContext.AsQueryable<TEntity>(useTracking).FirstOrDefaultAsync(condition);
         }
@@ -151,7 +168,10 @@ namespace LightApi.EFCore.Repository
             return queryable;
         }
 
-        public IQueryable<TEntity> Where(Expression<Func<TEntity, bool>> condition, bool useTracking = false)
+        public IQueryable<TEntity> Where(
+            Expression<Func<TEntity, bool>> condition,
+            bool useTracking = false
+        )
         {
             return DbContext.AsQueryable<TEntity>(useTracking).Where(condition);
         }

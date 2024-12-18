@@ -43,7 +43,11 @@ internal static class DocumenationExtension
 
         if (parametersString.Length > 0)
         {
-            return XmlFromName(methodInfo.DeclaringType, 'M', methodInfo.Name + "(" + parametersString + ")");
+            return XmlFromName(
+                methodInfo.DeclaringType,
+                'M',
+                methodInfo.Name + "(" + parametersString + ")"
+            );
         }
         else
         {
@@ -64,7 +68,11 @@ internal static class DocumenationExtension
                 return default;
 
             // First character [0] of member type is prefix character in the name in the XML
-            return XmlFromName(memberInfo.DeclaringType, memberInfo.MemberType.ToString()[0], memberInfo.Name);
+            return XmlFromName(
+                memberInfo.DeclaringType,
+                memberInfo.MemberType.ToString()[0],
+                memberInfo.Name
+            );
         }
         return default;
     }
@@ -127,7 +135,9 @@ internal static class DocumenationExtension
         var xmlDoc = XmlFromAssembly(type.Assembly);
         if (xmlDoc != null)
         {
-            var matchedElement = xmlDoc["doc"]?["members"]?.SelectSingleNode("member[@name='" + fullName + "']") as XmlElement;
+            var matchedElement =
+                xmlDoc["doc"]?["members"]?.SelectSingleNode("member[@name='" + fullName + "']")
+                as XmlElement;
             return matchedElement;
         }
         return default;
@@ -136,12 +146,14 @@ internal static class DocumenationExtension
     /// <summary>
     /// A cache used to remember Xml documentation for assemblies
     /// </summary>
-    private static readonly Dictionary<Assembly, XmlDocument> Cache = new Dictionary<Assembly, XmlDocument>();
+    private static readonly Dictionary<Assembly, XmlDocument> Cache =
+        new Dictionary<Assembly, XmlDocument>();
 
     /// <summary>
     /// A cache used to store failure exceptions for assembly lookups
     /// </summary>
-    private static readonly Dictionary<Assembly, Exception> FailCache = new Dictionary<Assembly, Exception>();
+    private static readonly Dictionary<Assembly, Exception> FailCache =
+        new Dictionary<Assembly, Exception>();
 
     /// <summary>
     /// Obtains the documentation file for the specified assembly
@@ -183,11 +195,16 @@ internal static class DocumenationExtension
         StreamReader streamReader;
         try
         {
-            streamReader = new StreamReader(Path.ChangeExtension(assemblyFilename.Substring(8), ".xml"));
+            streamReader = new StreamReader(
+                Path.ChangeExtension(assemblyFilename.Substring(8), ".xml")
+            );
         }
         catch (FileNotFoundException exception)
         {
-            throw new FileNotFoundException("XML documentation not present (make sure it is turned on in project properties when building)", exception);
+            throw new FileNotFoundException(
+                "XML documentation not present (make sure it is turned on in project properties when building)",
+                exception
+            );
         }
         var xmlDocument = new XmlDocument();
         xmlDocument.Load(streamReader);

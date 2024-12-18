@@ -14,16 +14,17 @@ public class ObsoleteOperationFilter : IOperationFilter
     {
         if (operation.Deprecated)
         {
-            var obsoleteMsg=context.MethodInfo.DeclaringType?.GetCustomAttribute<ObsoleteAttribute>()?.Message;
+            var obsoleteMsg = context
+                .MethodInfo.DeclaringType?.GetCustomAttribute<ObsoleteAttribute>()
+                ?.Message;
             if (obsoleteMsg.IsNullOrWhiteSpace())
             {
                 obsoleteMsg = context.MethodInfo.GetCustomAttribute<ObsoleteAttribute>()?.Message;
             }
             if (obsoleteMsg.IsNotNullOrWhiteSpace())
                 operation.Summary = $"{operation.Summary}   [{obsoleteMsg}]";
-            
-            operation.Summary =
-                    $"{operation.Summary}   [此接口已废弃，可能在后续版本删除，请及时更新！！]";
+
+            operation.Summary = $"{operation.Summary}   [此接口已废弃，可能在后续版本删除，请及时更新！！]";
         }
 
         // operation.Description = operation.Deprecated

@@ -9,25 +9,51 @@ namespace LightApi.EFCore.Repository
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
     /// <typeparam name="TDbContext"></typeparam>
-    public  partial class EfRepository<TEntity> : IEfRepository<TEntity>
-        where TEntity : class, IEfEntity, new() 
+    public partial class EfRepository<TEntity> : IEfRepository<TEntity>
+        where TEntity : class, IEfEntity, new()
     {
-     
-        public Task<IEnumerable<T>> QueryAsync<T>(string sql, object parameters = null, int timeout = 30)
+        public Task<IEnumerable<T>> QueryAsync<T>(
+            string sql,
+            object parameters = null,
+            int timeout = 30
+        )
         {
-            return DbContext.Database.GetDbConnection().QueryAsync<T>(sql, parameters, DbContext.Database.CurrentTransaction?.GetDbTransaction(), timeout);
+            return DbContext
+                .Database.GetDbConnection()
+                .QueryAsync<T>(
+                    sql,
+                    parameters,
+                    DbContext.Database.CurrentTransaction?.GetDbTransaction(),
+                    timeout
+                );
         }
 
         public Task<T> QuerySingleAsync<T>(string sql, object parameters = null, int timeout = 30)
         {
-            return DbContext.Database.GetDbConnection().QuerySingleAsync<T>(sql, parameters, DbContext.Database.CurrentTransaction?.GetDbTransaction(), timeout);
+            return DbContext
+                .Database.GetDbConnection()
+                .QuerySingleAsync<T>(
+                    sql,
+                    parameters,
+                    DbContext.Database.CurrentTransaction?.GetDbTransaction(),
+                    timeout
+                );
         }
 
-        public Task<T?> QueryFirstOrDefaultAsync<T>(string sql, object parameters = null, int timeout = 30)
+        public Task<T?> QueryFirstOrDefaultAsync<T>(
+            string sql,
+            object parameters = null,
+            int timeout = 30
+        )
         {
-            return DbContext.Database.GetDbConnection().QueryFirstOrDefaultAsync<T>(sql, parameters, DbContext.Database.CurrentTransaction?.GetDbTransaction(), timeout);
-
+            return DbContext
+                .Database.GetDbConnection()
+                .QueryFirstOrDefaultAsync<T>(
+                    sql,
+                    parameters,
+                    DbContext.Database.CurrentTransaction?.GetDbTransaction(),
+                    timeout
+                );
         }
-      
     }
 }

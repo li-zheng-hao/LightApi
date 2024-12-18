@@ -2,12 +2,9 @@
 
 namespace LightApi.SqlSugar;
 
-public class BaseRepository<T> : 
-    SimpleClient<T>,
-    IBaseRepository<T>
+public class BaseRepository<T> : SimpleClient<T>, IBaseRepository<T>
     where T : class, new()
 {
-    public BaseRepository(ISqlSugarClient context = null) : base(context)
-    {
-    }
+    public BaseRepository(ISqlSugarClient context = null)
+        : base(context) { }
 }

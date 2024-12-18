@@ -3,8 +3,8 @@ using LightApi.EFCore.Entities;
 
 namespace LightApi.EFCore.Repository;
 
-public  partial class EfRepository<TEntity> : IEfRepository<TEntity>
-    where TEntity : class, IEfEntity, new() 
+public partial class EfRepository<TEntity> : IEfRepository<TEntity>
+    where TEntity : class, IEfEntity, new()
 {
     public void Add(TEntity entity)
     {

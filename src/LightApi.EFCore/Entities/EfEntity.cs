@@ -1,6 +1,6 @@
 ﻿namespace LightApi.EFCore.Entities;
 
-public class EfEntity<T>:IAuditable,IEfEntity<T>
+public class EfEntity<T> : IAuditable, IEfEntity<T>
 {
     public T Id { get; set; }
 

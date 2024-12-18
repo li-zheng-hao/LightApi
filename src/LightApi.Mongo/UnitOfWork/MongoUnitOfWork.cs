@@ -9,7 +9,7 @@ public class MongoUnitOfWork : IMongoUnitOfWork
 {
     public void Dispose()
     {
-        if (!IsCommited && !IsRollback&&IClientSessionHandle!=null)
+        if (!IsCommited && !IsRollback && IClientSessionHandle != null)
         {
             CommitAsync().GetAwaiter().GetResult();
         }
@@ -22,23 +22,24 @@ public class MongoUnitOfWork : IMongoUnitOfWork
     public ICapTransaction? CapTransaction { get; set; }
 
     public IClientSessionHandle? IClientSessionHandle { get; set; }
-    
-    public DBContext DbContext { get; set; }
 
+    public DBContext DbContext { get; set; }
 
     public void StartTransaction(IServiceProvider serviceProvider, bool useCapTransaction = false)
     {
-        if (IClientSessionHandle != null) return;
+        if (IClientSessionHandle != null)
+            return;
 
-        DbContext=serviceProvider.GetRequiredService<DBContext>();
-        
+        DbContext = serviceProvider.GetRequiredService<DBContext>();
+
         if (useCapTransaction)
         {
             var trans = DbContext.Transaction();
             var publisher = serviceProvider.GetRequiredService<ICapPublisher>();
-            publisher.Transaction =
-            ActivatorUtilities.CreateInstance<MongoDBCapTransaction>(publisher.ServiceProvider);
-            publisher.Transaction.DbTransaction=  trans;
+            publisher.Transaction = ActivatorUtilities.CreateInstance<MongoDBCapTransaction>(
+                publisher.ServiceProvider
+            );
+            publisher.Transaction.DbTransaction = trans;
             publisher.Transaction.AutoCommit = false;
             IClientSessionHandle = trans;
             CapTransaction = publisher.Transaction;
@@ -53,13 +54,14 @@ public class MongoUnitOfWork : IMongoUnitOfWork
     private bool IsRollback { get; set; }
 
     private bool IsCommited { get; set; }
+
     public Task CommitAsync()
     {
         IsCommited = true;
-        
+
         if (CapTransaction != null)
             return CapTransaction.CommitAsync();
-        
+
         return IClientSessionHandle!.CommitTransactionAsync();
     }
 

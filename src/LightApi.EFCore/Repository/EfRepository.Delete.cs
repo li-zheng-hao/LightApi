@@ -3,34 +3,37 @@ using LightApi.EFCore.Entities;
 
 namespace LightApi.EFCore.Repository;
 
-public  partial class EfRepository<TEntity> : IEfRepository<TEntity>
-    where TEntity : class, IEfEntity, new() 
+public partial class EfRepository<TEntity> : IEfRepository<TEntity>
+    where TEntity : class, IEfEntity, new()
 {
     public async Task<bool> DeleteByKey(object? id)
     {
-        if(id is null) return false;
-        
-        if(typeof(ISoftDelete).IsAssignableFrom(typeof(TEntity)))
+        if (id is null)
+            return false;
+
+        if (typeof(ISoftDelete).IsAssignableFrom(typeof(TEntity)))
         {
             var entity = await GetById(id).FirstOrDefaultAsync();
-            if(entity is null) return false;
-            ((ISoftDelete)entity).Delete(); 
+            if (entity is null)
+                return false;
+            ((ISoftDelete)entity).Delete();
             DbContext.Update(entity);
             return true;
         }
-        
-        if(typeof(ISoftDeleteV2).IsAssignableFrom(typeof(TEntity)))
+
+        if (typeof(ISoftDeleteV2).IsAssignableFrom(typeof(TEntity)))
         {
             var entity = await GetById(id).FirstOrDefaultAsync();
-            if(entity is null) return false;
-            ((ISoftDeleteV2)entity).Delete(); 
+            if (entity is null)
+                return false;
+            ((ISoftDeleteV2)entity).Delete();
             DbContext.Update(entity);
             return true;
         }
-        
+
         var dbSet = DbContext.Set<TEntity>();
 
-        IQueryable<TEntity> queryable=dbSet.AsQueryable();
+        IQueryable<TEntity> queryable = dbSet.AsQueryable();
 
         var entityType = dbSet.EntityType;
 
@@ -46,32 +49,36 @@ public  partial class EfRepository<TEntity> : IEfRepository<TEntity>
         var pkMemberInfo = typeof(TEntity).GetProperty(pkProperty.Name);
 
         if (pkMemberInfo == null)
-            throw new ArgumentException("Type does not contain the primary key as an accessible property");
+            throw new ArgumentException(
+                "Type does not contain the primary key as an accessible property"
+            );
 
         // build lambda expression
         var parameter = Expression.Parameter(typeof(TEntity), "e");
 
         var body = Expression.Equal(
             Expression.MakeMemberAccess(parameter, pkMemberInfo),
-            Expression.Constant(id));
+            Expression.Constant(id)
+        );
 
         var predicateExpression = Expression.Lambda<Func<TEntity, bool>>(body, parameter);
 
-        return (await queryable.Where(predicateExpression).ExecuteDeleteAsync())==1;
+        return (await queryable.Where(predicateExpression).ExecuteDeleteAsync()) == 1;
     }
 
     public void Remove(object? entity)
     {
-        if(entity is null) return;
-        
+        if (entity is null)
+            return;
+
         DbContext.Remove(entity);
     }
 
     public void RemoveRange(IEnumerable<object>? entities)
     {
-        
-        if(entities.IsNullOrEmpty()) return;
-        
+        if (entities.IsNullOrEmpty())
+            return;
+
         DbContext.RemoveRange(entities);
     }
 }

@@ -3,7 +3,4 @@
 /// <summary>
 /// 标记为单例
 /// </summary>
-public interface ISingletonDependency 
-{
-    
-}
+public interface ISingletonDependency { }

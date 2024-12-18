@@ -47,7 +47,9 @@ namespace System.Linq.Expressions
         /// <typeparam name="T">The type of the delegate.</typeparam>
         /// <param name="exp">The expression to extract the <see cref="MethodCallExpression"/> from.</param>
         /// <returns>The <see cref="MethodCallExpression"/> representing the method call.</returns>
-        public static MethodCallExpression GetMethodExpression<T>(this Expression<Func<T, object>> exp)
+        public static MethodCallExpression GetMethodExpression<T>(
+            this Expression<Func<T, object>> exp
+        )
         {
             switch (exp.Body.NodeType)
             {
@@ -55,7 +57,10 @@ namespace System.Linq.Expressions
                     return (MethodCallExpression)exp.Body;
 
                 case ExpressionType.Convert:
-                    if (exp.Body is UnaryExpression unaryExp && unaryExp.Operand is MethodCallExpression methodCallExpression)
+                    if (
+                        exp.Body is UnaryExpression unaryExp
+                        && unaryExp.Operand is MethodCallExpression methodCallExpression
+                    )
                     {
                         return methodCallExpression;
                     }
@@ -73,8 +78,9 @@ namespace System.Linq.Expressions
         /// <typeparam name="TMember">The type of the member being accessed.</typeparam>
         /// <param name="memberExpression">The expression representing the member access.</param>
         /// <returns>The name of the member.</returns>
-        public static string? GetMemberName<TEntity, TMember>(this Expression<Func<TEntity, TMember>> memberExpression) =>
-            GetMemberInfo(memberExpression)?.Name;
+        public static string? GetMemberName<TEntity, TMember>(
+            this Expression<Func<TEntity, TMember>> memberExpression
+        ) => GetMemberInfo(memberExpression)?.Name;
 
         /// <summary>
         /// Extracts the <see cref="MemberInfo"/> from an <see cref="Expression{TDelegate}"/> representing a member access.
@@ -87,7 +93,9 @@ namespace System.Linq.Expressions
         /// <typeparam name="TMember">TMember</typeparam>
         /// <param name="expression">get member expression</param>
         /// <returns></returns>
-        public static MemberInfo GetMemberInfo<TEntity, TMember>([NotNull] this Expression<Func<TEntity, TMember>> expression)
+        public static MemberInfo GetMemberInfo<TEntity, TMember>(
+            [NotNull] this Expression<Func<TEntity, TMember>> expression
+        )
         {
             if (expression.NodeType != ExpressionType.Lambda)
                 throw new ArgumentException(nameof(expression));
@@ -108,7 +116,9 @@ namespace System.Linq.Expressions
         /// <typeparam name="TProperty"></typeparam>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static PropertyInfo? GetProperty<TEntity, TProperty>([NotNull] this Expression<Func<TEntity, TProperty>> expression)
+        public static PropertyInfo? GetProperty<TEntity, TProperty>(
+            [NotNull] this Expression<Func<TEntity, TProperty>> expression
+        )
         {
             var member = GetMemberInfo(expression);
             if (null == member)

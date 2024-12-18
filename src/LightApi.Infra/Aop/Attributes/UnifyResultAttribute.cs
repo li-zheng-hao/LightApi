@@ -11,9 +11,7 @@ namespace LightApi.Infra.AOP.Attributes;
 /// 需要忽略包装的函数上加这个特性
 /// </summary>
 [AttributeUsage(AttributeTargets.Method)]
-public class NonUnifyAttribute : Attribute
-{
-}
+public class NonUnifyAttribute : Attribute { }
 
 /// <summary>
 /// 返回值统一包装
@@ -25,8 +23,11 @@ public class UnifyResultAttribute : ActionFilterAttribute
     {
         base.OnActionExecuted(context);
         var attributes = context.ActionDescriptor.EndpointMetadata.OfType<NonUnifyAttribute>();
-        var option = context.HttpContext.RequestServices.GetService<IOptions<InfrastructureOptions>>();
-        var unifyResultProvider = context.HttpContext.RequestServices.GetService<IUnifyResultProvider>();
+        var option = context.HttpContext.RequestServices.GetService<
+            IOptions<InfrastructureOptions>
+        >();
+        var unifyResultProvider =
+            context.HttpContext.RequestServices.GetService<IUnifyResultProvider>();
 
         if (attributes.Any())
             return;
@@ -39,14 +40,23 @@ public class UnifyResultAttribute : ActionFilterAttribute
             if (objRes.Value is IUnifyResult)
                 return;
 
-            context.Result = new ObjectResult(unifyResultProvider.Success(objRes.Value,
-                option.Value.DefaultSuccessBusinessCode, option.Value.DefaultSuccessMessage));
+            context.Result = new ObjectResult(
+                unifyResultProvider.Success(
+                    objRes.Value,
+                    option.Value.DefaultSuccessBusinessCode,
+                    option.Value.DefaultSuccessMessage
+                )
+            );
         }
         else if (context.Result is NoContentResult or StatusCodeResult)
         {
-            context.Result = new ObjectResult(unifyResultProvider.Success(null, option.Value.DefaultSuccessBusinessCode,
-                option.Value.DefaultSuccessMessage
-            ));
+            context.Result = new ObjectResult(
+                unifyResultProvider.Success(
+                    null,
+                    option.Value.DefaultSuccessBusinessCode,
+                    option.Value.DefaultSuccessMessage
+                )
+            );
         }
     }
 }

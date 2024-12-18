@@ -12,4 +12,3 @@ public class MinioStorageOptions
     /// </summary>
     public bool EnableSSL { get; set; } = false;
 }
-

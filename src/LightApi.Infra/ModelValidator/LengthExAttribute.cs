@@ -29,8 +29,9 @@ public class LengthExAttribute : ValidationAttribute
     {
         ErrorMessage ??= $"{validationContext.DisplayName}长度必须在{Minimum}和{Maximum}之间";
 
-        if (value.IsNullOrEmpty()) return ValidationResult.Success;
-        
+        if (value.IsNullOrEmpty())
+            return ValidationResult.Success;
+
         // 判断是字符串还是数组，如果是字符串则判断长度，如果是数组则判断数组长度
         if (value is string stringValue)
         {

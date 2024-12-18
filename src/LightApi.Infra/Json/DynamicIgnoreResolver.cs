@@ -12,9 +12,9 @@ public class DynamicContractResolver : DefaultContractResolver
     /// <summary>
     /// Newtonsoft序列化时忽略指定类型
     /// </summary>
-    public DynamicContractResolver(params Type[] ignoreTypes )
+    public DynamicContractResolver(params Type[] ignoreTypes)
     {
-        if(ignoreTypes.IsNullOrEmpty())
+        if (ignoreTypes.IsNullOrEmpty())
             _typeToIgnore = new Type[]
             {
                 typeof(IFormFile),
@@ -28,11 +28,16 @@ public class DynamicContractResolver : DefaultContractResolver
         }
     }
 
-    protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
+    protected override IList<JsonProperty> CreateProperties(
+        Type type,
+        MemberSerialization memberSerialization
+    )
     {
         IList<JsonProperty> properties = base.CreateProperties(type, memberSerialization);
 
-        properties = properties.Where(p => !_typeToIgnore.Any(t=>t.IsAssignableFrom(p.PropertyType)) ).ToList();
+        properties = properties
+            .Where(p => !_typeToIgnore.Any(t => t.IsAssignableFrom(p.PropertyType)))
+            .ToList();
 
         return properties;
     }

@@ -20,7 +20,7 @@ namespace LightApi.Mongo.Entities
 
         public bool HasDefaultID()
         {
-            return Id==0;
+            return Id == 0;
         }
 
         [BsonId]

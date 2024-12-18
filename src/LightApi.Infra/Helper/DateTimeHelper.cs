@@ -11,7 +11,10 @@ public static class DateTimeHelper
     public static DateTime GetTimeOfWeek(DateTime currentTime, int indexOfWeek)
     {
         if (indexOfWeek < 1 || indexOfWeek > 7)
-            throw new ArgumentOutOfRangeException(nameof(indexOfWeek), "indexOfWeek must be between 1 and 7");
+            throw new ArgumentOutOfRangeException(
+                nameof(indexOfWeek),
+                "indexOfWeek must be between 1 and 7"
+            );
 
         int dayOfWeek = (int)currentTime.DayOfWeek;
         dayOfWeek = dayOfWeek == 0 ? 7 : dayOfWeek;

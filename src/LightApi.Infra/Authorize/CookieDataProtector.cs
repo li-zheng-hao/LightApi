@@ -14,6 +14,7 @@ public class CookieDataProtector : IDataProtector
     {
         _encryptKey = encryptKey;
     }
+
     public IDataProtector CreateProtector(string purpose)
     {
         return new CookieDataProtector(_encryptKey);
@@ -21,9 +22,9 @@ public class CookieDataProtector : IDataProtector
 
     public byte[] Protect(byte[] plaintext)
     {
-        var data=Convert.ToBase64String(plaintext);
+        var data = Convert.ToBase64String(plaintext);
         var encryptBase64Str = data.AESEncrypt(_encryptKey);
-        var res= Convert.FromBase64String(encryptBase64Str);
+        var res = Convert.FromBase64String(encryptBase64Str);
         return res;
     }
 

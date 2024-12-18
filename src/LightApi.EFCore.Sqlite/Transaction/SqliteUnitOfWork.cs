@@ -8,17 +8,16 @@ public class SqliteUnitOfWork<TDbContext> : UnitOfWork<TDbContext>
 {
     private ICapPublisher? _publisher;
 
-    public SqliteUnitOfWork(
-        TDbContext context
-        , ICapPublisher? publisher = null)
+    public SqliteUnitOfWork(TDbContext context, ICapPublisher? publisher = null)
         : base(context)
     {
         _publisher = publisher;
     }
 
     protected override IDbContextTransaction GetDbContextTransaction(
-        IsolationLevel isolationLevel = IsolationLevel.ReadCommitted
-        , bool distributed = false)
+        IsolationLevel isolationLevel = IsolationLevel.ReadCommitted,
+        bool distributed = false
+    )
     {
         if (distributed)
             if (_publisher is null)

@@ -21,7 +21,8 @@ public static class ExcelHelper
     /// <returns></returns>
     public static bool ValidateHeaders(DataTable dataTable, params string[] headers)
     {
-        if (dataTable.Columns.Count < headers.Length) return false;
+        if (dataTable.Columns.Count < headers.Length)
+            return false;
 
         // 顺序比较相等
         for (var i = 0; i < headers.Length; i++)
@@ -44,8 +45,13 @@ public static class ExcelHelper
     /// <param name="removeLastEmptyRow">从后往前移除Excel数据空行，中间存在的空行不会去除</param>
     /// <param name="throwIfEmpty">如果空表则抛出异常</param>
     /// <returns></returns>
-    public static DataTable GetValues(Stream excelStream, bool useHeaderRow = true,
-        string startCell = "A1", bool removeLastEmptyRow = true, bool throwIfEmpty = true)
+    public static DataTable GetValues(
+        Stream excelStream,
+        bool useHeaderRow = true,
+        string startCell = "A1",
+        bool removeLastEmptyRow = true,
+        bool throwIfEmpty = true
+    )
     {
         var excel = excelStream.QueryAsDataTable(useHeaderRow, startCell: startCell);
 
@@ -54,8 +60,15 @@ public static class ExcelHelper
         {
             for (int i = excel.Rows.Count - 1; i >= 0; i--)
             {
-                if (excel.Rows[i].ItemArray.All(field =>
-                        field is DBNull || field is null || string.IsNullOrWhiteSpace(field.ToString())))
+                if (
+                    excel
+                        .Rows[i]
+                        .ItemArray.All(field =>
+                            field is DBNull
+                            || field is null
+                            || string.IsNullOrWhiteSpace(field.ToString())
+                        )
+                )
                 {
                     excel.Rows.RemoveAt(i);
                 }
@@ -64,7 +77,8 @@ public static class ExcelHelper
             }
         }
 
-        if (excel.Rows.Count == 0 && throwIfEmpty) throw new BusinessException("Excel无有效数据");
+        if (excel.Rows.Count == 0 && throwIfEmpty)
+            throw new BusinessException("Excel无有效数据");
 
         return excel;
     }
@@ -76,17 +90,22 @@ public static class ExcelHelper
     /// <param name="removeLastEmptyRow">从后往前移除Excel数据空行，中间存在的空行不会去除</param>
     /// <param name="throwIfEmpty">如果空表则抛出异常</param>
     /// <returns></returns>
-    public static DataTable GetValuesByNpoi(Stream excelStream, bool removeLastEmptyRow = true,
-        bool throwIfEmpty = true)
+    public static DataTable GetValuesByNpoi(
+        Stream excelStream,
+        bool removeLastEmptyRow = true,
+        bool throwIfEmpty = true
+    )
     {
         var workbook = WorkbookFactory.Create(excelStream);
         var sheet = workbook.GetSheetAt(0);
-        if (sheet.LastRowNum <= 1 && throwIfEmpty) throw new BusinessException("Excel无有效数据");
+        if (sheet.LastRowNum <= 1 && throwIfEmpty)
+            throw new BusinessException("Excel无有效数据");
         var header = sheet.GetRow(0);
         List<string> headers = new();
         foreach (var headerCell in header.Cells)
         {
-            if (headerCell.ToString().IsNullOrWhiteSpace()) break;
+            if (headerCell.ToString().IsNullOrWhiteSpace())
+                break;
 
             headers.Add(headerCell.ToString()!);
         }
@@ -124,8 +143,15 @@ public static class ExcelHelper
         {
             for (int i = dataTable.Rows.Count - 1; i >= 0; i--)
             {
-                if (dataTable.Rows[i].ItemArray.All(field =>
-                        field is DBNull || field is null || string.IsNullOrWhiteSpace(field.ToString())))
+                if (
+                    dataTable
+                        .Rows[i]
+                        .ItemArray.All(field =>
+                            field is DBNull
+                            || field is null
+                            || string.IsNullOrWhiteSpace(field.ToString())
+                        )
+                )
                 {
                     dataTable.Rows.RemoveAt(i);
                 }
@@ -160,7 +186,11 @@ public static class ExcelHelper
     /// <param name="dataTable"></param>
     /// <param name="columnIndex">从0开始</param>
     /// <param name="includeZero">是否包含0</param>
-    public static void ThrowIfNotPositiveDouble(DataTable dataTable, int columnIndex, bool includeZero = true)
+    public static void ThrowIfNotPositiveDouble(
+        DataTable dataTable,
+        int columnIndex,
+        bool includeZero = true
+    )
     {
         var columnName = dataTable.Columns[columnIndex].ColumnName;
 
@@ -171,16 +201,28 @@ public static class ExcelHelper
         {
             if (!double.TryParse(rows[i][columnIndex].ToString(), out var data))
             {
-                throw new BusinessException(string.Format(errFormatString, i + 2, columnIndex + 1,
-                    includeZero ? "等于0" : "0"));
+                throw new BusinessException(
+                    string.Format(
+                        errFormatString,
+                        i + 2,
+                        columnIndex + 1,
+                        includeZero ? "等于0" : "0"
+                    )
+                );
             }
 
             bool condition = includeZero ? data < 0 : data <= 0;
 
             if (condition)
             {
-                throw new BusinessException(string.Format(errFormatString, i + 2, columnIndex + 1,
-                    includeZero ? "等于0" : "0"));
+                throw new BusinessException(
+                    string.Format(
+                        errFormatString,
+                        i + 2,
+                        columnIndex + 1,
+                        includeZero ? "等于0" : "0"
+                    )
+                );
             }
         }
     }
@@ -191,7 +233,11 @@ public static class ExcelHelper
     /// <param name="dataTable"></param>
     /// <param name="columnIndex">从0开始</param>
     /// <param name="includeZero">是否包含0</param>
-    public static void ThrowIfNotPositiveInt(DataTable dataTable, int columnIndex, bool includeZero = true)
+    public static void ThrowIfNotPositiveInt(
+        DataTable dataTable,
+        int columnIndex,
+        bool includeZero = true
+    )
     {
         var columnName = dataTable.Columns[columnIndex].ColumnName;
         string errFormatString = "第{0}行{1}列数据无效,必须为大于{2}的有效整数";
@@ -201,15 +247,22 @@ public static class ExcelHelper
         {
             if (!double.TryParse(rows[i][columnIndex].ToString(), out var data))
             {
-                throw new BusinessException(string.Format(errFormatString, i + 2, columnIndex + 1,
-                    includeZero ? "等于0" : ""));
+                throw new BusinessException(
+                    string.Format(errFormatString, i + 2, columnIndex + 1, includeZero ? "等于0" : "")
+                );
             }
 
             bool condition = includeZero ? data < 0 : data <= 0;
             if (condition)
             {
-                throw new BusinessException(string.Format(errFormatString, i + 2, columnIndex + 1,
-                    includeZero ? "等于0" : "0"));
+                throw new BusinessException(
+                    string.Format(
+                        errFormatString,
+                        i + 2,
+                        columnIndex + 1,
+                        includeZero ? "等于0" : "0"
+                    )
+                );
             }
         }
     }
@@ -258,7 +311,11 @@ public static class ExcelHelper
     /// <param name="dataTable"></param>
     /// <param name="columnIndex">从0开始</param>
     /// <param name="validValues">有效数据</param>
-    public static void ThrowIfNotInRange(DataTable dataTable, int columnIndex, params string[] validValues)
+    public static void ThrowIfNotInRange(
+        DataTable dataTable,
+        int columnIndex,
+        params string[] validValues
+    )
     {
         string errFormatString = "第{0}行{1}列数据不在有效范围内,有效数据为{2}";
 
@@ -267,8 +324,14 @@ public static class ExcelHelper
         {
             if (!validValues.Contains(rows[i][columnIndex].ToString() ?? string.Empty))
             {
-                throw new BusinessException(string.Format(errFormatString, i + 2, columnIndex + 1,
-                    string.Join(",", validValues)));
+                throw new BusinessException(
+                    string.Format(
+                        errFormatString,
+                        i + 2,
+                        columnIndex + 1,
+                        string.Join(",", validValues)
+                    )
+                );
             }
         }
     }
@@ -281,8 +344,12 @@ public static class ExcelHelper
     /// <param name="predicate"></param>
     /// <param name="errorMessage">错误信息会传递两个参数，依次为行号、列号</param>
     /// <exception cref="BusinessException"></exception>
-    public static void ThrowIfAny(DataTable dataTable, int columnIndex, Func<string, bool> predicate,
-        string errorMessage)
+    public static void ThrowIfAny(
+        DataTable dataTable,
+        int columnIndex,
+        Func<string, bool> predicate,
+        string errorMessage
+    )
     {
         var rows = dataTable.Rows;
         for (int i = 0; i < rows.Count; i++)
@@ -319,8 +386,15 @@ public static class ExcelHelper
     {
         for (int i = dataTable.Rows.Count - 1; i >= 0; i--)
         {
-            if (dataTable.Rows[i].ItemArray.All(field =>
-                    field is DBNull || field is null || string.IsNullOrWhiteSpace(field.ToString())))
+            if (
+                dataTable
+                    .Rows[i]
+                    .ItemArray.All(field =>
+                        field is DBNull
+                        || field is null
+                        || string.IsNullOrWhiteSpace(field.ToString())
+                    )
+            )
             {
                 dataTable.Rows.RemoveAt(i);
             }

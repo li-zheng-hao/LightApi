@@ -2,6 +2,8 @@
 
 internal static class EFCoreUtil
 {
-    internal static object[] GetEntityKeyValues<TEntity>(Func<TEntity, object>[] keyValueGetter, TEntity entity)
-        => keyValueGetter.Select(x => x.Invoke(entity)).ToArray();
+    internal static object[] GetEntityKeyValues<TEntity>(
+        Func<TEntity, object>[] keyValueGetter,
+        TEntity entity
+    ) => keyValueGetter.Select(x => x.Invoke(entity)).ToArray();
 }

@@ -9,17 +9,23 @@ namespace LightApi.Common.Page;
 public class PageList<T>
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <param name="source">数据源</param>
     /// <param name="pageIndex">分页索引</param>
     /// <param name="pageSize">分页大小</param>
     /// <param name="totalCount">总记录数</param>
     /// <returns></returns>
-    public static PageList<T> From(IEnumerable<T> source, int pageIndex, int pageSize, int totalCount)
+    public static PageList<T> From(
+        IEnumerable<T> source,
+        int pageIndex,
+        int pageSize,
+        int totalCount
+    )
     {
         return new PageList<T>(source, pageIndex, pageSize, totalCount);
     }
+
     /// <summary>
     ///     构造函数
     /// </summary>
@@ -74,6 +80,11 @@ public class PageList<T>
 
     public PageList<T1> Adapt<T1>()
     {
-        return new PageList<T1>(Rows.Adapt<List<T1>>(), this.PageIndex, this.PageSize, this.TotalCount);
+        return new PageList<T1>(
+            Rows.Adapt<List<T1>>(),
+            this.PageIndex,
+            this.PageSize,
+            this.TotalCount
+        );
     }
 }

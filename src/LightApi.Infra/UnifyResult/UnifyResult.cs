@@ -20,7 +20,7 @@ public class UnifyResult : IUnifyResult
     /// 附加信息
     /// </summary>
     public object? extraInfo { get; set; }
-    
+
     [Newtonsoft.Json.JsonIgnore]
     [JsonIgnore]
     public HttpStatusCode httpStatusCode { get; set; } = HttpStatusCode.OK;
@@ -32,16 +32,15 @@ public class UnifyResult : IUnifyResult
 
     public static UnifyResult Success(object? data, int code = 200)
     {
-        return new UnifyResult
-        {
-            code = code,
-            data = data,
-        };
+        return new UnifyResult { code = code, data = data, };
     }
 
-
-    public static UnifyResult Failure(string? msg,object? data, HttpStatusCode httpStatusCode = HttpStatusCode.BadRequest,
-        int code = 888)
+    public static UnifyResult Failure(
+        string? msg,
+        object? data,
+        HttpStatusCode httpStatusCode = HttpStatusCode.BadRequest,
+        int code = 888
+    )
     {
         return new UnifyResult
         {
@@ -52,8 +51,9 @@ public class UnifyResult : IUnifyResult
             httpStatusCode = httpStatusCode,
         };
     }
+
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <param name="msg"></param>
     /// <param name="data"></param>
@@ -61,8 +61,13 @@ public class UnifyResult : IUnifyResult
     /// <param name="httpStatusCode"></param>
     /// <param name="code"></param>
     /// <returns></returns>
-    public static UnifyResult Failure(string? msg,object? data,object? extraInfo, HttpStatusCode httpStatusCode = HttpStatusCode.BadRequest,
-        int code = 888)
+    public static UnifyResult Failure(
+        string? msg,
+        object? data,
+        object? extraInfo,
+        HttpStatusCode httpStatusCode = HttpStatusCode.BadRequest,
+        int code = 888
+    )
     {
         return new UnifyResult
         {

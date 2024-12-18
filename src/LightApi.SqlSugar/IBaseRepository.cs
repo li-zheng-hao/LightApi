@@ -2,8 +2,5 @@
 
 namespace LightApi.SqlSugar;
 
-public interface IBaseRepository<T> :
-    ISugarRepository, ISimpleClient<T> where T : class, new()
-{
-    
-}
+public interface IBaseRepository<T> : ISugarRepository, ISimpleClient<T>
+    where T : class, new() { }

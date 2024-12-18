@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace LightApi.EFCore.Repository;
 
-public interface IEfRepository<TEntity> :
-    IPageQueryRepository<TEntity>,
-    ISqlQueryRepository,
-    IQueryRepository<TEntity>,
-    IInsertableRepository<TEntity>,
-    IDeletableRepository<TEntity>
+public interface IEfRepository<TEntity>
+    : IPageQueryRepository<TEntity>,
+        ISqlQueryRepository,
+        IQueryRepository<TEntity>,
+        IInsertableRepository<TEntity>,
+        IDeletableRepository<TEntity>
     where TEntity : class, IEfEntity
 {
     /// <summary>
@@ -18,13 +18,14 @@ public interface IEfRepository<TEntity> :
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    IEfRepository<T> Change<T>() where T : class, IEfEntity;
-    
+    IEfRepository<T> Change<T>()
+        where T : class, IEfEntity;
+
     /// <summary>
     /// EFCore的DBContext
     /// </summary>
     AppDbContext DbContext { get; set; }
-    
+
     /// <summary>
     /// 数据库操作对象
     /// </summary>
@@ -59,9 +60,11 @@ public interface IEfRepository<TEntity> :
     /// </summary>
     /// <param name="tracking">是否跟踪实体,默认不跟踪</param>
     /// <returns>IQueryable{TEntity}</returns>
-    IQueryable<OtherEntity> AsQueryable<OtherEntity>(bool tracking = false) where OtherEntity : class, IEfEntity;
+    IQueryable<OtherEntity> AsQueryable<OtherEntity>(bool tracking = false)
+        where OtherEntity : class, IEfEntity;
 
-    DbSet<T> GetDbSet<T>() where T : class, IEfEntity;
+    DbSet<T> GetDbSet<T>()
+        where T : class, IEfEntity;
 
     DbSet<TEntity> GetDbSet();
 
@@ -109,5 +112,6 @@ public interface IEfRepository<TEntity, out TDbContext> : IEfRepository<TEntity>
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    IEfRepository<T,TDbContext> Change<T>() where T : class, IEfEntity;
+    IEfRepository<T, TDbContext> Change<T>()
+        where T : class, IEfEntity;
 }

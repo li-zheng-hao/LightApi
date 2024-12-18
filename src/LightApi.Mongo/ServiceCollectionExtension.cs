@@ -7,7 +7,7 @@ using MongoDB.Entities;
 namespace LightApi.Mongo;
 
 /// <summary>
-/// 
+///
 /// </summary>
 public static class ServiceCollectionExtension
 {
@@ -19,10 +19,16 @@ public static class ServiceCollectionExtension
     /// <param name="connectionString"></param>
     /// <param name="immediateConnect">是否立即建立连接，默认true</param>
     /// <returns></returns>
-    public static IServiceCollection AddMongoSetup(this IServiceCollection serviceCollection,string dbName,string connectionString,bool immediateConnect=true)
+    public static IServiceCollection AddMongoSetup(
+        this IServiceCollection serviceCollection,
+        string dbName,
+        string connectionString,
+        bool immediateConnect = true
+    )
     {
         if (immediateConnect)
-            DB.InitAsync(dbName, MongoClientSettings.FromConnectionString(connectionString)).Wait(5000);
+            DB.InitAsync(dbName, MongoClientSettings.FromConnectionString(connectionString))
+                .Wait(5000);
         serviceCollection.AddScoped<IMongoUnitOfWork, MongoUnitOfWork>();
         serviceCollection.AddScoped<DBContext>();
         return serviceCollection;
@@ -36,7 +42,12 @@ public static class ServiceCollectionExtension
     /// <param name="settings">连接配置</param>
     /// <param name="immediateConnect">是否立即建立连接，默认true</param>
     /// <returns></returns>
-    public static IServiceCollection AddMongoSetup(this IServiceCollection serviceCollection,string dbName,MongoClientSettings settings,bool immediateConnect=true)
+    public static IServiceCollection AddMongoSetup(
+        this IServiceCollection serviceCollection,
+        string dbName,
+        MongoClientSettings settings,
+        bool immediateConnect = true
+    )
     {
         if (immediateConnect)
             DB.InitAsync(dbName, settings).Wait(5000);
