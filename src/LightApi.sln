@@ -33,8 +33,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightApi.EFCore.Sqlite", "L
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightApi.Common", "LightApi.Common\LightApi.Common.csproj", "{72B0D8F6-67A8-4478-BF17-4D6E2DF9335F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleSample", "ConsoleSample\ConsoleSample.csproj", "{C13FFA86-5E7B-4AA9-B9B6-FCE489C4A8D0}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,14 +83,9 @@ Global
 		{72B0D8F6-67A8-4478-BF17-4D6E2DF9335F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72B0D8F6-67A8-4478-BF17-4D6E2DF9335F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72B0D8F6-67A8-4478-BF17-4D6E2DF9335F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C13FFA86-5E7B-4AA9-B9B6-FCE489C4A8D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C13FFA86-5E7B-4AA9-B9B6-FCE489C4A8D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C13FFA86-5E7B-4AA9-B9B6-FCE489C4A8D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C13FFA86-5E7B-4AA9-B9B6-FCE489C4A8D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{BEF7095D-56D9-4128-BBD0-1E4D85B6CAF3} = {71D073E8-619F-493F-B911-24B1C73E8D4B}
 		{950EC586-67F5-4533-A3A0-A7FB14667C13} = {71D073E8-619F-493F-B911-24B1C73E8D4B}
-		{C13FFA86-5E7B-4AA9-B9B6-FCE489C4A8D0} = {71D073E8-619F-493F-B911-24B1C73E8D4B}
 	EndGlobalSection
 EndGlobal

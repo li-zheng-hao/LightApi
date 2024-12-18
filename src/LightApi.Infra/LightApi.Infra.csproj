@@ -5,7 +5,6 @@
         <Nullable>enable</Nullable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <IncludeSymbols>true</IncludeSymbols>
         <Version>4.0.0-preview1</Version>
         <Title>LightApi.Infra</Title>
         <Authors>李正浩</Authors>
@@ -17,6 +16,8 @@
         <PackageLicenseUrl>https://raw.githubusercontent.com/li-zheng-hao/LightApi/main/LICENSE</PackageLicenseUrl>
         <NoWarn>1701;1702;CS1591;CS1712</NoWarn>
         <LangVersion>default</LangVersion>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
       <DocumentationFile>bin\Debug\LightApi.Infra.xml</DocumentationFile>
