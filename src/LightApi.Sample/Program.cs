@@ -10,25 +10,24 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-Log.Logger=new LoggerConfiguration()
-    .Enrich.WithProperty("System","LightApiSample")
+Log.Logger = new LoggerConfiguration()
+    .Enrich.WithProperty("System", "LightApiSample")
     .WriteTo.Console()
     .WriteTo.Seq("")
     .CreateLogger();
 
 builder.Services.AddSerilog();
 
-builder.Services.AddLightApiSetup(it =>
-{
-    
-});
+builder.Services.AddLightApiSetup(it => { });
 builder.Host.AddAutofacSetup();
 
-builder.Services.AddOpenTelemetry()
+builder
+    .Services.AddOpenTelemetry()
     .ConfigureResource(r => r.AddService(LightApiSource.SourceName))
     .WithTracing(tracing =>
     {

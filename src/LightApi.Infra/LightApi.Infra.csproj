@@ -6,7 +6,7 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeSymbols>true</IncludeSymbols>
-        <Version>3.9.1</Version>
+        <Version>4.0.0-preview1</Version>
         <Title>LightApi.Infra</Title>
         <Authors>李正浩</Authors>
         <Description>ASP.NET Core快速开发框架</Description>
@@ -15,6 +15,8 @@
         <RepositoryUrl>https://github.com/li-zheng-hao/LightApi</RepositoryUrl>
         <PackageIcon>icon.png</PackageIcon>
         <PackageLicenseUrl>https://raw.githubusercontent.com/li-zheng-hao/LightApi/main/LICENSE</PackageLicenseUrl>
+        <NoWarn>1701;1702;CS1591;CS1712</NoWarn>
+        <LangVersion>default</LangVersion>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
       <DocumentationFile>bin\Debug\LightApi.Infra.xml</DocumentationFile>
@@ -24,38 +26,26 @@
       <DebugSymbols>true</DebugSymbols>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Autofac" Version="7.0.1"/>
-        <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0"/>
-        <PackageReference Include="CliWrap" Version="3.6.4" />
-        <PackageReference Include="DistributedLock.Redis" Version="1.0.2"/>
+        <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="10.0.0" />
+        <PackageReference Include="CliWrap" Version="3.7.0" />
+        <PackageReference Include="DistributedLock.Redis" Version="1.0.3" />
         <PackageReference Include="IdentityModel" Version="6.0.0"/>
         <PackageReference Include="JWT" Version="10.0.2"/>
         <PackageReference Include="Mapster" Version="7.4.0" />
-        <PackageReference Include="Masuit.Tools.AspNetCore" Version="1.2.7.4"/>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.16"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
-        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0"/>
-        <PackageReference Include="MiniExcel" Version="1.31.3" />
-        <PackageReference Include="Minio" Version="6.0.2" />
-        <PackageReference Include="MongoDB.Entities" Version="23.1.1" />
+        <PackageReference Include="Masuit.Tools.Abstractions" Version="2024.7.1" />
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
+        <PackageReference Include="MiniExcel" Version="1.36.0" />
+        <PackageReference Include="Minio" Version="6.0.3" />
+        <PackageReference Include="MongoDB.Entities" Version="24.0.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-        <PackageReference Include="NPOI" Version="2.7.0" />
-        <PackageReference Include="Polly" Version="8.3.1" />
-        <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
-        <PackageReference Include="Rougamo.Fody" Version="2.0.0"/>
-        <PackageReference Include="Serilog" Version="4.0.0" />
-        <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
-        <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
-        <PackageReference Include="Serilog.Exceptions" Version="8.4.0"/>
-        <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.1" />
-        <PackageReference Include="Serilog.Sinks.Async" Version="2.0.0" />
-        <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
-        <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
-        <PackageReference Include="StackExchange.Redis" Version="2.6.104"/>
-        <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.2.3"/>
-        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.2.3"/>
+        <PackageReference Include="NPOI" Version="2.7.2" />
+        <PackageReference Include="Polly" Version="8.5.0" />
+        <PackageReference Include="RabbitMQ.Client" Version="7.0.0" />
+        <PackageReference Include="Rougamo.Fody" Version="5.0.0" />
+        <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+        <PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
+        <PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="7.2.0" />
     </ItemGroup>
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App"/>

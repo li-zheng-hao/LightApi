@@ -15,8 +15,8 @@ public class App
         Configuration = app.Configuration;
         HostEnvironment = app.Environment;
         ServiceProvider = app.Services;
-        AutofacContainer=app.Services.GetAutofacRoot();
-        AppLifeTime=app.Lifetime;
+        AutofacContainer = app.Services.GetAutofacRoot();
+        AppLifeTime = app.Lifetime;
     }
 
     /// <summary>
@@ -25,7 +25,7 @@ public class App
     public static IHostApplicationLifetime AppLifeTime { get; set; }
 
     public static ILifetimeScope AutofacContainer { get; set; }
-    
+
     public static IConfiguration Configuration { get; set; }
 
     public static IWebHostEnvironment HostEnvironment { get; set; }
@@ -36,7 +36,7 @@ public class App
     public static IServiceProvider ServiceProvider { get; set; }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <param name="serviceType"></param>
     /// <returns></returns>
@@ -46,7 +46,7 @@ public class App
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
@@ -61,13 +61,14 @@ public class App
     /// <param name="name"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static T? GetNamedService<T>(string name) where T : class
+    public static T? GetNamedService<T>(string name)
+        where T : class
     {
-        return AutofacContainer.ResolveNamed(serviceName:name,serviceType:typeof(T)) as T;
+        return AutofacContainer.ResolveNamed(serviceName: name, serviceType: typeof(T)) as T;
     }
-    
+
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
@@ -77,7 +78,7 @@ public class App
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <param name="serviceType"></param>
     /// <returns></returns>
@@ -87,17 +88,18 @@ public class App
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
     public static T GetRequiredService<T>()
+        where T : notnull
     {
         return ServiceProvider.GetRequiredService<T>();
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <param name="serviceType"></param>
     /// <returns></returns>
@@ -107,7 +109,7 @@ public class App
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <param name="key"></param>
     /// <typeparam name="T"></typeparam>

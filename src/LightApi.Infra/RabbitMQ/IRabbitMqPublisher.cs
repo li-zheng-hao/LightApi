@@ -4,7 +4,8 @@ namespace LightApi.Infra.RabbitMQ;
 
 public interface IRabbitMqPublisher
 {
-    void InitConnection(IConnection connection);
+    Task InitConnection(IConnection connection);
+
     /// <summary>
     /// 发送消息
     /// </summary>
@@ -14,14 +15,11 @@ public interface IRabbitMqPublisher
     /// <param name="properties"></param>
     /// <param name="mandatory"></param>
     /// <typeparam name="TMessage"></typeparam>
-    void Publish<TMessage>(
-        string routingKey
-        , TMessage message
-        , string exchange = "amq.direct"
-        , IBasicProperties? properties = null
-        , bool mandatory = false
+    Task PublishAsync<TMessage>(
+        string routingKey,
+        TMessage message,
+        string exchange = "amq.direct",
+        BasicProperties? properties = null,
+        bool mandatory = false
     );
-
-    IBasicProperties? CreateBasicProperties();
-
 }

@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using ExceptionContext = Microsoft.AspNetCore.Mvc.Filters.ExceptionContext;
+using ExceptionExtensions = LightApi.Infra.InfraException.ExceptionExtensions;
 using IExceptionFilter = Microsoft.AspNetCore.Mvc.Filters.IExceptionFilter;
 
 namespace LightApi.Infra.AOP.Filters;
@@ -61,7 +62,7 @@ public class GlobalExceptionsFilter : IExceptionFilter, IActionFilter
             LogError(context, paramString);
 
             object? result;
-            
+
             if (_options.Value.IncludeUnCatchExceptionTraceInfo)
             {
                 context.HttpContext.Items.TryGetValue(RequestContext.REQUEST_ID, out var requestId);
@@ -79,7 +80,7 @@ public class GlobalExceptionsFilter : IExceptionFilter, IActionFilter
                 result = _unifyResultProvider.Failure(null, _options.Value.UnCatchExceptionBusinessCode,
                     _options.Value.DefaultErrorMessage);
             }
-           
+
             context.HttpContext.Response.StatusCode = (int)_options.Value.DefaultUnCatchErrorHttpStatusCode;
 
             context.ExceptionHandled = true;
@@ -92,7 +93,7 @@ public class GlobalExceptionsFilter : IExceptionFilter, IActionFilter
     private string GetLogString(HttpContext context)
     {
         context.Items.TryGetValue(RequestContext.REQUEST_PARAMS, out var requestParams);
-        
+
         if (requestParams == null)
             return string.Empty;
 

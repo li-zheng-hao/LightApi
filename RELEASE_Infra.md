@@ -1,5 +1,19 @@
 # Infra模块更新日志
 
+## 2024年12月18日 4.0.0-preview1
+
+不兼容更新：
+
+1. Rougamo.Fody升级2.0.0=>5.0.0
+2. 升级RabbitMQ.Client升级到7.0.0
+3. 删除OpLogAttribute
+4. MongoDB.Entities升级到24.x，Mongo官方驱动从2.x到3.x版本
+5. Masuit库由Masuit.Tools.AspNetCore改为使用Masuit.Tools.Abstrations
+
+其它更新
+
+1. 升级其它依赖
+
 ## 2024年11月28日 3.9.1
 
 1. 修复DynamicOrder忽略大小写问题

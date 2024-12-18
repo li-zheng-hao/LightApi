@@ -1,5 +1,6 @@
 ﻿using Rougamo;
 using Rougamo.Context;
+using Rougamo.Metadatas;
 using Serilog.Context;
 
 namespace LightApi.Infra.AOP.Attributes;
@@ -7,31 +8,33 @@ namespace LightApi.Infra.AOP.Attributes;
 /// <summary>
 /// 给日志上下文新增一个OperationId字段，方便日志查询过滤
 /// </summary>
-public class AddOperationIdAttribute : ExMoAttribute
+[Lifetime(Lifetime.Transient)]
+public class AddOperationIdAttribute : MoAttribute
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public string OperationId { get; set; }
-
     private IDisposable? _context { get; set; }
+
     /// <summary>
-    /// 
+    ///
     /// </summary>
-    /// <param name="OperationId"></param>
-    public AddOperationIdAttribute(string? operationId =null)
+    /// <param name="operationId"></param>
+    public AddOperationIdAttribute(string? operationId = null)
     {
-      
-        OperationId = operationId??Guid.NewGuid().ToString();
+        OperationId = operationId ?? Guid.NewGuid().ToString();
     }
 
-    protected override void ExOnEntry(MethodContext context)
+    public override void OnEntry(MethodContext context)
     {
-        _context=LogContext.PushProperty(nameof(OperationId), OperationId);
+        Console.WriteLine("Entry");
+        _context = LogContext.PushProperty(nameof(OperationId), OperationId);
     }
 
-    protected override void ExOnExit(MethodContext context)
+    public override void OnExit(MethodContext context)
     {
+        Console.WriteLine("Exit");
         _context?.Dispose();
     }
 }

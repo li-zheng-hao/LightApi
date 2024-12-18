@@ -14,9 +14,9 @@ namespace LightApi.Infra.RabbitMQ
     internal sealed class RabbitMqConnection : IRabbitMqConnection
     {
         public IConnection Connection { get; private set; } = default!;
+
         public RabbitMqConnection(RabbitMqConfig options)
         {
-
             var factory = new ConnectionFactory()
             {
                 HostName = options.HostName,
@@ -29,18 +29,23 @@ namespace LightApi.Infra.RabbitMQ
                 //TopologyRecoveryEnabled=true
             };
 
-            Policy.Handle<SocketException>()
-                  .Or<BrokerUnreachableException>()
-                  .WaitAndRetry(2, retryAttempt => TimeSpan.FromSeconds(1), (ex, time, retryCount, content) =>
-                  {
-                      if (2 == retryCount)
-                          throw ex;
-                      Log.Error(ex, string.Format("{0}:{1}", retryCount, ex.Message));
-                  })
-                  .Execute(() =>
-                  {
-                      Connection = factory.CreateConnection();
-                  });
+            Policy
+                .Handle<SocketException>()
+                .Or<BrokerUnreachableException>()
+                .WaitAndRetry(
+                    2,
+                    retryAttempt => TimeSpan.FromSeconds(1),
+                    (ex, time, retryCount, content) =>
+                    {
+                        if (2 == retryCount)
+                            throw ex;
+                        Log.Error(ex, string.Format("{0}:{1}", retryCount, ex.Message));
+                    }
+                )
+                .Execute(() =>
+                {
+                    Connection = factory.CreateConnectionAsync().GetAwaiter().GetResult();
+                });
         }
     }
 }

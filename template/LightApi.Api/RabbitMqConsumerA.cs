@@ -7,10 +7,10 @@ namespace LightApi.Api;
 public class RabbitMqConsumerA:BaseRabbitMqConsumer
 {
 
-    public override void InitChannel()
+    public override async Task InitChannel()
     {
         this._connection = App.GetService<RabbitMqManager>()!.GetConnection().Connection;
-        this._channel = this._connection.CreateModel();
+        this._channel = await this._connection.CreateChannelAsync();
     }
 
     protected override ExchageConfig GetExchangeConfig()
@@ -39,7 +39,7 @@ public class RabbitMqConsumerA:BaseRabbitMqConsumer
         };
     }
 
-    protected override async Task<bool> Process(string exchange, string routingKey, string message)
+    protected override async Task<bool> ProcessAsync(string exchange, string routingKey, string message)
     {
         Log.Information(message);
         await Task.Delay(1000);

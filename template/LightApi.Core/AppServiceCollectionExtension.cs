@@ -16,6 +16,7 @@ using LightApi.Core.Converter;
 using LightApi.Core.Swagger;
 using LightApi.Domain;
 using LightApi.Infra.Extension;
+using LightApi.Infra.Swagger;
 using Masuit.Tools.Systems;
 using Medallion.Threading;
 using Medallion.Threading.FileSystem;
@@ -32,13 +33,13 @@ using Nacos.AspNetCore.V2;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
-using OOS.Core.Swagger;
 using Prometheus.SystemMetrics;
 using Prometheus.SystemMetrics.Collectors;
 using Serilog;
 using Serilog.Events;
 using StackExchange.Redis;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using FileUploadFilter = LightApi.Core.Swagger.FileUploadFilter;
 
 namespace LightApi.Core;
 
@@ -79,7 +80,6 @@ public static class AppServiceCollectionExtension
         });
         serviceCollection.AddUserContextSetup<UserContext>();
         serviceCollection.AddMapsterSetup(Assembly.Load("LightApi.Service"));
-        // serviceCollection.AddRabbitMqSetup(builder.Configuration);
 
         return serviceCollection;
     }

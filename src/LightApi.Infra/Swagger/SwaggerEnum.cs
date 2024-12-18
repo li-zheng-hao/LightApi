@@ -5,7 +5,7 @@ using System.Xml.XPath;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace OOS.Core.Swagger
+namespace LightApi.Infra.Swagger
 {
     /// <summary>
     /// Swagger schema filter to modify description of enum types so they
@@ -72,9 +72,10 @@ namespace OOS.Core.Swagger
                 var value = Convert.ToInt64(name);
                 var fullName = $"F:{type.FullName}.{name}";
 
-                var description = xmlComments.XPathEvaluate(
-                    $"normalize-space(//member[@name = '{fullName}']/summary/text())"
-                ) as string;
+                var description =
+                    xmlComments.XPathEvaluate(
+                        $"normalize-space(//member[@name = '{fullName}']/summary/text())"
+                    ) as string;
 
                 sb.AppendLine(string.Format("<li>" + Format + "</li>", value, name, description));
             }
@@ -86,8 +87,11 @@ namespace OOS.Core.Swagger
 
         private string DetermineAssembly(XDocument doc)
         {
-            var name = ((IEnumerable)doc.XPathEvaluate("/doc/assembly")).Cast<XElement>().ToList().FirstOrDefault();
-            
+            var name = ((IEnumerable)doc.XPathEvaluate("/doc/assembly"))
+                .Cast<XElement>()
+                .ToList()
+                .FirstOrDefault();
+
             return name?.Value;
         }
     }

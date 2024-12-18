@@ -11,9 +11,9 @@ namespace LightApi.Api.Controllers.v1;
 public class RabbitMqController:ControllerBase
 {
     [HttpPost]
-    public IActionResult AS()
+    public async Task<IActionResult> Test()
     {
-        App.GetService<RabbitMqManager>()!.GetPublisher().Publish<string>("test_a","aaa");
+        await App.GetService<RabbitMqManager>()!.GetPublisher().PublishAsync<string>("test_a","aaa");
         return Ok();
     }
 }

@@ -36,8 +36,10 @@ try
     builder.Services.AddWindowsService(); 
     
     // 基础框架
-    builder.Services.AddInfraSetup(builder); 
-    
+    builder.Services.AddInfraSetup(builder);
+    // rabbitmq
+    builder.Services.AddRabbitMqSetup(builder.Configuration);
+
 #if DEBUG
 #else
     // 服务注册中心
@@ -86,7 +88,7 @@ try
         it.Limits.MaxRequestBodySize = 524288000;
     });
 
-    // builder.Services.AddHostedService<RabbitMqConsumerA>();
+    builder.Services.AddHostedService<RabbitMqConsumerA>();
     #endregion
 
     var app = builder.Build();
