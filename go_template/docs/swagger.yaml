@@ -1,0 +1,85 @@
+definitions:
+  user.LoginRequest:
+    description: 登录请求参数
+    properties:
+      password:
+        description: 密码
+        type: string
+      username:
+        description: 用户名
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  user.PartCost:
+    properties:
+      create_time:
+        type: string
+      id:
+        type: integer
+      is_deleted:
+        type: boolean
+      update_time:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /api/hello/hello:
+    get:
+      responses: {}
+      summary: Hello World
+      tags:
+      - hello
+  /api/user/export_excel:
+    get:
+      consumes:
+      - application/json
+      description: 导出excel
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.PartCost'
+      summary: 导出excel
+  /api/user/login:
+    post:
+      consumes:
+      - application/json
+      description: 登录
+      parameters:
+      - description: 登录请求
+        in: body
+        name: loginRequest
+        required: true
+        schema:
+          $ref: '#/definitions/user.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 登录成功
+          schema:
+            type: string
+        "400":
+          description: 登录失败
+          schema:
+            type: string
+      summary: 登录
+  /api/user/query:
+    get:
+      consumes:
+      - application/json
+      description: 查询用户
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.PartCost'
+      summary: 查询用户
+swagger: "2.0"
