@@ -7,11 +7,6 @@ namespace LightApi.Mongo.UnitOfWork;
 
 public class MongoUnitOfWorkAttribute : ActionFilterAttribute
 {
-    private ILogger<MongoUnitOfWorkAttribute> _logger;
-
-    private ICapPublisher? _publisher;
-
-    private IMongoUnitOfWork _uow;
 
     /// <summary>
     ///  开启MongoDB的工作单元事务
@@ -32,22 +27,24 @@ public class MongoUnitOfWorkAttribute : ActionFilterAttribute
         ActionExecutionDelegate next
     )
     {
-        try
-        {
-            _logger = context.HttpContext.RequestServices.GetRequiredService<
+        var uow = context.HttpContext.RequestServices.GetRequiredService<IMongoUnitOfWork>();
+        var logger = context.HttpContext.RequestServices.GetRequiredService<
                 ILogger<MongoUnitOfWorkAttribute>
             >();
-            _uow = context.HttpContext.RequestServices.GetRequiredService<IMongoUnitOfWork>();
-            _uow.StartTransaction(context.HttpContext.RequestServices, UseCapPublisher);
+        try
+        {
+
+            uow.StartTransaction(context.HttpContext.RequestServices, UseCapPublisher);
             var executed = await next();
             if (executed.Exception != null)
-                await _uow.RollbackAsync();
+                await uow.RollbackAsync();
             else
-                await _uow.CommitAsync();
+                await uow.CommitAsync();
         }
-        catch
+        catch (Exception ex)
         {
-            await _uow.RollbackAsync();
+            logger.LogError(ex, "MongoDB工作单元执行失败，回滚事务");
+            await uow.RollbackAsync();
             throw;
         }
     }
