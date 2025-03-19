@@ -44,17 +44,44 @@ public class ModelValidatorFilter : IResultFilter
 
             var unifyResultProvider =
                 actionContext.HttpContext.RequestServices.GetService<IUnifyResultProvider>();
-            var baseResult = unifyResultProvider!.Failure(
-                errors,
-                options!.Value.DefaultModelValidateErrorBusinessCode,
-                options.Value.UseFirstModelValidateErrorMessage
-                    ? errorMsg
-                    : options.Value.DefaultModelValidateErrorMessage,
-                options.Value.DefaultModelValidateErrorHttpStatusCode
-            );
+            IUnifyResult? unifyResult = null;
+            if (errors.Count == 1)
+            {
+                unifyResult = unifyResultProvider!.Failure(
+                    null,
+                    options!.Value.DefaultModelValidateErrorBusinessCode,
+                    options.Value.UseFirstModelValidateErrorMessage
+                        ? errorMsg
+                        : options.Value.DefaultModelValidateErrorMessage,
+                    options.Value.DefaultModelValidateErrorHttpStatusCode
+                );
+            }
+            else if (options!.Value.ReturnModelValidateErrorMessageInExtraInfo)
+            {
+                unifyResult = unifyResultProvider!.Failure(
+                    null,
+                    options!.Value.DefaultModelValidateErrorBusinessCode,
+                    options.Value.UseFirstModelValidateErrorMessage
+                        ? errorMsg
+                        : options.Value.DefaultModelValidateErrorMessage,
+                    errors,
+                    options.Value.DefaultModelValidateErrorHttpStatusCode
+                );
+            }
+            else
+            {
+                unifyResult = unifyResultProvider!.Failure(
+                    errors,
+                    options!.Value.DefaultModelValidateErrorBusinessCode,
+                    options.Value.UseFirstModelValidateErrorMessage
+                        ? errorMsg
+                        : options.Value.DefaultModelValidateErrorMessage,
+                    options.Value.DefaultModelValidateErrorHttpStatusCode
+                );
+            }
 
             // 设置返回值和状态码
-            actionContext.Result = new JsonResult(baseResult);
+            actionContext.Result = new JsonResult(unifyResult);
             actionContext.HttpContext.Response.StatusCode = (int)
                 options.Value.DefaultModelValidateErrorHttpStatusCode;
         }

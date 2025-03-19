@@ -62,6 +62,11 @@ public class InfrastructureOptions
     public bool UseFirstModelValidateErrorMessage { get; set; } = false;
 
     /// <summary>
+    /// 如果有多条错误消息，将错误消息数组放到extraInfo部分返回
+    /// </summary>
+    public bool ReturnModelValidateErrorMessageInExtraInfo { get; set; } = false;
+
+    /// <summary>
     /// 是否在出现未处理异常时接口附加错误信息
     /// </summary>
     public bool IncludeUnCatchExceptionTraceInfo { get; set; } = true;
