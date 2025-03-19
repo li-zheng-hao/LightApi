@@ -1,5 +1,10 @@
 # Infra模块更新日志
 
+## 2025年3月19日 3.9.2
+
+1. 如果模型验证错误只有一条，则不会再放到data中返回
+2. 框架选项新增ReturnModelValidateErrorMessageInExtraInfo参数，默认false，如果存在多条模型验证错误时，将其返回到extraInfo部分。
+
 ## 2024年11月28日 3.9.1
 
 1. 修复DynamicOrder忽略大小写问题
