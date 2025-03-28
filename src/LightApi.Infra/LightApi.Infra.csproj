@@ -6,6 +6,7 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <Version>3.9.3</Version>
         <Title>LightApi.Infra</Title>
         <Authors>李正浩</Authors>
