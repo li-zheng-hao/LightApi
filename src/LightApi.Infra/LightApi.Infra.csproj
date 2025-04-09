@@ -5,7 +5,7 @@
         <Nullable>enable</Nullable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>4.0.1</Version>
+        <Version>4.1.0</Version>
         <Title>LightApi.Infra</Title>
         <Authors>李正浩</Authors>
         <Description>ASP.NET Core快速开发框架</Description>
@@ -17,7 +17,6 @@
         <NoWarn>1701;1702;CS1591;CS1712</NoWarn>
         <LangVersion>default</LangVersion>
         <IncludeSymbols>true</IncludeSymbols>
-        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
       <DocumentationFile>bin\Debug\LightApi.Infra.xml</DocumentationFile>
