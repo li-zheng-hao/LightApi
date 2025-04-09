@@ -112,6 +112,24 @@ public class FileStorage:IFileStorage
     private string GetAbsoluteDirectory()
     {
         return Path.IsPathRooted(_options.Value.LocalStorageOptions!.Directory)==false ? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _options.Value.LocalStorageOptions.Directory) : _options.Value.LocalStorageOptions.Directory;
-        
+    }
+
+    /// <summary>
+    /// 生成Minio预签名的上传链接
+    /// </summary>
+    /// <param name="fileName"></param>
+    /// <returns></returns>
+    public async Task<string> GenerateMinioUploadUrl(string fileName)
+    {
+        if (_minioClient == null)
+            throw new InvalidOperationException("Minio client is not initialized");
+
+        string objectKey = $"{DateTime.Now:yyMMdd}/{DateTime.Now:yyMMddhhmmssfff}_{fileName}";
+        var args = new PresignedPutObjectArgs()
+            .WithBucket(_options.Value.MinioStorageOptions!.Bucket)
+            .WithObject(objectKey)
+            .WithExpiry(1800); // 30分钟 = 1800秒
+
+        return await _minioClient.PresignedPutObjectAsync(args);
     }
 }

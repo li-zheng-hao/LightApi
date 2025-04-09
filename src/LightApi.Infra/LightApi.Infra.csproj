@@ -7,7 +7,7 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-        <Version>3.9.3</Version>
+        <Version>3.9.4</Version>
         <Title>LightApi.Infra</Title>
         <Authors>李正浩</Authors>
         <Description>ASP.NET Core快速开发框架</Description>
