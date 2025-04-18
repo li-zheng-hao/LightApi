@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Minio.Exceptions;
 
 namespace LightApi.Infra.FileStorage;
 
@@ -30,16 +31,20 @@ public interface IFileStorage
     /// 上传到Minio存储
     /// </summary>
     /// <param name="file"></param>
-    /// <returns>返回文件 http url,失败返回null</returns>
-    Task<string?> UploadToMinioStorage(IFormFile file);
+    /// <exception cref="InvalidOperationException">当Minio client未初始化时抛出异常</exception>
+    /// <exception cref="MinioException">当上传失败时抛出异常</exception>
+    /// <returns>返回文件的完整url</returns>
+    Task<string> UploadToMinioStorage(IFormFile file);
 
     /// <summary>
-    /// 上传到本地存储
+    /// 上传到Minio存储
     /// </summary>
     /// <param name="stream"></param>
     /// <param name="fileName"></param>
-    /// <returns>返回文件 http url</returns>
-    Task<string?> UploadToMinioStorage(Stream stream, string fileName);
+    /// <exception cref="InvalidOperationException">当Minio client未初始化时抛出异常</exception>
+    /// <exception cref="MinioException">当上传失败时抛出异常</exception>
+    /// <returns>返回文件的完整url</returns>
+    Task<string> UploadToMinioStorage(Stream stream, string fileName);
 
     /// <summary>
     /// 上传到MongoDB

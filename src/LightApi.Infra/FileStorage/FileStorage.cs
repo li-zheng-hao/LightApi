@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using Minio;
 using Minio.DataModel.Args;
+using Minio.Exceptions;
 using MongoDB.Entities;
 
 namespace LightApi.Infra.FileStorage;
@@ -47,15 +48,15 @@ public class FileStorage : IFileStorage
         return File.Exists(filePath) == false ? null : File.OpenRead(filePath);
     }
 
-    public Task<string?> UploadToMinioStorage(IFormFile file)
+    public Task<string> UploadToMinioStorage(IFormFile file)
     {
         return UploadToMinioStorage(file.OpenReadStream(), file.FileName);
     }
 
-    public async Task<string?> UploadToMinioStorage(Stream stream, string fileName)
+    public async Task<string> UploadToMinioStorage(Stream stream, string fileName)
     {
         if (_minioClient == null)
-            return null;
+            throw new InvalidOperationException("Minio client is not initialized");
 
         string objectKey = $"{DateTime.Now:yyMMdd}/{DateTime.Now:yyMMddhhmmssfff}_{fileName}";
 
@@ -64,8 +65,12 @@ public class FileStorage : IFileStorage
             .WithObject(objectKey)
             .WithStreamData(stream)
             .WithObjectSize(stream.Length);
-
-        await _minioClient.PutObjectAsync(putObjectArgs);
+        var uploadResponse = await _minioClient.PutObjectAsync(putObjectArgs);
+        int statusInt = (int)uploadResponse.ResponseStatusCode;
+        if (statusInt is < 200 or > 299)
+        {
+            throw new MinioException($"文件上传失败:[{statusInt}]{uploadResponse.ResponseContent}");
+        }
         string prefix = _options.Value.MinioStorageOptions.EnableSSL ? "https" : "http";
         return $"{prefix}://{_options.Value.MinioStorageOptions.EndPoint}/{_options.Value.MinioStorageOptions.Bucket}/{objectKey}";
     }
