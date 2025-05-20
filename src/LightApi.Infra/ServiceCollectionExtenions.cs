@@ -332,7 +332,7 @@ public static class ServiceCollectionExtenions
             {
                 var connection = new RabbitMqConnection(config);
                 var rabbitMqPublisher = sp.GetService<IRabbitMqPublisher>();
-                rabbitMqPublisher!.InitConnection(connection.Connection);
+                rabbitMqPublisher!.InitConnection(connection.Connection).GetAwaiter().GetResult();
                 rabbitMqManager.AddConnection(config.Key, connection);
                 rabbitMqManager.AddPublisher(config.Key, rabbitMqPublisher);
             }
