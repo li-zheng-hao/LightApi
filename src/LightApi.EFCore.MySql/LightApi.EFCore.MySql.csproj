@@ -8,7 +8,7 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeSymbols>true</IncludeSymbols>
-        <Version>1.2.2</Version>
+        <Version>1.2.3</Version>
         <Title>LightApi.EFCore.MySql</Title>
         <Authors>lizhenghao</Authors>
         <Description>AspNetCore项目开发库</Description>
