@@ -61,6 +61,11 @@ public class SoftDeleteInterceptor : SaveChangesInterceptor
                 delete2.IsDeleted = true;
                 delete2.DeletedAt = DateTime.Now;
             }
+            else if (entry is { State: EntityState.Deleted, Entity: ISoftDeleteV3 delete3 })
+            {
+                entry.State = EntityState.Modified;
+                delete3.DeletedAt = DateTime.Now;
+            }
         }
 
         return base.SavingChangesAsync(eventData, result, cancellationToken);

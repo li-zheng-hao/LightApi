@@ -86,6 +86,16 @@ public abstract class AbstractSharedEntityInfo : IEntityInfo
 
             genericMethod.Invoke(null, new object[] { builder });
         }
+        else if (typeof(ISoftDeleteV3).IsAssignableFrom(entityType))
+        {
+            Type classType = typeof(AbstractSharedEntityInfo);
+            MethodInfo methodInfo = classType.GetMethod("ConfigureSoftDeleteV3")!;
+
+            Type[] genericArguments = new Type[] { entityType };
+            MethodInfo genericMethod = methodInfo.MakeGenericMethod(genericArguments);
+
+            genericMethod.Invoke(null, new object[] { builder });
+        }
     }
 
     public static void ConfigureSoftDelete<TEntity>(EntityTypeBuilder builder)
@@ -98,5 +108,11 @@ public abstract class AbstractSharedEntityInfo : IEntityInfo
         where TEntity : class, ISoftDeleteV2
     {
         builder.HasQueryFilter((TEntity d) => d.IsDeleted != true);
+    }
+
+    public static void ConfigureSoftDeleteV3<TEntity>(EntityTypeBuilder builder)
+        where TEntity : class, ISoftDeleteV3
+    {
+        builder.HasQueryFilter((TEntity d) => d.DeletedAt == null);
     }
 }

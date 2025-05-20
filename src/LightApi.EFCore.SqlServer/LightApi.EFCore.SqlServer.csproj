@@ -3,29 +3,30 @@
     <PropertyGroup>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <TargetFramework>net8.0</TargetFramework>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeSymbols>true</IncludeSymbols>
-        <Version>1.2.1</Version>
+        <Version>1.2.2</Version>
         <Title>LightApi.EFCore.SqlServer</Title>
         <Authors>lizhenghao</Authors>
         <Description>AspNetCore项目开发库</Description>
         <Copyright>lizhenghao</Copyright>
         <PackageProjectUrl>https://github.com/li-zheng-hao/LightApi</PackageProjectUrl>
         <RepositoryUrl>https://github.com/li-zheng-hao/LightApi</RepositoryUrl>
+        <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="DotNetCore.CAP.SqlServer" Version="7.2.0" />
     </ItemGroup>
-    <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.18" />
-    </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.4" />
     </ItemGroup>
-    <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
       <ProjectReference Include="..\LightApi.EFCore\LightApi.EFCore.csproj" />
     </ItemGroup>
-    
+
 </Project>

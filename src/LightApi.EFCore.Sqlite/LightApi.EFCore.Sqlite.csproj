@@ -3,19 +3,19 @@
     <PropertyGroup>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeSymbols>true</IncludeSymbols>
-        <Version>1.2.1</Version>
+        <Version>1.2.2</Version>
         <Title>LightApi.EFCore.Sqlite</Title>
         <Authors>lizhenghao</Authors>
         <Description>AspNetCore项目开发库</Description>
         <Copyright>lizhenghao</Copyright>
         <PackageProjectUrl>https://github.com/li-zheng-hao/LightApi</PackageProjectUrl>
         <RepositoryUrl>https://github.com/li-zheng-hao/LightApi</RepositoryUrl>
+        <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     </PropertyGroup>
 
     <ItemGroup>
@@ -25,5 +25,4 @@
     <ItemGroup>
       <PackageReference Include="DotNetCore.CAP.Sqlite" Version="8.0.0" />
     </ItemGroup>
-
 </Project>
