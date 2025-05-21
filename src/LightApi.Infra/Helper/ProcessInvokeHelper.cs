@@ -111,25 +111,26 @@ public static class ProcessInvokeHelper
         param.CancellationToken ??= new CancellationTokenSource(
             TimeSpan.FromSeconds(param.Timeout ?? 60)
         ).Token;
-
-        var paramPath = param.JsonParamFileDir.IsNotNullOrWhiteSpace()
-            ? Write(
-                param.JsonParam,
-                $"{Path.Combine(param.JsonParamFileDir!, $"{Guid.NewGuid()}.json")}",
-                param.JsonSerializerSettings
-            )
-            : Write(param.JsonParam, null, param.JsonSerializerSettings);
-
-        var args = param.Args.ToList();
-
-        if (paramPath != null)
+        List<string> args = param.Args.ToList();
+        string? paramPath = null;
+        if (param.JsonParam != null)
         {
-            if (param.JsonParamAppendEnd ?? false)
-                args.Add(paramPath);
-            else
-                args.Insert(0, paramPath);
-        }
+            paramPath = param.JsonParamFileDir.IsNotNullOrWhiteSpace()
+                ? Write(
+                    param.JsonParam,
+                    $"{Path.Combine(param.JsonParamFileDir!, $"{Guid.NewGuid()}.json")}",
+                    param.JsonSerializerSettings
+                )
+                : Write(param.JsonParam, null, param.JsonSerializerSettings);
 
+            if (paramPath != null)
+            {
+                if (param.JsonParamAppendEnd ?? false)
+                    args.Add(paramPath);
+                else
+                    args.Insert(0, paramPath);
+            }
+        }
         var result = await Cli.Wrap(param.ExecutePath)
             .WithArguments(args)
             .WithWorkingDirectory(param.WorkingDir!)
@@ -142,7 +143,9 @@ public static class ProcessInvokeHelper
             )
             .ExecuteAsync(param.CancellationToken.Value);
 
-        return (Read<TResult>(paramPath, true, param.JsonSerializerSettings), result);
+        return File.Exists(paramPath) == false
+            ? (default, result)
+            : (Read<TResult>(paramPath, true, param.JsonSerializerSettings), result);
     }
 
     /// <summary>
@@ -170,22 +173,27 @@ public static class ProcessInvokeHelper
             TimeSpan.FromSeconds(param.Timeout ?? 60)
         ).Token;
 
-        var paramPath = param.JsonParamFileDir.IsNotNullOrWhiteSpace()
-            ? Write(
-                param.JsonParam,
-                $"{Path.Combine(param.JsonParamFileDir!, $"{Guid.NewGuid()}.json")}",
-                param.JsonSerializerSettings
-            )
-            : Write(param.JsonParam, null, param.JsonSerializerSettings);
+        List<string> args = param.Args.ToList();
 
-        var args = param.Args.ToList();
+        string? paramPath = null;
 
-        if (paramPath != null)
+        if (param.JsonParam != null)
         {
-            if (param.JsonParamAppendEnd ?? false)
-                args.Add(paramPath);
-            else
-                args.Insert(0, paramPath);
+            paramPath = param.JsonParamFileDir.IsNotNullOrWhiteSpace()
+                ? Write(
+                    param.JsonParam,
+                    $"{Path.Combine(param.JsonParamFileDir!, $"{Guid.NewGuid()}.json")}",
+                    param.JsonSerializerSettings
+                )
+                : Write(param.JsonParam, null, param.JsonSerializerSettings);
+
+            if (paramPath != null)
+            {
+                if (param.JsonParamAppendEnd ?? false)
+                    args.Add(paramPath);
+                else
+                    args.Insert(0, paramPath);
+            }
         }
 
         var result = await Cli.Wrap(param.ExecutePath)

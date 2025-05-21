@@ -1,5 +1,10 @@
 # Infra模块更新日志
 
+## 2025年5月20日 4.1.3
+
+1. 升级CliWrap
+2. 调整ProcessInvokeHelper参数和返回值读取逻辑
+
 ## 2025年5月20日 4.1.2
 
 1. 修复rabbitmqmanager未初始化连接的问题
