@@ -12,9 +12,9 @@ namespace LightApi.EFCore.Repository
     public partial class EfRepository<TEntity> : IEfRepository<TEntity>
         where TEntity : class, IEfEntity, new()
     {
-        public Task<IEnumerable<T>> QueryAsync<T>(
+        public Task<IEnumerable<T>> DapperQueryAsync<T>(
             string sql,
-            object parameters = null,
+            object? parameters = null,
             int timeout = 30
         )
         {
@@ -28,7 +28,11 @@ namespace LightApi.EFCore.Repository
                 );
         }
 
-        public Task<T> QuerySingleAsync<T>(string sql, object parameters = null, int timeout = 30)
+        public Task<T> DapperQuerySingleAsync<T>(
+            string sql,
+            object? parameters = null,
+            int timeout = 30
+        )
         {
             return DbContext
                 .Database.GetDbConnection()
@@ -40,15 +44,43 @@ namespace LightApi.EFCore.Repository
                 );
         }
 
-        public Task<T?> QueryFirstOrDefaultAsync<T>(
+        public Task<T?> DapperQueryFirstOrDefaultAsync<T>(
             string sql,
-            object parameters = null,
+            object? parameters = null,
             int timeout = 30
         )
         {
             return DbContext
                 .Database.GetDbConnection()
                 .QueryFirstOrDefaultAsync<T>(
+                    sql,
+                    parameters,
+                    DbContext.Database.CurrentTransaction?.GetDbTransaction(),
+                    timeout
+                );
+        }
+
+        public Task<int> DapperExecuteAsync(string sql, object? parameters = null, int timeout = 30)
+        {
+            return DbContext
+                .Database.GetDbConnection()
+                .ExecuteAsync(
+                    sql,
+                    parameters,
+                    DbContext.Database.CurrentTransaction?.GetDbTransaction(),
+                    timeout
+                );
+        }
+
+        public Task<T?> DapperExecuteScalarAsync<T>(
+            string sql,
+            object? parameters = null,
+            int timeout = 30
+        )
+        {
+            return DbContext
+                .Database.GetDbConnection()
+                .ExecuteScalarAsync<T>(
                     sql,
                     parameters,
                     DbContext.Database.CurrentTransaction?.GetDbTransaction(),
