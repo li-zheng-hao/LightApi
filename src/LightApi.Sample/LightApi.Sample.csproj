@@ -14,6 +14,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\LightApi.EFCore.Sqlite\LightApi.EFCore.Sqlite.csproj" />
+      <ProjectReference Include="..\LightApi.EFCore\LightApi.EFCore.csproj" />
       <ProjectReference Include="..\LightApi.Infra\LightApi.Infra.csproj" />
     </ItemGroup>
 

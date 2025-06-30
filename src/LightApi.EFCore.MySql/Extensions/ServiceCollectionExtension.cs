@@ -6,7 +6,6 @@ using LightApi.EFCore.Entities;
 using LightApi.EFCore.Interceptors;
 using LightApi.EFCore.Internal;
 using LightApi.EFCore.MySql.Transaction;
-using LightApi.EFCore.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -50,10 +49,6 @@ public static class ServiceCollectionExtension
         Db.AddDbContextModelMap(typeof(TAppContext), entityInfoType);
 
         Db.AddDbContextUnitOfWorkMap(typeof(TAppContext), typeof(MySqlUnitOfWork<TAppContext>));
-
-        services.TryAddScoped(typeof(IEfRepository<>), typeof(EfRepository<>));
-
-        services.TryAddScoped(typeof(IEfRepository<,>), typeof(MultiContextEfRepository<,>));
 
         services.AddDbContext<TAppContext>(
             (sp, op) =>

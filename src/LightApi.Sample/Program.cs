@@ -15,30 +15,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-Log.Logger = new LoggerConfiguration()
-    .Enrich.WithProperty("System", "LightApiSample")
-    .WriteTo.Console()
-    .WriteTo.Seq("")
-    .CreateLogger();
-
-builder.Services.AddSerilog();
-
 builder.Services.AddLightApiSetup(it => { });
-builder.Host.AddAutofacSetup();
-
-builder
-    .Services.AddOpenTelemetry()
-    .ConfigureResource(r => r.AddService(LightApiSource.SourceName))
-    .WithTracing(tracing =>
-    {
-        tracing.AddSource(LightApiSource.SourceName);
-        tracing.SetSampler(new AlwaysOnSampler());
-        tracing.AddOtlpExporter(opt =>
-        {
-            opt.Endpoint = new Uri("/ingest/otlp/v1/traces");
-            opt.Protocol = OtlpExportProtocol.HttpProtobuf;
-        });
-    });
+builder.Host.AddAutofacSetup("LightApi");
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -5,7 +5,6 @@ using LightApi.EFCore.EFCore.DbContext;
 using LightApi.EFCore.Entities;
 using LightApi.EFCore.Interceptors;
 using LightApi.EFCore.Internal;
-using LightApi.EFCore.Repository;
 using LightApi.EFCore.SqlServer.Transaction;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -50,10 +49,6 @@ public static class ServiceCollectionExtension
         Db.AddDbContextModelMap(typeof(TAppContext), entityInfoType);
 
         Db.AddDbContextUnitOfWorkMap(typeof(TAppContext), typeof(SqlServerUnitOfWork<TAppContext>));
-
-        services.TryAddScoped(typeof(IEfRepository<>), typeof(EfRepository<>));
-
-        services.TryAddScoped(typeof(IEfRepository<,>), typeof(MultiContextEfRepository<,>));
 
         services.AddDbContext<TAppContext>(
             (sp, op) =>

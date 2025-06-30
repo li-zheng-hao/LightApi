@@ -1,4 +1,3 @@
-using LightApi.EFCore.Repository;
 using Microsoft.EntityFrameworkCore;
 using MultiEfCoreDbContextSample.Database;
 
@@ -36,6 +35,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapControllers();
+
+
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
