@@ -19,7 +19,9 @@ using SameSiteMode = Microsoft.AspNetCore.Http.SameSiteMode;
 
 namespace LightApi.Infra.Authorize.CustomCookie;
 
-public class CookieAuthHandler : AuthenticationHandler<CookieAuthSchemeOptions>
+public class CookieAuthHandler
+    : AuthenticationHandler<CookieAuthSchemeOptions>,
+        IAuthenticationSignOutHandler
 {
     private readonly ICookieAuthHandler? _authHandler;
 
@@ -33,6 +35,12 @@ public class CookieAuthHandler : AuthenticationHandler<CookieAuthSchemeOptions>
         : base(options, logger, encoder, clock)
     {
         _authHandler = authHandler;
+    }
+
+    public Task SignOutAsync(AuthenticationProperties? properties)
+    {
+        Response.Cookies.Delete(Options.CookieName);
+        return Task.CompletedTask;
     }
 
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()

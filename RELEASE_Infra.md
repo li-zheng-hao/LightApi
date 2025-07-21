@@ -1,5 +1,11 @@
 # Infra模块更新日志
 
+## 2025年7月21日 4.2.0
+
+1. FileStorage增加删除mongodb文件接口
+2. 优化FileStorage下载MongoDB文件key参数，支持读取url
+3. 修复自定义CookieAuth注销登录错误问题
+
 ## 2025年7月1日 4.1.4
 
 1. 优化启动速度

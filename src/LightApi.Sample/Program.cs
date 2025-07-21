@@ -1,4 +1,5 @@
 using LightApi.Infra;
+using LightApi.Infra.Authorize.CustomCookie;
 using LightApi.Infra.OpenTelemetry;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Resources;
@@ -15,6 +16,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCustomCookieAuth(i => { });
 builder.Services.AddLightApiSetup(it => { });
 builder.Host.AddAutofacSetup("LightApi");
 var app = builder.Build();
@@ -28,6 +30,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseInfrastructure();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

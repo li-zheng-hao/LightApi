@@ -58,9 +58,16 @@ public interface IFileStorage
     /// <summary>
     /// 从mongodb下载文件
     /// </summary>
-    /// <param name="key">UploadToMongoDB接口返回的字符串，或者直接使用文件id</param>
-    /// <returns></returns>
+    /// <param name="key">UploadToMongoDB接口返回的字符串，或者直接使用文件id,或者文件url</param>
+    /// <returns>文件流</returns>
     Task<Stream?> DownloadFromMongoDBStorage(string key);
+
+    /// <summary>
+    /// 从mongodb删除文件
+    /// </summary>
+    /// <param name="key">UploadToMongoDB接口返回的字符串，或者直接使用文件id,或者文件url</param>
+    /// <returns>是否删除成功</returns>
+    Task<bool> DeleteFromMongoDBStorage(string key);
 
     /// <summary>
     /// 生成Minio预签名的上传链接

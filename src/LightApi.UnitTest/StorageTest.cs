@@ -40,9 +40,10 @@ public class StorageTest
         var file = new FormFile(fileStream, 0, fileStream.Length, "test.xlsx", "test.xlsx");
         var res = await fileStorage.UploadToMongoDBStorage(file.OpenReadStream(), "test.xlsx");
         Assert.NotNull(res);
-        res = res.Replace($"{storageOptions.MongoStorageOptions.PublicDomain}/", "");
         var res2 = await fileStorage.DownloadFromMongoDBStorage(res);
         Assert.NotNull(res2);
+        var res3 = await fileStorage.DeleteFromMongoDBStorage(res);
+        Assert.True(res3);
     }
 
     [Fact]

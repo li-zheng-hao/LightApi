@@ -91,12 +91,8 @@ public class FileStorage : IFileStorage
     {
         try
         {
-            if (key.Length > 24)
-                key = key.Split("_")[0];
-            if (key.Length != 24)
-                return null;
             var mongoFile = await DB.Find<MongoStorage>()
-                .Match(it => it.ID == key)
+                .Match(it => it.ID == GetMongoDBStorageKey(key))
                 .ExecuteFirstAsync();
 
             if (mongoFile != null)
@@ -112,6 +108,29 @@ public class FileStorage : IFileStorage
         {
             return null;
         }
+    }
+
+    public async Task<bool> DeleteFromMongoDBStorage(string key)
+    {
+        var mongoFile = await DB.Find<MongoStorage>()
+            .Match(it => it.ID == GetMongoDBStorageKey(key))
+            .ExecuteFirstAsync();
+        if (mongoFile == null)
+            return false;
+        var result = await mongoFile.DeleteAsync();
+        return result.IsAcknowledged && result.DeletedCount > 0;
+    }
+
+    private string GetMongoDBStorageKey(string key)
+    {
+        if (key.StartsWith(_options.Value.MongoStorageOptions!.PublicDomain))
+        {
+            // 移除PublicDomain/
+            key = key.Substring(_options.Value.MongoStorageOptions!.PublicDomain.Length + 1);
+        }
+        if (key.Length > 24)
+            key = key.Split("_")[0];
+        return key;
     }
 
     /// <summary>
