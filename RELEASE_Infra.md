@@ -1,5 +1,10 @@
 # Infra模块更新日志
 
+## 2025年7月29日 4.2.1
+
+1. RabbitMqManager允许返回null
+
+
 ## 2025年7月21日 4.2.0
 
 1. FileStorage增加删除mongodb文件接口

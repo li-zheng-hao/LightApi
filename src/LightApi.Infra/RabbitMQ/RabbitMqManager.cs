@@ -15,17 +15,13 @@ public class RabbitMqManager
         Publishers.TryAdd(key, publisher);
     }
 
-    public IRabbitMqConnection GetConnection(string key = "default")
+    public IRabbitMqConnection? GetConnection(string key = "default")
     {
-        return Connections.TryGetValue(key!, out var connection)
-            ? connection
-            : throw new Exception($"未找到key为{key}的RabbitMQ连接");
+        return Connections.TryGetValue(key!, out var connection) ? connection : null;
     }
 
-    public IRabbitMqPublisher GetPublisher(string key = "default")
+    public IRabbitMqPublisher? GetPublisher(string key = "default")
     {
-        return Publishers.TryGetValue(key!, out var publisher)
-            ? publisher
-            : throw new Exception($"未找到key为{key}的RabbitMQ发送者");
+        return Publishers.TryGetValue(key!, out var publisher) ? publisher : null;
     }
 }

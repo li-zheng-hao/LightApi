@@ -23,20 +23,23 @@ namespace LightApi.Infra.RabbitMQ
         /// <returns></returns>
         public virtual async Task InitChannel()
         {
-            this._connection = _rabbitMqManager.GetConnection().Connection;
-            this._channel = await _connection.CreateChannelAsync();
+            _connection = _rabbitMqManager.GetConnection()?.Connection;
+            if (_connection == null)
+            {
+                throw new NullReferenceException("RabbitMQ连接为空");
+            }
+            _channel = await _connection.CreateChannelAsync();
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             await InitChannel();
-            Register();
+            _ = Register();
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            DeRegister();
-            return Task.CompletedTask;
+            return DeRegister();
         }
 
         /// <summary>
