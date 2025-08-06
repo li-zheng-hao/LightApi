@@ -96,7 +96,7 @@ public static class ExcelHelper
         bool throwIfEmpty = true
     )
     {
-        var workbook = WorkbookFactory.Create(excelStream);
+        using var workbook = WorkbookFactory.Create(excelStream);
         var sheet = workbook.GetSheetAt(0);
         if (sheet.LastRowNum <= 1 && throwIfEmpty)
             throw new BusinessException("Excel无有效数据");
