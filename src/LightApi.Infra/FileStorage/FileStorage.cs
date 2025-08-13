@@ -57,12 +57,19 @@ public class FileStorage : IFileStorage
     {
         if (_minioClient == null)
             throw new InvalidOperationException("Minio client is not initialized");
+        string fileExt = Path.GetExtension(fileName);
 
-        string objectKey = $"{DateTime.Now:yyMMdd}/{DateTime.Now:yyMMddhhmmssfff}_{fileName}";
-
+        string objectKey = $"{DateTime.Now:yyMMdd}/{Guid.NewGuid():N}{fileExt}";
+        // 2. 创建一个包含自定义元数据的字典
+        //    键名不需要 "X-Amz-Meta-" 前缀，SDK会自动处理。
+        var headers = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            { "Original-Filename", fileName },
+        };
         var putObjectArgs = new PutObjectArgs()
             .WithBucket(_options.Value.MinioStorageOptions!.Bucket)
             .WithObject(objectKey)
+            .WithHeaders(headers)
             .WithStreamData(stream)
             .WithObjectSize(stream.Length);
         var uploadResponse = await _minioClient.PutObjectAsync(putObjectArgs);
@@ -142,11 +149,19 @@ public class FileStorage : IFileStorage
     {
         if (_minioClient == null)
             throw new InvalidOperationException("Minio client is not initialized");
+        string fileExt = Path.GetExtension(fileName);
 
-        string objectKey = $"{DateTime.Now:yyMMdd}/{DateTime.Now:yyMMddhhmmssfff}_{fileName}";
+        string objectKey = $"{DateTime.Now:yyMMdd}/{Guid.NewGuid():N}{fileExt}";
+        // 2. 创建一个包含自定义元数据的字典
+        //    键名不需要 "X-Amz-Meta-" 前缀，SDK会自动处理。
+        var headers = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            { "Original-Filename", fileName },
+        };
         var args = new PresignedPutObjectArgs()
             .WithBucket(_options.Value.MinioStorageOptions!.Bucket)
             .WithObject(objectKey)
+            .WithHeaders(headers)
             .WithExpiry(1800); // 30分钟 = 1800秒
 
         return await _minioClient.PresignedPutObjectAsync(args);
