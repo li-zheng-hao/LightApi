@@ -75,4 +75,19 @@ public interface IFileStorage
     /// <param name="fileName"></param>
     /// <returns>完整的下载签名url</returns>
     Task<string> GenerateMinioUploadUrl(string fileName);
+
+    /// <summary>
+    /// 生成Minio分享下载的链接
+    /// </summary>
+    /// <param name="objectKey"></param>
+    /// <param name="expireSeconds">过期时间</param>
+    /// <returns></returns>
+    Task<string> GenerateMinioDownloadUrl(string objectKey, int expireSeconds = 1800);
+
+    /// <summary>
+    /// 从当前FileStorage minio生成的url获取objectKey
+    /// </summary>
+    /// <param name="url"></param>
+    /// <returns></returns>
+    string GetMinioObjectKeyFromUrl(string url);
 }

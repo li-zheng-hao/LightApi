@@ -73,10 +73,10 @@ public class StorageTest
         {
             MinioStorageOptions = new MinioStorageOptions()
             {
-                EndPoint = "",
-                AccessKey = "",
-                SecretKey = "",
-                Bucket = "",
+                EndPoint = "localhost:9000",
+                AccessKey = "JM9AMXjHH2tTcfWlhA5G",
+                SecretKey = "mHMNwN7njZ5gc1iMt8mRKjc0MTQ5akKIvOGOe11Z",
+                Bucket = "test",
                 EnableSSL = false
             }
         };
@@ -96,7 +96,9 @@ public class StorageTest
         IOptions<StorageOptions> options = new OptionsWrapper<StorageOptions>(storageOptions);
         using var fs = File.OpenRead(_testFile);
         var fileStorage = new FileStorage(options, client);
-        var res = await fileStorage.UploadToMinioStorage(fs, "test.xlsx");
-        Assert.NotNull(res);
+        var url = await fileStorage.UploadToMinioStorage(fs, "test.xlsx");
+        var objectKey = fileStorage.GetMinioObjectKeyFromUrl(url);
+        url = await fileStorage.GenerateMinioDownloadUrl(objectKey);
+        Assert.NotNull(url);
     }
 }

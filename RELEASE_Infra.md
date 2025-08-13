@@ -1,5 +1,9 @@
 # Infra模块更新日志
 
+## 2025年8月13日 4.3.0
+
+1. minio文件上传object key调整
+
 ## 2025年8月6日 4.2.3
 
 1. 修复Npoi workbook未dipose的问题

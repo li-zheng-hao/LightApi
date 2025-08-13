@@ -60,8 +60,6 @@ public class FileStorage : IFileStorage
         string fileExt = Path.GetExtension(fileName);
 
         string objectKey = $"{DateTime.Now:yyMMdd}/{Guid.NewGuid():N}{fileExt}";
-        // 2. 创建一个包含自定义元数据的字典
-        //    键名不需要 "X-Amz-Meta-" 前缀，SDK会自动处理。
         var headers = new Dictionary<string, string>(StringComparer.Ordinal)
         {
             { "Original-Filename", fileName },
@@ -152,8 +150,6 @@ public class FileStorage : IFileStorage
         string fileExt = Path.GetExtension(fileName);
 
         string objectKey = $"{DateTime.Now:yyMMdd}/{Guid.NewGuid():N}{fileExt}";
-        // 2. 创建一个包含自定义元数据的字典
-        //    键名不需要 "X-Amz-Meta-" 前缀，SDK会自动处理。
         var headers = new Dictionary<string, string>(StringComparer.Ordinal)
         {
             { "Original-Filename", fileName },
@@ -165,6 +161,70 @@ public class FileStorage : IFileStorage
             .WithExpiry(1800); // 30分钟 = 1800秒
 
         return await _minioClient.PresignedPutObjectAsync(args);
+    }
+
+    /// <summary>
+    /// 生成Minio分享下载的链接
+    /// </summary>
+    /// <param name="objectKey"></param>
+    /// <param name="expireSeconds"></param>
+    /// <returns></returns>
+    public async Task<string> GenerateMinioDownloadUrl(string objectKey, int expireSeconds = 1800)
+    {
+        if (_minioClient == null)
+            throw new InvalidOperationException("Minio client is not initialized");
+        var args = new PresignedGetObjectArgs()
+            .WithBucket(_options.Value.MinioStorageOptions!.Bucket)
+            .WithObject(objectKey)
+            .WithExpiry(expireSeconds); // 30分钟 = 1800秒
+        // 生成预签名 URL
+        string url = await _minioClient!.PresignedGetObjectAsync(args);
+        return url;
+    }
+
+    /// <summary>
+    /// 从当前FileStorage minio生成的url获取objectKey
+    /// </summary>
+    /// <param name="url"></param>
+    /// <returns></returns>
+    public string GetMinioObjectKeyFromUrl(string url)
+    {
+        if (string.IsNullOrEmpty(url))
+            throw new ArgumentException("URL不能为空", nameof(url));
+
+        try
+        {
+            // 解析URL，获取路径部分
+            var uri = new Uri(url);
+            var pathSegments = uri.AbsolutePath.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+            // 路径格式应该是: /{bucket}/{objectKey}
+            // 如果路径段少于2个，说明URL格式不正确
+            if (pathSegments.Length < 2)
+                throw new ArgumentException("无效的Minio URL格式", nameof(url));
+
+            // 第一个段是bucket，第二个段开始是objectKey
+            var bucket = pathSegments[0];
+            var objectKey = string.Join("/", pathSegments.Skip(1));
+
+            // 验证bucket是否匹配配置
+            if (
+                _options.Value.MinioStorageOptions?.Bucket != null
+                && bucket != _options.Value.MinioStorageOptions.Bucket
+            )
+            {
+                throw new ArgumentException(
+                    $"URL中的bucket '{bucket}' 与配置的bucket '{_options.Value.MinioStorageOptions.Bucket}' 不匹配",
+                    nameof(url)
+                );
+            }
+
+            return objectKey;
+        }
+        catch (UriFormatException)
+        {
+            throw new ArgumentException("无效的URL格式", nameof(url));
+        }
     }
 
     /// <summary>
