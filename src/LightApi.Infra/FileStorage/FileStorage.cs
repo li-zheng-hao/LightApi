@@ -60,14 +60,9 @@ public class FileStorage : IFileStorage
         string fileExt = Path.GetExtension(fileName);
 
         string objectKey = $"{DateTime.Now:yyMMdd}/{Guid.NewGuid():N}{fileExt}";
-        var headers = new Dictionary<string, string>(StringComparer.Ordinal)
-        {
-            { "Original-Filename", fileName },
-        };
         var putObjectArgs = new PutObjectArgs()
             .WithBucket(_options.Value.MinioStorageOptions!.Bucket)
             .WithObject(objectKey)
-            .WithHeaders(headers)
             .WithStreamData(stream)
             .WithObjectSize(stream.Length);
         var uploadResponse = await _minioClient.PutObjectAsync(putObjectArgs);
@@ -150,14 +145,9 @@ public class FileStorage : IFileStorage
         string fileExt = Path.GetExtension(fileName);
 
         string objectKey = $"{DateTime.Now:yyMMdd}/{Guid.NewGuid():N}{fileExt}";
-        var headers = new Dictionary<string, string>(StringComparer.Ordinal)
-        {
-            { "Original-Filename", fileName },
-        };
         var args = new PresignedPutObjectArgs()
             .WithBucket(_options.Value.MinioStorageOptions!.Bucket)
             .WithObject(objectKey)
-            .WithHeaders(headers)
             .WithExpiry(1800); // 30分钟 = 1800秒
 
         return await _minioClient.PresignedPutObjectAsync(args);
