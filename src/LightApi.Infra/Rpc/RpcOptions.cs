@@ -15,6 +15,14 @@ public class RpcOptions
     /// 示例：DEFAULT_GROUP 不使用Nacos时，此值无效
     /// </summary>
     public string? NacosGroupName { get; set; }
+    /// <summary>
+    /// nacos缓存时间
+    /// </summary>
+    public int NacosCacheSeconds { get; set; } = 5;
+    /// <summary>
+    /// 是否使用默认的标准化重试处理程序
+    /// </summary>
+    public bool UseStandardResilienceHandler { get; set; } = true;
 }
 
 public enum ServiceDiscoveryType

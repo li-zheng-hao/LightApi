@@ -7,9 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddNacosAspNet(builder.Configuration);
-builder.Services.AddRefitRpcClient<App2ApiClient>(c =>
+builder.Services.AddRefitRpcClient<App1ApiClient>(c =>
 {
-    c.Host = "app2";
+    c.Host = "app1";
     c.ServiceDiscoveryType = ServiceDiscoveryType.Nacos;
     c.UseTls = false;
 });
@@ -21,9 +21,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.MapGet("/api/ping", () => "Hello World! from api/ping");
-app.MapGet("/", () => "Hello World! from  /");
-app.MapGet("/test", ([FromServices] App2ApiClient apiClient) => apiClient.GetHelloWorld());
-app.MapGet("/test2", ([FromServices] App2ApiClient apiClient) => apiClient.GetHelloWorld2());
+app.MapGet("/api/ping", () => "Hello World! from app2 api/ping");
+app.MapGet("/", () => "Hello World! from  app2 /");
+app.MapGet("/test", ([FromServices] App1ApiClient apiClient) => apiClient.GetHelloWorld());
+app.MapGet("/test2", ([FromServices] App1ApiClient apiClient) => apiClient.GetHelloWorld2());
 app.Run();
-

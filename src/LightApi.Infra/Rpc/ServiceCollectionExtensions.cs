@@ -1,5 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Threading.RateLimiting;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Http.Resilience;
 using Nacos.V2;
 using Refit;
 
@@ -24,14 +27,24 @@ public static class ServiceCollectionExtensions
         {
             throw new ArgumentException("RpcOptions.Host is required");
         }
-        var builder = services.AddRefitClient<T>().ConfigureHttpClient(c =>
+        var builder = services.AddRefitClient<T>()
+            .ConfigureHttpClient(c =>
         {
             string url = rpcOptions.UseTls ? $"https://{rpcOptions.Host}" : $"http://{rpcOptions.Host}";
             c.BaseAddress = new Uri(url);
         });
+        if (rpcOptions.UseStandardResilienceHandler)
+        {
+            builder.AddStandardResilienceHandler();
+        }
         if (rpcOptions.ServiceDiscoveryType == ServiceDiscoveryType.Nacos)
         {
-            services.TryAddTransient<NacosServiceDiscoveryHandler>(sp => new NacosServiceDiscoveryHandler(rpcOptions, sp.GetRequiredService<INacosNamingService>()));
+            services.AddMemoryCache();
+            services.TryAddTransient<NacosServiceDiscoveryHandler>(sp =>
+            {
+                var memoryCache = sp.GetRequiredService<IMemoryCache>();
+                return new NacosServiceDiscoveryHandler(rpcOptions, sp.GetRequiredService<INacosNamingService>(), memoryCache);
+            });
             builder.AddHttpMessageHandler<NacosServiceDiscoveryHandler>();
         }
         if (httpClientBuilder != null)

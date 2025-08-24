@@ -1,0 +1,6 @@
+@NacosRpcSample2_HostAddress = http://localhost:5160
+
+GET {{NacosRpcSample2_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
