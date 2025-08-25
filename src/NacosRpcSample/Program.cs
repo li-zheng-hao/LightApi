@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddNacosAspNet(builder.Configuration);
-builder.Services.AddRefitRpcClient<App2ApiClient>(c =>
+builder.Services.AddRpcClient<App2ApiClient>(c =>
 {
     c.Host = "app2";
     c.ServiceDiscoveryType = ServiceDiscoveryType.Nacos;
@@ -26,4 +26,3 @@ app.MapGet("/", () => "Hello World! from  /");
 app.MapGet("/test", ([FromServices] App2ApiClient apiClient) => apiClient.GetHelloWorld());
 app.MapGet("/test2", ([FromServices] App2ApiClient apiClient) => apiClient.GetHelloWorld2());
 app.Run();
-

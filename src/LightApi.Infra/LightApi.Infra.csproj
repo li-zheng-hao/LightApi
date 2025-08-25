@@ -5,7 +5,7 @@
         <Nullable>enable</Nullable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>4.3.1</Version>
+        <Version>4.4.0</Version>
         <Title>LightApi.Infra</Title>
         <Authors>李正浩</Authors>
         <Description>ASP.NET Core快速开发框架</Description>
@@ -34,7 +34,6 @@
         <PackageReference Include="Mapster" Version="7.4.0" />
         <PackageReference Include="Masuit.Tools.Abstractions" Version="2024.7.1" />
         <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="9.8.0" />
-        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.8" />
         <PackageReference Include="MiniExcel" Version="1.36.0" />
         <PackageReference Include="Minio" Version="6.0.4" />
         <PackageReference Include="MongoDB.Entities" Version="24.1.1" />

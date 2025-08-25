@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddNacosAspNet(builder.Configuration);
-builder.Services.AddRefitRpcClient<App1ApiClient>(c =>
+builder.Services.AddRpcClient<App1ApiClient>(c =>
 {
     c.Host = "app1";
     c.ServiceDiscoveryType = ServiceDiscoveryType.Nacos;
