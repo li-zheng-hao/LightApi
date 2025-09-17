@@ -143,10 +143,10 @@ namespace LightApi.Infra.RabbitMQ
         /// </summary>
         protected virtual async Task DeRegister()
         {
-            await _channel!.CloseAsync();
-            _channel!.Dispose();
-            await _connection!.CloseAsync();
-            _connection!.Dispose();
+            if(_channel!=null)
+                await _channel!.CloseAsync();
+            if(_connection!=null)
+                await _connection!.CloseAsync();
         }
 
         /// <summary>
