@@ -24,9 +24,10 @@ namespace LightApi.Infra.RabbitMQ
                 UserName = options.UserName,
                 Password = options.Password,
                 Port = options.Port,
-                //Rabbitmq集群必需加这两个参数
+                // 断线重连
                 AutomaticRecoveryEnabled = true,
-                //TopologyRecoveryEnabled=true
+                // 拓扑恢复
+                TopologyRecoveryEnabled = true
             };
 
             Policy

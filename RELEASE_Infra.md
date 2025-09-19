@@ -1,5 +1,11 @@
 # Infra模块更新日志
 
+## 2025年9月19日 4.4.2
+
+1. 升级RabbitMQ依赖
+2. 打开TopologyRecoveryEnabled选项
+3. RabbitMQ发送消息添加日志
+
 ## 2025年9月17日 4.4.1
 
 1. 修复RabbitMqConsumer取消注册时抛出异常

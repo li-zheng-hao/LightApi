@@ -3,6 +3,7 @@ using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Serilog;
+using Serilog.Context;
 
 namespace LightApi.Infra.RabbitMQ
 {
@@ -120,12 +121,14 @@ namespace LightApi.Infra.RabbitMQ
 
             consumer.ReceivedAsync += async (model, ea) =>
             {
+                using var logContext = LogContext.PushProperty(
+                    "rabbit_consume_id",
+                    Guid.NewGuid().ToString()
+                );
                 byte[] body = ea.Body.ToArray();
                 string message = Encoding.UTF8.GetString(body);
                 bool result = await ProcessAsync(ea.Exchange, ea.RoutingKey, message);
-
-                Log.Debug($"result:{result},message:{message}");
-
+                Log.Debug($"rabbitmq处理返回值:{result},消息内容:{message}");
                 //关闭自动确认,开启手动确认后需要依据处理结果选择返回确认信息。
                 if (!queue.AutoAck)
                     if (result)
@@ -143,9 +146,9 @@ namespace LightApi.Infra.RabbitMQ
         /// </summary>
         protected virtual async Task DeRegister()
         {
-            if(_channel!=null)
+            if (_channel != null)
                 await _channel!.CloseAsync();
-            if(_connection!=null)
+            if (_connection != null)
                 await _connection!.CloseAsync();
         }
 
