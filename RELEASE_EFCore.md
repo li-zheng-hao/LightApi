@@ -1,5 +1,11 @@
 # EFCore模块更新日志
 
+## 2025年12月31日 3.1.0
+
+1. 移除EFCore.BulkExtensions依赖
+2. 替换Mysql驱动
+3. 支持net10.0，支持EFCore10.0
+
 ## 2025年7月1日 3.0.0
 
 1. 删除仓储代码，直接使用DbContext
