@@ -98,7 +98,7 @@ public static class ExcelHelper
     {
         using var workbook = WorkbookFactory.Create(excelStream);
         var sheet = workbook.GetSheetAt(0);
-        if (sheet.LastRowNum <= 1 && throwIfEmpty)
+        if (sheet.LastRowNum < 1 && throwIfEmpty)
             throw new BusinessException("Excel无有效数据");
         var header = sheet.GetRow(0);
         List<string> headers = new();
