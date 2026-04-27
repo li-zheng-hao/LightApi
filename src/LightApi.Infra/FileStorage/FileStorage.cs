@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Options;
 using Minio;
 using Minio.DataModel.Args;
@@ -9,6 +10,7 @@ namespace LightApi.Infra.FileStorage;
 
 public class FileStorage : IFileStorage
 {
+    private static readonly FileExtensionContentTypeProvider ContentTypeProvider = new();
     private readonly IOptions<StorageOptions> _options;
     private readonly IMinioClient? _minioClient;
 
@@ -59,12 +61,18 @@ public class FileStorage : IFileStorage
             throw new InvalidOperationException("Minio client is not initialized");
         string fileExt = Path.GetExtension(fileName);
 
+        if (ContentTypeProvider.TryGetContentType(fileName, out var contentType) == false)
+        {
+            contentType = "application/octet-stream";
+        }
+
         string objectKey = $"{DateTime.Now:yyMMdd}/{Guid.NewGuid():N}{fileExt}";
         var putObjectArgs = new PutObjectArgs()
             .WithBucket(_options.Value.MinioStorageOptions!.Bucket)
             .WithObject(objectKey)
             .WithStreamData(stream)
-            .WithObjectSize(stream.Length);
+            .WithObjectSize(stream.Length)
+            .WithContentType(contentType);
         var uploadResponse = await _minioClient.PutObjectAsync(putObjectArgs);
         int statusInt = (int)uploadResponse.ResponseStatusCode;
         if (statusInt is < 200 or > 299)
