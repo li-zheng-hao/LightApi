@@ -1,11 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>4.4.5</Version>
+        <Version>4.4.6</Version>
         <Title>LightApi.Infra</Title>
         <Authors>李正浩</Authors>
         <Description>ASP.NET Core快速开发框架</Description>
@@ -17,6 +16,7 @@
         <NoWarn>1701;1702;CS1591;CS1712</NoWarn>
         <LangVersion>default</LangVersion>
         <IncludeSymbols>true</IncludeSymbols>
+        <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
       <DocumentationFile>bin\Debug\LightApi.Infra.xml</DocumentationFile>
