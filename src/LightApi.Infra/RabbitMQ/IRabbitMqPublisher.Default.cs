@@ -56,6 +56,59 @@ namespace LightApi.Infra.RabbitMQ
                 });
         }
 
+        public virtual async Task PublishBatchAsync<TMessage>(
+            string routingKey,
+            IEnumerable<TMessage> messages,
+            string exchange = "amq.direct",
+            BasicProperties? properties = null,
+            bool mandatory = false
+        )
+        {
+            if (_channel == null)
+                throw new ArgumentNullException(nameof(_channel), "channel is null");
+
+            var messageList = messages?.ToList() ?? new List<TMessage>();
+            if (messageList.Count == 0)
+                return;
+
+            await Policy
+                .Handle<Exception>()
+                .WaitAndRetryAsync(
+                    3,
+                    retryAttempt => TimeSpan.FromSeconds(1),
+                    (ex, time, retryCount, content) =>
+                    {
+                        Log.Error(ex, $"Rabbitmq批量发送消息失败：{retryCount}:{ex.Message}");
+                    }
+                )
+                .ExecuteAsync(async () =>
+                {
+                    var bodies = messageList
+                        .Select(m => Encoding.UTF8.GetBytes(m as string ?? JsonConvert.SerializeObject(m)))
+                        .ToArray();
+
+                    Log.Debug($"Rabbitmq批量发送消息：{exchange}:{routingKey}:{bodies.Length}条");
+
+                    var publishTasks = new List<ValueTask>(bodies.Length);
+                    foreach (var body in bodies)
+                    {
+                        publishTasks.Add(
+                            properties == null
+                                ? _channel!.BasicPublishAsync(exchange, routingKey, mandatory, body)
+                                : _channel!.BasicPublishAsync(
+                                    exchange,
+                                    routingKey,
+                                    mandatory,
+                                    properties,
+                                    body
+                                )
+                        );
+                    }
+
+                    await Task.WhenAll(publishTasks.Select(t => t.AsTask()));
+                });
+        }
+
         public async ValueTask DisposeAsync()
         {
             if (_channel != null)

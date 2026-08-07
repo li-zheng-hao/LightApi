@@ -4,7 +4,7 @@
         <Nullable>enable</Nullable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>4.4.6</Version>
+        <Version>4.4.7</Version>
         <Title>LightApi.Infra</Title>
         <Authors>李正浩</Authors>
         <Description>ASP.NET Core快速开发框架</Description>
