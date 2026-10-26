@@ -1,5 +1,9 @@
 # Infra模块更新日志
 
+## 2026年10月26日 4.4.8
+
+1. FileStorage新增Minio文件删除接口 `DeleteFromMinioStorage`，支持通过objectKey删除文件
+
 ## 2026年8月7日 4.4.7
 
 1. RabbitMQ工具类支持批量发送消息

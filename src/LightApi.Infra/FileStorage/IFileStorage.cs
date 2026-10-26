@@ -47,6 +47,15 @@ public interface IFileStorage
     Task<string> UploadToMinioStorage(Stream stream, string fileName);
 
     /// <summary>
+    /// 从Minio存储删除文件
+    /// </summary>
+    /// <param name="objectKey">文件在Minio中的对象键</param>
+    /// <exception cref="InvalidOperationException">当Minio client未初始化时抛出异常</exception>
+    /// <exception cref="MinioException">当删除失败时抛出异常</exception>
+    /// <returns>删除操作任务</returns>
+    Task DeleteFromMinioStorage(string objectKey);
+
+    /// <summary>
     /// 上传到MongoDB
     /// </summary>
     /// <param name="stream"></param>

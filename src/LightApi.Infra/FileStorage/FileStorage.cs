@@ -83,6 +83,16 @@ public class FileStorage : IFileStorage
         return $"{prefix}://{_options.Value.MinioStorageOptions.EndPoint}/{_options.Value.MinioStorageOptions.Bucket}/{objectKey}";
     }
 
+    public async Task DeleteFromMinioStorage(string objectKey)
+    {
+        if (_minioClient == null)
+            throw new InvalidOperationException("Minio client is not initialized");
+        var args = new RemoveObjectArgs()
+            .WithBucket(_options.Value.MinioStorageOptions!.Bucket)
+            .WithObject(objectKey);
+        await _minioClient.RemoveObjectAsync(args);
+    }
+
     public async Task<string?> UploadToMongoDBStorage(
         Stream stream,
         string fileName,
