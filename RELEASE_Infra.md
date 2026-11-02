@@ -1,5 +1,9 @@
 # Infra模块更新日志
 
+## 2026年11月2日 4.4.9
+
+1. FileStorage新增Minio指定完整objectKey上传接口 `UploadToMinioStorageWithObjectKey`，支持Stream和IFormFile，返回文件完整URL
+
 ## 2026年10月26日 4.4.8
 
 1. FileStorage新增Minio文件删除接口 `DeleteFromMinioStorage`，支持通过objectKey删除文件

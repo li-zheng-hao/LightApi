@@ -47,6 +47,22 @@ public interface IFileStorage
     Task<string> UploadToMinioStorage(Stream stream, string fileName);
 
     /// <summary>
+    /// 使用完整对象键上传到Minio存储
+    /// </summary>
+    /// <param name="file">上传文件</param>
+    /// <param name="objectKey">完整对象键（包含路径和文件名，不包含bucket或域名）</param>
+    /// <returns>返回文件的完整url</returns>
+    Task<string> UploadToMinioStorageWithObjectKey(IFormFile file, string objectKey);
+
+    /// <summary>
+    /// 使用完整对象键上传到Minio存储
+    /// </summary>
+    /// <param name="stream">文件流</param>
+    /// <param name="objectKey">完整对象键（包含路径和文件名，不包含bucket或域名）</param>
+    /// <returns>返回文件的完整url</returns>
+    Task<string> UploadToMinioStorageWithObjectKey(Stream stream, string objectKey);
+
+    /// <summary>
     /// 从Minio存储删除文件
     /// </summary>
     /// <param name="objectKey">文件在Minio中的对象键</param>

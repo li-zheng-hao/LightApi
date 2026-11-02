@@ -55,18 +55,29 @@ public class FileStorage : IFileStorage
         return UploadToMinioStorage(file.OpenReadStream(), file.FileName);
     }
 
-    public async Task<string> UploadToMinioStorage(Stream stream, string fileName)
+    public Task<string> UploadToMinioStorage(Stream stream, string fileName)
+    {
+        string fileExt = Path.GetExtension(fileName);
+        string objectKey = $"{DateTime.Now:yyMMdd}/{Guid.NewGuid():N}{fileExt}";
+        return UploadToMinioStorageWithObjectKey(stream, objectKey);
+    }
+
+    public Task<string> UploadToMinioStorageWithObjectKey(IFormFile file, string objectKey)
+    {
+        return UploadToMinioStorageWithObjectKey(file.OpenReadStream(), objectKey);
+    }
+
+    public async Task<string> UploadToMinioStorageWithObjectKey(Stream stream, string objectKey)
     {
         if (_minioClient == null)
             throw new InvalidOperationException("Minio client is not initialized");
-        string fileExt = Path.GetExtension(fileName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(objectKey);
 
-        if (ContentTypeProvider.TryGetContentType(fileName, out var contentType) == false)
+        if (ContentTypeProvider.TryGetContentType(objectKey, out var contentType) == false)
         {
             contentType = "application/octet-stream";
         }
 
-        string objectKey = $"{DateTime.Now:yyMMdd}/{Guid.NewGuid():N}{fileExt}";
         var putObjectArgs = new PutObjectArgs()
             .WithBucket(_options.Value.MinioStorageOptions!.Bucket)
             .WithObject(objectKey)
